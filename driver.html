@@ -182,7 +182,7 @@
                         
                         let actionHTML = '';
                         if(o.status === 'new') {
-                            actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-hourglass-half"></i> MASIH DI DAPUR</button>`;
+                            actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-hourglass-half"></i> LAGI DIPROSES DAPUR</button>`;
                         } else if(o.status === 'ready') {
                             actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL SEKARANG</button>`;
                         } else {
@@ -221,3 +221,4 @@
     </script>
 </body>
 </html>
+
