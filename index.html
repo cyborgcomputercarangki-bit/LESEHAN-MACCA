@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>Lesehan Macca System</title>
+    <title>ADMIN - Lesehan Macca</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
 
@@ -19,232 +19,195 @@
             --white: #ffffff;
         }
 
-        body, html { 
-            margin: 0; padding: 0; 
-            font-family: 'Poppins', sans-serif; 
-            background: var(--bg);
-            scroll-behavior: smooth;
-        }
-
-        /* --- LOGIN PAGE (FULL SCREEN) --- */
-        #login-page {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--primary), #ff4d6d);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 9999; transition: 0.5s;
-        }
-        .login-box { 
-            background: white; padding: 35px 25px; border-radius: 25px; 
-            width: 85%; max-width: 350px; text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
-        }
-        .btn-role { 
-            width: 100%; padding: 16px; margin: 12px 0; border: none; 
-            border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 1rem;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .btn-admin { background: var(--secondary); color: white; }
-        .btn-driver { background: var(--primary); color: white; }
-
-        /* --- APP CONTENT --- */
-        #app-page { display: none; min-height: 100vh; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 50px; }
         
+        /* Navbar */
         .navbar { 
             background: var(--primary); color: white; padding: 15px 20px; 
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .navbar h3 { margin: 0; font-size: 1.1rem; }
-        .btn-logout { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; }
+        .navbar h3 { margin: 0; font-size: 1.1rem; letter-spacing: 1px; }
 
         .container { padding: 15px; max-width: 500px; margin: 0 auto; }
         
-        /* Form Admin */
-        .form-card { background: white; padding: 20px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1.5px solid #eee; box-sizing: border-box; font-size: 1rem; }
-        input:focus { border-color: var(--primary); outline: none; }
-        .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; }
+        /* Input Form */
+        .form-card { 
+            background: white; padding: 20px; border-radius: 20px; 
+            margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+        }
+        .form-card h4 { margin: 0 0 15px 0; color: var(--secondary); display: flex; align-items: center; gap: 8px; }
+        
+        input { 
+            width: 100%; padding: 14px; margin: 8px 0 15px 0; border-radius: 12px; 
+            border: 1.5px solid #eee; box-sizing: border-box; font-size: 1rem; font-family: inherit;
+        }
+        input:focus { border-color: var(--primary); outline: none; background: #fffafa; }
+
+        .btn-send { 
+            width: 100%; padding: 15px; background: var(--primary); color: white; 
+            border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; 
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-send:active { transform: scale(0.98); opacity: 0.9; }
 
         /* Order Cards */
+        .section-title { font-size: 0.9rem; font-weight: 700; margin: 25px 0 15px; color: #8d99ae; text-transform: uppercase; letter-spacing: 1px; }
+        
         .order-card { 
             background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; 
             position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border-left: 6px solid #ddd; animation: slideIn 0.3s ease;
+            border-left: 6px solid #ddd; transition: 0.3s;
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        .order-card.new { border-left-color: #8d99ae; }
         .order-card.ready { border-left-color: #ff9f1c; }
         .order-card.onprogress { border-left-color: #3a86ff; }
-        .order-card.delivered { border-left-color: #2ec4b6; }
+        .order-card.delivered { border-left-color: #2ec4b6; opacity: 0.7; }
 
-        .status-badge { float: right; font-size: 0.65rem; padding: 4px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; }
+        .status-badge { 
+            float: right; font-size: 0.65rem; padding: 4px 10px; border-radius: 6px; 
+            font-weight: 800; text-transform: uppercase; 
+        }
         .badge-new { background: #f0f0f0; color: #888; }
         .badge-ready { background: #fff3e0; color: #ff9f1c; }
         .badge-progress { background: #e3f2fd; color: #3a86ff; }
         .badge-done { background: #e8f5e9; color: #2ec4b6; }
 
-        .btn-action { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: 700; margin-top: 12px; cursor: pointer; }
-        .btn-orange { background: #ff9f1c; color: white; }
-        .btn-green { background: #2ec4b6; color: white; }
-        .btn-delete { background: #fee2e2; color: #ef4444; border: 1px dashed #fca5a5; font-size: 0.8rem; margin-top: 15px; }
+        .cust-name { font-size: 1.1rem; font-weight: 700; display: block; margin-bottom: 5px; }
+        .wa-link { color: #25d366; text-decoration: none; font-size: 0.85rem; font-weight: 600; }
 
-        .wa-link { display: inline-block; color: #25d366; text-decoration: none; font-weight: 600; font-size: 0.9rem; margin-top: 5px; }
+        .btn-action { 
+            width: 100%; padding: 12px; border: none; border-radius: 10px; 
+            font-weight: 700; margin-top: 15px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-orange { background: #ff9f1c; color: white; }
+        .btn-delete { background: #fee2e2; color: #ef4444; border: 1px dashed #fca5a5; font-size: 0.75rem; margin-top: 15px; }
+
+        .driver-info { 
+            margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee; 
+            font-size: 0.8rem; color: #3a86ff; font-weight: 600; display: flex; align-items: center; gap: 5px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="login-page">
-        <div class="login-box">
-            <i class="fas fa-utensils fa-3x" style="color: var(--primary); margin-bottom: 15px;"></i>
-            <h2 style="margin:0;">Lesehan Macca</h2>
-            <p style="color:#777; font-size: 0.9rem; margin-bottom: 25px;">Sistem Delivery Terpadu</p>
-            
-            <button class="btn-role btn-admin" onclick="openApp('admin')">
-                <i class="fas fa-user-shield"></i> PANEL ADMIN
-            </button>
-            <button class="btn-role btn-driver" onclick="openApp('driver')">
-                <i class="fas fa-motorcycle"></i> PANEL DRIVER
-            </button>
-        </div>
-        <p style="margin-top:20px; font-size: 0.7rem; opacity: 0.8;">v2.0 - Stabilized Connection</p>
+    <div class="navbar">
+        <h3><i class="fas fa-store"></i> ADMIN MACCA</h3>
+        <div id="online-indicator" style="font-size: 0.7rem; background: #2ec4b6; padding: 2px 8px; border-radius: 10px;">ONLINE</div>
     </div>
 
-    <div id="app-page">
-        <div class="navbar">
-            <h3 id="role-title">Lesehan Macca</h3>
-            <button class="btn-logout" onclick="location.reload()">Keluar <i class="fas fa-sign-out-alt"></i></button>
+    <div class="container">
+        <div class="form-card">
+            <h4><i class="fas fa-plus-circle"></i> Pesanan Baru</h4>
+            <label style="font-size: 0.8rem; font-weight: 600;">Nama Pelanggan</label>
+            <input type="text" id="name" placeholder="Contoh: Bpk. Agus">
+            
+            <label style="font-size: 0.8rem; font-weight: 600;">Nomor WhatsApp</label>
+            <input type="tel" id="wa" placeholder="Contoh: 08123456789">
+            
+            <button class="btn-send" onclick="buatPesanan()">
+                <i class="fas fa-paper-plane"></i> TERUSKAN KE DRIVER
+            </button>
         </div>
 
-        <div class="container">
-            <div id="admin-section" style="display:none;">
-                <div class="form-card">
-                    <h4 style="margin:0 0 15px 0;">Input Pesanan</h4>
-                    <input type="text" id="name" placeholder="Nama Pelanggan">
-                    <input type="tel" id="wa" placeholder="Nomor WA (Contoh: 0812...)">
-                    <button class="btn-send" onclick="buatPesanan()">KIRIM KE DRIVER</button>
-                </div>
-                <h4 style="margin-bottom:15px;"><i class="fas fa-list"></i> Monitoring Pesanan</h4>
-                <div id="admin-display"></div>
-            </div>
-
-            <div id="driver-section" style="display:none;">
-                <div style="background:#fff; padding:12px; border-radius:12px; margin-bottom:20px; border:1px solid #ddd;">
-                    <i class="fas fa-user-circle"></i> Driver: <b id="driver-display-name"></b>
-                </div>
-                <h4 style="margin-bottom:15px;"><i class="fas fa-tasks"></i> Tugas Anda</h4>
-                <div id="driver-display"></div>
-            </div>
+        <div class="section-title">Pantauan Pengantaran</div>
+        <div id="admin-display">
+            <p style="text-align: center; color: #aaa; font-size: 0.9rem; margin-top: 20px;">Memuat data...</p>
         </div>
     </div>
 
     <script>
+        // --- KONFIGURASI FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
             databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        
-        let userRole = '';
-        let myName = '';
 
-        // --- FUNGSI BUKA APLIKASI ---
-        function openApp(role) {
-            userRole = role;
-            if(role === 'driver') {
-                myName = prompt("Masukkan Nama Driver:");
-                if(!myName) return;
-                document.getElementById('driver-display-name').innerText = myName;
-                document.getElementById('driver-section').style.display = 'block';
-                document.getElementById('role-title').innerText = "Driver Panel";
-            } else {
-                document.getElementById('admin-section').style.display = 'block';
-                document.getElementById('role-title').innerText = "Admin Panel";
+        // --- FUNGSI TAMBAH DATA ---
+        function buatPesanan() {
+            const nameInput = document.getElementById('name');
+            const waInput = document.getElementById('wa');
+            
+            if(!nameInput.value || !waInput.value) {
+                alert("Harap isi Nama dan Nomor WA!");
+                return;
             }
 
-            // Transisi Visual
-            document.getElementById('login-page').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('login-page').style.display = 'none';
-                document.getElementById('app-page').style.display = 'block';
-                window.scrollTo(0,0); // Pastikan layar di paling atas
-            }, 500);
-
-            startSync();
-        }
-
-        // --- LOGIKA DATA ---
-        function buatPesanan() {
-            const n = document.getElementById('name').value;
-            const w = document.getElementById('wa').value;
-            if(!n || !w) return alert("Lengkapi data!");
-
             db.ref('orders').push({
-                customer: n,
-                whatsapp: w.replace(/\D/g, ''),
+                customer: nameInput.value,
+                whatsapp: waInput.value.replace(/\D/g, ''), // Hanya ambil angka
                 status: 'new',
                 timestamp: Date.now()
+            }).then(() => {
+                nameInput.value = '';
+                waInput.value = '';
             });
-            document.getElementById('name').value = '';
-            document.getElementById('wa').value = '';
         }
 
-        function updateStatus(key, newStatus) {
-            let data = { status: newStatus };
-            if(newStatus === 'onprogress') data.driver = myName;
-            db.ref('orders/' + key).update(data);
+        // --- FUNGSI UPDATE STATUS ---
+        function setSiap(key) {
+            db.ref('orders/' + key).update({ status: 'ready' });
         }
 
         function hapusPesanan(key) {
-            if(confirm("Hapus pesanan ini dari riwayat?")) {
+            if(confirm("Hapus pesanan ini dari daftar?")) {
                 db.ref('orders/' + key).remove();
             }
         }
 
         // --- REALTIME SYNC ---
-        function startSync() {
-            db.ref('orders').on('value', snap => {
-                const aDiv = document.getElementById('admin-display');
-                const dDiv = document.getElementById('driver-display');
-                aDiv.innerHTML = dDiv.innerHTML = '';
+        db.ref('orders').on('value', snap => {
+            const display = document.getElementById('admin-display');
+            display.innerHTML = '';
+            
+            if(!snap.exists()) {
+                display.innerHTML = '<p style="text-align: center; color: #aaa; font-size: 0.9rem; margin-top: 20px;">Belum ada pesanan.</p>';
+                return;
+            }
 
-                snap.forEach(child => {
-                    const o = child.val();
-                    const k = child.key;
+            snap.forEach(child => {
+                const o = child.val();
+                const k = child.key;
 
-                    // Template Kartu
-                    const card = document.createElement('div');
-                    card.className = `order-card ${o.status}`;
+                const card = document.createElement('div');
+                card.className = `order-card ${o.status}`;
+                
+                // Logika Badge Status
+                let badgeClass = 'badge-new';
+                if(o.status === 'ready') badgeClass = 'badge-ready';
+                if(o.status === 'onprogress') badgeClass = 'badge-progress';
+                if(o.status === 'delivered') badgeClass = 'badge-done';
+
+                card.innerHTML = `
+                    <span class="status-badge ${badgeClass}">${o.status}</span>
+                    <span class="cust-name">${o.customer}</span>
+                    <a href="https://wa.me/${o.whatsapp}" class="wa-link" target="_blank">
+                        <i class="fab fa-whatsapp"></i> ${o.whatsapp}
+                    </a>
                     
-                    const htmlContent = `
-                        <span class="status-badge badge-${o.status === 'new' ? 'new' : (o.status === 'ready' ? 'ready' : (o.status === 'onprogress' ? 'progress' : 'done'))}">${o.status}</span>
-                        <strong>${o.customer}</strong><br>
-                        <a href="https://wa.me/${o.whatsapp}" class="wa-link"><i class="fab fa-whatsapp"></i> ${o.whatsapp}</a>
-                    `;
+                    ${o.status === 'new' ? `
+                        <button class="btn-action btn-orange" onclick="setSiap('${k}')">
+                            <i class="fas fa-bell"></i> SIAP ANTAR (KIRIM NOTIF)
+                        </button>
+                    ` : ''}
 
-                    // Render Admin
-                    if(userRole === 'admin') {
-                        card.innerHTML = htmlContent + `
-                            ${o.status === 'new' ? `<button class="btn-action btn-orange" onclick="updateStatus('${k}', 'ready')">SIAP ANTAR</button>` : ''}
-                            ${o.driver ? `<div style="font-size:0.8rem; color:blue; margin-top:5px;">Driver: ${o.driver}</div>` : ''}
-                            ${o.status === 'delivered' ? `<button class="btn-action btn-delete" onclick="hapusPesanan('${k}')">HAPUS DARI LIST</button>` : ''}
-                        `;
-                        aDiv.prepend(card);
-                    }
+                    ${o.driver ? `
+                        <div class="driver-info">
+                            <i class="fas fa-biking"></i> Driver: ${o.driver}
+                        </div>
+                    ` : ''}
 
-                    // Render Driver
-                    if(userRole === 'driver') {
-                        if(o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
-                            card.innerHTML = htmlContent + `
-                                ${o.status === 'ready' ? `<button class="btn-action btn-orange" onclick="updateStatus('${k}', 'onprogress')">AMBIL PESANAN</button>` : ''}
-                                ${o.status === 'onprogress' ? `<button class="btn-action btn-green" onclick="updateStatus('${k}', 'delivered')">SELESAI ANTAR</button>` : ''}
-                            `;
-                            dDiv.prepend(card);
-                        }
-                    }
-                });
+                    ${o.status === 'delivered' ? `
+                        <button class="btn-action btn-delete" onclick="hapusPesanan('${k}')">
+                            <i class="fas fa-trash-alt"></i> HAPUS RIWAYAT
+                        </button>
+                    ` : ''}
+                `;
+                display.prepend(card);
             });
-        }
+        });
     </script>
 </body>
 </html>
