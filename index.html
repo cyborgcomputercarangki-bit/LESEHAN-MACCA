@@ -2,31 +2,27 @@
 <html lang="id">
 <head>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    
-    <title>ADMIN MACCA V2.1</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
+    <title>ADMIN MACCA V2.2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; --blue: #3a86ff; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 70px; }
         
-        .navbar { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .navbar { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .navbar h3 { margin: 0; font-size: 1rem; }
-        
-        /* Tombol Update Kecil di Pojok */
-        .refresh-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.7rem; cursor: pointer; }
+        .refresh-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
 
         .tab-bar { display: flex; background: white; position: sticky; top: 54px; z-index: 99; border-bottom: 1px solid #ddd; }
-        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-family: inherit; font-size: 0.75rem; font-weight: 700; color: #888; cursor: pointer; }
+        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-family: inherit; font-size: 0.7rem; font-weight: 700; color: #888; cursor: pointer; }
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
         .tab-btn i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
 
@@ -35,32 +31,31 @@
         .tab-content.active { display: block; }
 
         .form-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
-        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1.5px solid #eee; box-sizing: border-box; }
-        .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; }
+        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1.5px solid #eee; box-sizing: border-box; font-family: inherit; }
+        .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; }
 
-        .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.05); }
+        .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.05); position: relative; }
         .order-card.ready { border-left-color: var(--green); }
         .order-card.onprogress { border-left-color: var(--blue); }
         .order-card.new { border-left-color: var(--orange); }
 
-        .status-btn { width: 100%; margin-top: 10px; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; font-family: inherit; text-transform: uppercase; font-size: 0.8rem; }
+        .time-info { font-size: 0.65rem; color: #aaa; margin-top: 5px; display: block; }
+        .status-btn { width: 100%; margin-top: 12px; border: none; color: white; padding: 12px; border-radius: 10px; font-weight: bold; font-family: inherit; text-transform: uppercase; font-size: 0.8rem; cursor: pointer; }
         .btn-orange { background: var(--orange); }
         .btn-green { background: var(--green); }
-        .btn-blue { background: var(--blue); }
         
-        .driver-info { margin-top: 10px; padding: 8px; background: #e3f2fd; border-radius: 8px; color: #3a86ff; font-size: 0.85rem; font-weight: 600; text-align: center; }
-        
+        .driver-info { margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 10px; color: #3a86ff; font-size: 0.8rem; font-weight: 600; text-align: center; }
+        .btn-delete { background: none; border: none; color: #ff4d4d; font-size: 0.7rem; font-weight: bold; margin-top: 10px; width: 100%; cursor: pointer; }
+
         table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; }
+        td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
     <div class="navbar">
         <h3>ADMIN MACCA</h3>
-        <button class="refresh-btn" onclick="forceUpdate()">
-            <i class="fas fa-sync-alt"></i> Update Sistem
-        </button>
+        <button class="refresh-btn" onclick="forceUpdate()"><i class="fas fa-sync-alt"></i> UPDATE</button>
     </div>
 
     <div class="tab-bar">
@@ -88,21 +83,14 @@
         <div id="tab-rekap" class="tab-content">
             <div style="background:white; padding:20px; border-radius:20px;">
                 <h4 style="margin:0 0 15px 0;">Performa Driver</h4>
-                <table><tbody id="rekap-driver-list"></tbody></table>
+                <table id="rekap-table">
+                    <tbody id="rekap-driver-list"></tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <script>
-        // FUNGSI UNTUK MEMAKSA UPDATE TANPA UNINSTAL
-        function forceUpdate() {
-            if(confirm("Update sistem ke versi terbaru dari GitHub?")) {
-                // Menambahkan timestamp unik agar browser menganggap ini link baru
-                const newUrl = window.location.href.split('?')[0] + '?update=' + new Date().getTime();
-                window.location.replace(newUrl);
-            }
-        }
-
         const firebaseConfig = {
             apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
             databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -110,7 +98,31 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Fungsi Tab dan Firebase lainnya tetap sama...
+        function forceUpdate() {
+            Swal.fire({
+                title: 'Perbarui Sistem?',
+                text: "Aplikasi akan memuat ulang versi terbaru.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ef233c',
+                confirmButtonText: 'Ya, Update'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.replace(window.location.href.split('?')[0] + '?u=' + new Date().getTime());
+                }
+            })
+        }
+
+        function formatWaktu(ts) {
+            const d = new Date(ts);
+            const tgl = d.getDate().toString().padStart(2, '0');
+            const bln = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][d.getMonth()];
+            const thn = d.getFullYear();
+            const jam = d.getHours().toString().padStart(2, '0');
+            const min = d.getMinutes().toString().padStart(2, '0');
+            return `${tgl} ${bln} ${thn} - ${jam}:${min}`;
+        }
+
         function openTab(evt, tabId) {
             let i, content, btns;
             content = document.getElementsByClassName("tab-content");
@@ -124,13 +136,41 @@
         function buatPesanan() {
             const n = document.getElementById('name').value;
             const w = document.getElementById('wa').value;
-            if(!n || !w) return alert("Isi Data!");
-            db.ref('orders').push({ customer: n, whatsapp: w.replace(/\D/g, ''), status: 'new', timestamp: Date.now() });
-            document.getElementById('name').value = ''; document.getElementById('wa').value = '';
+            if(!n || !w) return Swal.fire('Error', 'Nama dan WA harus diisi!', 'error');
+            
+            db.ref('orders').push({ 
+                customer: n, 
+                whatsapp: w.replace(/\D/g, ''), 
+                status: 'new', 
+                timestamp: Date.now() 
+            }).then(() => {
+                Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Pesanan ditambahkan!', timer: 1500, showConfirmButton: false });
+                document.getElementById('name').value = ''; 
+                document.getElementById('wa').value = '';
+            });
         }
 
-        function setReady(key) { db.ref('orders/' + key).update({ status: 'ready' }); }
-        function hapusData(key) { if(confirm("Hapus?")) db.ref('orders/' + key).remove(); }
+        function setReady(key) {
+            db.ref('orders/' + key).update({ status: 'ready' }).then(() => {
+                Swal.fire({ icon: 'info', title: 'Siap!', text: 'Status diubah ke Siap Antar', timer: 1500, showConfirmButton: false });
+            });
+        }
+
+        function hapusData(key) {
+            Swal.fire({
+                title: 'Hapus Pesanan?',
+                text: "Data akan dihapus permanen dari riwayat.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef233c',
+                confirmButtonText: 'Ya, Hapus'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    db.ref('orders/' + key).remove();
+                    Swal.fire('Terhapus!', 'Data telah dihapus.', 'success');
+                }
+            })
+        }
 
         db.ref('orders').on('value', snap => {
             const activeList = document.getElementById('active-orders-list');
@@ -144,15 +184,19 @@
                 const k = child.key;
                 const card = document.createElement('div');
                 card.className = `order-card ${o.status}`;
-                let detail = `<strong>${o.customer}</strong><br><small>${o.whatsapp}</small>`;
+                const detail = `<strong>${o.customer}</strong><br><small>${o.whatsapp}</small><br><span class="time-info"><i class="far fa-clock"></i> ${formatWaktu(o.timestamp)}</span>`;
 
                 if (o.status !== 'delivered') {
-                    if (o.status === 'new') card.innerHTML = detail + `<button class="status-btn btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
-                    else if (o.status === 'ready') card.innerHTML = detail + `<button class="status-btn btn-green" disabled>PROSES (MENUNGGU DRIVER)</button>`;
-                    else if (o.status === 'onprogress') card.innerHTML = detail + `<div class="driver-info"><i class="fas fa-truck"></i> Sedang Diantar oleh: <b>${o.driver}</b></div>`;
+                    if (o.status === 'new') {
+                        card.innerHTML = detail + `<button class="status-btn btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
+                    } else if (o.status === 'ready') {
+                        card.innerHTML = detail + `<button class="status-btn btn-green" disabled>PROSES (MENUNGGU DRIVER)</button>`;
+                    } else if (o.status === 'onprogress') {
+                        card.innerHTML = detail + `<div class="driver-info"><i class="fas fa-truck"></i> Sedang Diantar oleh: <b>${o.driver}</b></div>`;
+                    }
                     activeList.prepend(card);
                 } else {
-                    card.innerHTML = detail + `<div class="driver-info" style="background:#f1f8e9; color:#2e7d32;"><i class="fas fa-check-double"></i> Selesai oleh: ${o.driver}</div><button onclick="hapusData('${k}')" style="border:none; color:red; background:none; font-size:0.7rem; margin-top:10px; cursor:pointer;">Hapus</button>`;
+                    card.innerHTML = detail + `<div class="driver-info" style="background:#f1f8e9; color:#2e7d32;"><i class="fas fa-check-double"></i> Selesai diantar oleh: <b>${o.driver}</b></div><button class="btn-delete" onclick="hapusData('${k}')"><i class="fas fa-trash"></i> HAPUS PERMANEN</button>`;
                     historyList.prepend(card);
                     if(o.driver) rekapData[o.driver] = (rekapData[o.driver] || 0) + 1;
                 }
