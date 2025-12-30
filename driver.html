@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>DRIVER - Lesehan Macca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --primary: #ef233c; --bg: #f4f7f6; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); }
+        
+        /* Navbar */
+        .navbar { background: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .navbar h3 { margin: 0; font-size: 1.1rem; }
+        
+        .container { padding: 15px; max-width: 500px; margin: 0 auto; }
+        
+        /* Notif Permission Banner */
+        #notif-banner { background: #fff3e0; padding: 10px; text-align: center; font-size: 0.8rem; border-bottom: 1px solid #ffe0b2; display: none; }
+        #notif-banner button { background: #ff9800; border: none; color: white; padding: 5px 10px; border-radius: 5px; margin-left: 10px; font-weight: bold; }
+
+        /* Order Card */
+        .order-card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 6px solid #ff9f1c; position: relative; }
+        .order-card.onprogress { border-left-color: #3a86ff; }
+        
+        .btn-action { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: 700; margin-top: 15px; cursor: pointer; font-size: 1rem; }
+        .btn-orange { background: #ff9f1c; color: white; }
+        .btn-green { background: #2ec4b6; color: white; }
+        
+        .wa-link { display: inline-block; color: #25d366; text-decoration: none; font-weight: 600; margin-top: 8px; }
+        
+        #driver-login { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; box-sizing: border-box; }
+        input { width: 100%; max-width: 300px; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+
+    <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" preload="auto"></audio>
+
+    <div id="driver-login">
+        <i class="fas fa-motorcycle fa-3x" style="color:var(--primary); margin-bottom:20px;"></i>
+        <h2>Panel Driver</h2>
+        <input type="text" id="name-input" placeholder="Masukkan Nama Anda">
+        <button class="btn-action btn-orange" onclick="login()" style="max-width:300px;">MASUK & AKTIFKAN NOTIF</button>
+    </div>
+
+    <div id="notif-banner">
+        ⚠️ Notifikasi belum aktif. <button onclick="requestNotif()">AKTIFKAN</button>
+    </div>
+
+    <div class="navbar">
+        <h3>Lesehan Macca - Driver</h3>
+        <small id="display-name"></small>
+    </div>
+
+    <div class="container">
+        <h4 id="status-tugas">Menunggu Pesanan...</h4>
+        <div id="order-list"></div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
+            databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        
+        let myName = localStorage.getItem('driverName') || '';
+        let lastOrderCount = -1;
+
+        function login() {
+            const val = document.getElementById('name-input').value;
+            if(!val) return alert("Isi nama dulu!");
+            myName = val;
+            localStorage.setItem('driverName', val);
+            document.getElementById('driver-login').style.display = 'none';
+            document.getElementById('display-name').innerText = myName;
+            requestNotif();
+            startSync();
+        }
+
+        if(myName) {
+            document.getElementById('driver-login').style.display = 'none';
+            document.getElementById('display-name').innerText = myName;
+            startSync();
+        }
+
+        function requestNotif() {
+            if (!("Notification" in window)) return;
+            Notification.requestPermission().then(permission => {
+                if (permission !== "granted") {
+                    document.getElementById('notif-banner').style.display = 'block';
+                } else {
+                    document.getElementById('notif-banner').style.display = 'none';
+                }
+            });
+        }
+
+        function playSound() {
+            const sound = document.getElementById('notif-sound');
+            sound.play().catch(e => console.log("Sound blocked by browser"));
+        }
+
+        function showPushNotif(cust) {
+            if (Notification.permission === "granted") {
+                new Notification("Ada Pesanan Baru!", {
+                    body: "Pelanggan: " + cust + " siap diantar.",
+                    icon: "https://cdn-icons-png.flaticon.com/512/2830/2830305.png"
+                });
+            }
+        }
+
+        function startSync() {
+            // Kita pantau pesanan dengan status 'ready'
+            db.ref('orders').on('value', snap => {
+                const list = document.getElementById('order-list');
+                list.innerHTML = '';
+                let currentReadyCount = 0;
+
+                snap.forEach(child => {
+                    const o = child.val();
+                    const k = child.key;
+
+                    if(o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
+                        currentReadyCount++;
+                        const card = document.createElement('div');
+                        card.className = `order-card ${o.status === 'onprogress' ? 'onprogress' : ''}`;
+                        card.innerHTML = `
+                            <span style="float:right; color:#ff9f1c; font-weight:bold; font-size:0.7rem;">${o.status.toUpperCase()}</span>
+                            <strong>${o.customer}</strong><br>
+                            <a href="https://wa.me/${o.whatsapp}" class="wa-link"><i class="fab fa-whatsapp"></i> Chat WhatsApp</a>
+                            ${o.status === 'ready' ? 
+                                `<button class="btn-action btn-orange" onclick="updateStatus('${k}', 'onprogress')">AMBIL PESANAN</button>` : 
+                                `<button class="btn-action btn-green" onclick="updateStatus('${k}', 'delivered')">SELESAI ANTAR</button>`}
+                        `;
+                        list.prepend(card);
+                    }
+                });
+
+                // LOGIKA NOTIFIKASI
+                // Jika jumlah pesanan ready bertambah, bunyikan suara & notif
+                if (lastOrderCount !== -1 && currentReadyCount > lastOrderCount) {
+                    playSound();
+                    showPushNotif("Seseorang");
+                }
+                lastOrderCount = currentReadyCount;
+                document.getElementById('status-tugas').innerText = currentReadyCount > 0 ? "Tugas Aktif ("+currentReadyCount+")" : "Belum Ada Tugas";
+            });
+        }
+
+        function updateStatus(key, stat) {
+            let d = { status: stat };
+            if(stat === 'onprogress') d.driver = myName;
+            db.ref('orders/' + key).update(d);
+        }
+    </script>
+</body>
+</html>
