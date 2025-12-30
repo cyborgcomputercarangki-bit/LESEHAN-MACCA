@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>ADMIN DELIVERY MODERN</title>
+    <title>Lesehan Macca - Delivery System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
 
@@ -9,493 +9,204 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #ef233c, #ff4d6d); /* Merah gradasi */
-            --primary-color: #ef233c; /* Merah solid */
-            --bg-light: #f4f7f6; /* Background sangat terang */
-            --card-bg: #ffffff;
-            --text-dark: #2b2d42;
-            --text-muted: #8d99ae;
-            --border-light: rgba(0,0,0,0.08);
-            --shadow-light: rgba(0,0,0,0.05);
-            --shadow-medium: rgba(0,0,0,0.15);
+            --primary: #ef233c;
+            --primary-dark: #d90429;
+            --secondary: #2b2d42;
+            --bg: #f4f7f6;
+            --white: #ffffff;
         }
 
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            margin: 0; padding: 0; 
-            background: var(--bg-light); 
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        .container { max-width: 500px; margin: 0 auto; min-height: 100vh; padding-bottom: 80px; }
-
-        /* --- HEADER --- */
-        .header { 
-            padding: 40px 25px; 
-            background: var(--primary-gradient); 
-            color: white; 
-            border-radius: 0 0 40px 40px;
-            box-shadow: 0 8px 25px var(--shadow-medium);
-            text-align: left;
-            position: relative;
-            overflow: hidden;
-        }
-        .header h3 { margin: 0; font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
-        .header p { margin: 8px 0 0; opacity: 0.9; font-size: 1rem; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); }
         
-        /* Shape SVG for modern header look */
-        .header::before {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            left: -50px;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            transform: rotate(20deg);
+        /* --- LOGIN PAGE --- */
+        #login-page {
+            height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--primary), #ff4d6d); color: white; padding: 20px;
         }
-        .header::after {
-            content: '';
-            position: absolute;
-            top: -30px;
-            right: -30px;
-            width: 150px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            transform: rotate(-30deg);
-        }
+        .login-box { background: white; padding: 30px; border-radius: 20px; width: 100%; max-width: 350px; color: var(--secondary); box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
+        .login-box h2 { margin-bottom: 20px; color: var(--primary); }
+        .btn-role { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+        .btn-admin { background: var(--secondary); color: white; }
+        .btn-driver { background: var(--primary); color: white; }
 
-
-        /* --- TAB MENU --- */
-        .tab-menu { 
-            display: flex; 
-            margin: -30px 20px 25px; 
-            background: var(--card-bg);
-            padding: 10px;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px var(--shadow-light);
-            position: relative;
-            z-index: 10;
-        }
-        .tab-item { 
-            flex: 1; text-align: center; padding: 14px; cursor: pointer; 
-            color: var(--text-muted); font-weight: 600; font-size: 0.9rem;
-            transition: all 0.3s ease; border-radius: 15px;
-        }
-        .tab-item.active { 
-            background: var(--primary-color); /* Use solid color for active tab */
-            color: white; 
-            box-shadow: 0 4px 10px rgba(239, 35, 60, 0.3);
-        }
-
-        .content-area { padding: 0 20px; }
-        .tab-content { display: none; animation: fadeIn 0.5s ease forwards; }
-        .tab-content.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- CARD PESANAN --- */
-        .card { 
-            background: var(--card-bg); 
-            padding: 20px; 
-            margin-bottom: 20px; 
-            border-radius: 20px; 
-            box-shadow: 0 6px 20px var(--shadow-light);
-            border: 1px solid var(--border-light);
-            transition: transform 0.2s ease;
-        }
-        .card:hover { transform: translateY(-3px); }
+        /* --- COMMON LAYOUT --- */
+        .navbar { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .navbar h3 { margin: 0; color: var(--primary); font-size: 1.2rem; }
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
         
-        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .order-id { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-        .order-status-badge { 
-            padding: 5px 12px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; 
-            text-transform: uppercase; letter-spacing: 0.5px;
-            color: white;
-        }
-        .status-new { background-color: #4CAF50; } /* Green */
-        .status-ready { background-color: #FFC107; } /* Amber */
-        .status-onprogress { background-color: #2196F3; } /* Blue */
-        .status-history { background-color: #9E9E9E; } /* Grey */
-        .status-cancelled { background-color: #F44336; } /* Red */
+        /* --- ADMIN STYLES --- */
+        .form-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-family: inherit; }
+        .btn-send { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
 
-
-        .order-info { display: flex; align-items: flex-start; margin-bottom: 12px; gap: 15px; }
-        .order-info i { color: var(--primary-color); font-size: 1rem; width: 20px; text-align: center; margin-top: 3px; }
-        .order-info div { flex: 1; font-size: 0.95rem; }
-        .order-info strong { display: block; font-weight: 600; color: var(--text-dark); }
-        .order-info span { color: var(--text-muted); font-size: 0.85rem; display: block; margin-top: 2px; }
-
-        .whatsapp-link { 
-            display: inline-flex; align-items: center; gap: 8px;
-            color: var(--primary-color); text-decoration: none; font-weight: 600; font-size: 0.9rem;
-            margin-top: 10px;
-            transition: color 0.2s ease;
-        }
-        .whatsapp-link:hover { color: #d32f2f; }
-
-
-        /* --- BUTTONS --- */
-        .btn-action-group { 
-            display: flex; gap: 10px; margin-top: 20px; 
-            padding-top: 15px; border-top: 1px solid var(--border-light); 
-        }
-        .btn-action { 
-            border: none; font-weight: 600; cursor: pointer; padding: 12px 15px; border-radius: 12px;
-            flex: 1; font-size: 0.85rem; transition: all 0.3s ease;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn-action:active { transform: translateY(1px); }
-
-        .btn-primary { background: var(--primary-color); color: white; }
-        .btn-secondary { background: #f0f2f5; color: var(--text-dark); border: 1px solid var(--border-light); }
-        .btn-danger { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
-        .btn-disabled { background: #e0e0e0; color: #a0a0a0; cursor: not-allowed; }
-
-        /* --- OVERLAY FORM --- */
-        #input-content {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: white; z-index: 1000; padding: 40px 25px; display: none;
-            animation: slideUp 0.4s ease forwards;
-        }
-        #input-content.active { display: block; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        .form-group { margin-bottom: 25px; }
-        .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; color: var(--text-dark); }
-        .form-group input {
-            width: 100%; padding: 14px 18px; border-radius: 12px; border: 1.5px solid var(--border-light);
-            box-sizing: border-box; font-size: 1rem; font-family: 'Poppins', sans-serif;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .form-group input:focus { 
-            border-color: var(--primary-color); 
-            box-shadow: 0 0 0 3px rgba(239, 35, 60, 0.1); 
-            outline: none; 
-        }
-
-        .btn-submit { 
-            width: 100%; background: var(--primary-gradient); color: white; border: none; 
-            padding: 16px; border-radius: 15px; font-weight: 600; font-size: 1rem; cursor: pointer;
-            box-shadow: 0 6px 20px rgba(239, 35, 60, 0.4);
-            transition: transform 0.2s ease;
-        }
-        .btn-submit:active { transform: translateY(1px); }
-
-        .btn-close-form { 
-            position: absolute; top: 20px; right: 20px; background: #f0f2f5; 
-            border: none; width: 45px; height: 45px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 1.1rem; color: var(--text-dark);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: background 0.2s ease;
-        }
-        .btn-close-form:hover { background: #e2e4e7; }
-
-        /* --- FAB (Floating Action Button) --- */
-        .fab {
-            position: fixed; bottom: 30px; right: 30px; 
-            background: var(--primary-gradient); color: white; width: 60px; height: 60px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 25px rgba(239, 35, 60, 0.4); z-index: 900;
-            font-size: 1.5rem; cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        .fab:active { transform: scale(0.9); }
+        /* --- CARD STYLES --- */
+        .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; border-left: 6px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.05); position: relative; }
+        .order-card.ready { border-left-color: #ff9f1c; }
+        .order-card.onprogress { border-left-color: #3a86ff; }
+        .order-card.delivered { border-left-color: #2ec4b6; opacity: 0.7; }
         
-        /* --- EMPTY STATE --- */
-        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); opacity: 0.6; }
-        .empty-state i { font-size: 4rem; margin-bottom: 20px; color: var(--border-light); }
-        .empty-state p { font-size: 1rem; font-weight: 500; }
+        .status-badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 5px; font-weight: 700; text-transform: uppercase; float: right; }
+        .badge-new { background: #edf2f4; color: #8d99ae; }
+        .badge-ready { background: #ff9f1c; color: white; }
+        .badge-progress { background: #3a86ff; color: white; }
 
-        /* General spacing and text tweaks */
-        h2 { font-size: 1.5rem; font-weight: 700; color: var(--text-dark); margin-top: 20px; }
-        p#form-error { font-size: 0.85rem; font-weight: 500; text-align: center; margin-top: 15px; color: #e74c3c; }
+        .btn-small { padding: 8px 15px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
+        .btn-orange { background: #ff9f1c; color: white; }
+        .btn-blue { background: #3a86ff; color: white; }
+        .btn-green { background: #2ec4b6; color: white; }
+
+        .hidden { display: none; }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="header">
-            <h3>Lesehan Macca</h3>
-            <p>Panel Admin Pengiriman</p>
-        </div>
 
-        <div class="tab-menu">
-            <div class="tab-item active" data-tab="active">
-                AKTIF <span id="count-active" style="font-weight: 700;">0</span>
-            </div>
-            <div class="tab-item" data-tab="history">
-                RIWAYAT
-            </div>
-        </div>
-
-        <div class="content-area">
-            <div id="active-content" class="tab-content active">
-                <div id="orderListActive"></div>
-                <div id="noOrdersActive" class="empty-state">
-                    <i class="fas fa-box-open"></i>
-                    <p>Tidak ada pengiriman aktif saat ini.</p>
-                </div>
-            </div>
-
-            <div id="history-content" class="tab-content">
-                <div id="orderListHistory"></div>
-                <div id="noOrdersHistory" class="empty-state">
-                    <i class="fas fa-history"></i>
-                    <p>Belum ada riwayat pesanan.</p>
-                </div>
-            </div>
-            
-            <div id="input-content">
-                <button class="btn-close-form" onclick="closeForm()"><i class="fas fa-times"></i></button>
-                <h2>Tambah Pesanan Baru</h2>
-                
-                <div class="form-group" style="margin-top: 30px;">
-                    <label for="customer">Nama Pelanggan</label>
-                    <input type="text" id="customer" placeholder="Contoh: Budi Santoso">
-                </div>
-                <div class="form-group">
-                    <label for="whatsapp">Nomor WhatsApp</label>
-                    <input type="tel" id="whatsapp" placeholder="Contoh: 0812xxxx atau +62812xxxx">
-                </div>
-
-                <button class="btn-submit" onclick="sendToDriver()">
-                    <i class="fas fa-paper-plane"></i> TERUSKAN KE DRIVER
-                </button>
-                <p id="form-error"></p>
-            </div>
+    <div id="login-page">
+        <div class="login-box">
+            <i class="fas fa-utensils fa-3x" style="color: var(--primary); margin-bottom: 15px;"></i>
+            <h2>Lesehan Macca</h2>
+            <p>Silakan pilih akses Anda:</p>
+            <button class="btn-role btn-admin" onclick="showApp('admin')">LOG IN ADMIN</button>
+            <button class="btn-role btn-driver" onclick="showApp('driver')">LOG IN DRIVER</button>
         </div>
     </div>
 
-    <div class="fab" onclick="openForm()">
-        <i class="fas fa-plus"></i>
+    <div id="app-page" class="hidden">
+        <div class="navbar">
+            <h3 id="app-title">Lesehan Macca</h3>
+            <button onclick="location.reload()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+        </div>
+
+        <div class="container">
+            <div id="admin-ui" class="hidden">
+                <div class="form-card">
+                    <h4 style="margin-top:0;">Input Pesanan Baru</h4>
+                    <input type="text" id="cust-name" placeholder="Nama Pelanggan">
+                    <input type="tel" id="cust-wa" placeholder="Nomor WhatsApp">
+                    <button class="btn-send" onclick="adminKirim()"><i class="fas fa-paper-plane"></i> TERUSKAN KE DRIVER</button>
+                </div>
+                <h4>Daftar Pantauan</h4>
+                <div id="admin-list"></div>
+            </div>
+
+            <div id="driver-ui" class="hidden">
+                <div id="driver-info" style="margin-bottom: 15px; font-weight: 600;"></div>
+                <h4>Tugas Pengantaran</h4>
+                <div id="driver-list"></div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // --- KONFIGURASI FIREBASE ---
+        // --- CONFIG FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
             databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app"
         };
-
-        // Inisialisasi Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        
+        let currentRole = '';
+        let driverName = '';
 
-        // UI Elements
-        const customerInput = document.getElementById('customer');
-        const whatsappInput = document.getElementById('whatsapp');
-        const formError = document.getElementById('form-error');
-
-        function openForm() { 
-            document.getElementById('input-content').classList.add('active'); 
-            formError.textContent = ""; // Clear previous errors
-            customerInput.value = ""; // Clear form fields
-            whatsappInput.value = "";
-        }
-        function closeForm() { 
-            document.getElementById('input-content').classList.remove('active');
-        }
-
-        // Fungsi Format WA (Menangani 0, +62, 62)
-        function formatWA(phone) {
-            let cleaned = phone.replace(/\D/g, ''); // Ambil hanya angka
-            if (cleaned.startsWith('0')) {
-                cleaned = '62' + cleaned.substring(1);
-            } else if (!cleaned.startsWith('62') && cleaned !== "") {
-                cleaned = '62' + cleaned;
-            }
-            return cleaned;
-        }
-
-        // --- FUNGSI KIRIM DATA ---
-        function sendToDriver() {
-            const customerName = customerInput.value.trim();
-            const waRaw = whatsappInput.value.trim();
+        // --- NAVIGATION ---
+        function showApp(role) {
+            currentRole = role;
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('app-page').classList.remove('hidden');
             
-            if (!customerName || !waRaw) {
-                formError.textContent = "Nama Pelanggan dan Nomor WhatsApp wajib diisi!";
-                return;
+            if(role === 'admin') {
+                document.getElementById('admin-ui').classList.remove('hidden');
+                document.getElementById('app-title').innerText = "Admin Panel";
+            } else {
+                driverName = prompt("Masukkan Nama Driver:");
+                if(!driverName) return location.reload();
+                document.getElementById('driver-ui').classList.remove('hidden');
+                document.getElementById('app-title').innerText = "Driver Panel";
+                document.getElementById('driver-info').innerText = "Driver: " + driverName;
             }
+            startListener();
+        }
 
-            const cleanWa = formatWA(waRaw);
-            
-            const newOrder = {
-                customer: customerName,
-                whatsapp: cleanWa,
+        // --- LOGIC ADMIN ---
+        function adminKirim() {
+            const name = document.getElementById('cust-name').value;
+            const wa = document.getElementById('cust-wa').value;
+            if(!name || !wa) return alert("Mohon lengkapi data!");
+
+            db.ref('orders').push({
+                customer: name,
+                whatsapp: wa,
                 status: 'new',
-                time: Date.now(),
-                address: "-", // Default value for simplified input
-                menu: "-"     // Default value for simplified input
-            };
-
-            db.ref('orders').push(newOrder)
-                .then(() => {
-                    closeForm();
-                    // Optionally, switch to active tab after successful input
-                    document.querySelector('.tab-item[data-tab="active"]').click();
-                })
-                .catch((error) => {
-                    formError.textContent = "Gagal mengirim pesanan: " + error.message;
-                    console.error("Gagal kirim:", error);
-                });
+                time: Date.now()
+            });
+            document.getElementById('cust-name').value = '';
+            document.getElementById('cust-wa').value = '';
         }
 
-        // --- FUNGSI UPDATE STATUS ---
-        function setReady(k) { 
-            db.ref('orders/' + k).update({ status: 'ready', notifyAt: Date.now() })
-                .then(() => console.log(`Order ${k} set to ready`))
-                .catch(e => console.error(e));
+        function adminSiap(key) {
+            db.ref('orders/' + key).update({ status: 'ready' });
         }
 
-        function setCancelled(k) { 
-            if(confirm('Yakin membatalkan pesanan ini?')) {
-                db.ref('orders/' + k).update({ status: 'cancelled' })
-                    .then(() => console.log(`Order ${k} cancelled`))
-                    .catch(e => console.error(e));
-            }
+        // --- LOGIC DRIVER ---
+        function driverAmbil(key) {
+            db.ref('orders/' + key).update({ 
+                status: 'onprogress',
+                driver: driverName
+            });
         }
 
-        function deleteOrder(k) { 
-            if(confirm('Yakin menghapus pesanan ini dari riwayat secara permanen?')) {
-                db.ref('orders/' + k).remove()
-                    .then(() => console.log(`Order ${k} deleted`))
-                    .catch(e => console.error(e));
-            }
+        function driverSelesai(key) {
+            db.ref('orders/' + key).update({ status: 'delivered' });
         }
 
-        // --- RENDER DAN LISTENER REALTIME DATABASE ---
-        db.ref('orders').on('value', snap => {
-            const listActive = document.getElementById('orderListActive');
-            const listHistory = document.getElementById('orderListHistory');
-            listActive.innerHTML = '';
-            listHistory.innerHTML = ''; // Clear history list to re-render
-            let activeCount = 0;
-            let historyCount = 0;
+        // --- REALTIME MONITOR ---
+        function startListener() {
+            db.ref('orders').on('value', snap => {
+                const adminList = document.getElementById('admin-list');
+                const driverList = document.getElementById('driver-list');
+                adminList.innerHTML = '';
+                driverList.innerHTML = '';
 
-            snap.forEach(child => {
-                const o = child.val();
-                const k = child.key;
-                const card = document.createElement('div');
-                card.className = 'card';
-                
-                let statusClass = "status-history", statusText = "Tidak Diketahui";
-                if(o.status === 'new') { statusClass = "status-new"; statusText = "BARU"; }
-                else if(o.status === 'ready') { statusClass = "status-ready"; statusText = "SIAP ANTAR"; }
-                else if(o.status === 'onprogress') { statusClass = "status-onprogress"; statusText = "DALAM PENGIRIMAN"; }
-                else if(o.status === 'delivered') { statusClass = "status-history"; statusText = "SELESAI"; }
-                else if(o.status === 'cancelled') { statusClass = "status-cancelled"; statusText = "DIBATALKAN"; }
+                snap.forEach(child => {
+                    const o = child.val();
+                    const k = child.key;
 
-                let actionBtns = "";
-                if (['new', 'ready', 'onprogress'].includes(o.status)) {
-                    activeCount++;
-                    if(o.status === 'new') {
-                        actionBtns = `
-                            <div class="btn-action-group">
-                                <button class="btn-action btn-primary" onclick="setReady('${k}')"><i class="fas fa-check-circle"></i> SIAP ANTAR</button>
-                                <button class="btn-action btn-secondary" onclick="setCancelled('${k}')"><i class="fas fa-times"></i> BATAL</button>
-                            </div>
+                    // TAMPILAN UNTUK ADMIN
+                    if(currentRole === 'admin') {
+                        const card = document.createElement('div');
+                        card.className = `order-card ${o.status}`;
+                        card.innerHTML = `
+                            <span class="status-badge badge-${o.status}">${o.status}</span>
+                            <strong>${o.customer}</strong><br>
+                            <small>${o.whatsapp}</small><br>
+                            ${o.status === 'new' ? `<button class="btn-small btn-orange" onclick="adminSiap('${k}')">SIAP DIANTAR</button>` : ''}
+                            ${o.driver ? `<div style="margin-top:5px; font-size:0.8rem; color:blue;">Driver: ${o.driver}</div>` : ''}
                         `;
-                    } else if (o.status === 'ready' || o.status === 'onprogress') {
-                        actionBtns = `
-                            <div class="btn-action-group">
-                                <button class="btn-action btn-disabled" disabled><i class="fas fa-truck-moving"></i> DRIVER: ${o.driverName || 'Menunggu...'}</button>
-                                <button class="btn-action btn-danger" onclick="setCancelled('${k}')"><i class="fas fa-times-circle"></i> BATAL</button>
-                            </div>
-                        `;
+                        adminList.prepend(card);
                     }
-                } else {
-                    historyCount++;
-                    actionBtns = `
-                        <div class="btn-action-group">
-                            <button class="btn-action btn-secondary" onclick="deleteOrder('${k}')"><i class="fas fa-trash-alt"></i> HAPUS RIWAYAT</button>
-                        </div>
-                    `;
-                }
 
-                card.innerHTML = `
-                    <div class="order-header">
-                        <span class="order-id">ORDER #${k.substring(1, 8).toUpperCase()}</span>
-                        <span class="order-status-badge ${statusClass}">${statusText}</span>
-                    </div>
-                    <div class="order-info">
-                        <i class="fas fa-user"></i>
-                        <div>
-                            <strong>${o.customer}</strong>
-                            <span>Pelanggan</span>
-                        </div>
-                    </div>
-                    ${o.driverName ? `
-                    <div class="order-info">
-                        <i class="fas fa-motorcycle"></i>
-                        <div>
-                            <strong>${o.driverName}</strong>
-                            <span>Driver</span>
-                        </div>
-                    </div>
-                    ` : ''}
-                    <div class="order-info">
-                        <i class="fas fa-info-circle"></i>
-                        <div>
-                            <span>Ket. Admin:</span> 
-                            <p style="margin:0;">${o.menu === '-' ? 'Input manual' : o.menu}</p>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <a href="https://wa.me/${o.whatsapp}" target="_blank" class="whatsapp-link">
-                            <i class="fab fa-whatsapp"></i> Chat WhatsApp
-                        </a>
-                    </div>
-                    ${actionBtns}
-                `;
-
-                if (['new', 'ready', 'onprogress'].includes(o.status)) {
-                    listActive.appendChild(card);
-                } else {
-                    // Prepend to show newest history first
-                    listHistory.prepend(card); 
-                }
+                    // TAMPILAN UNTUK DRIVER
+                    if(currentRole === 'driver') {
+                        // Driver hanya melihat jika status 'ready' ATAU pesanan itu miliknya
+                        if(o.status === 'ready' || (o.status === 'onprogress' && o.driver === driverName)) {
+                            const card = document.createElement('div');
+                            card.className = `order-card ${o.status}`;
+                            card.innerHTML = `
+                                <strong>${o.customer}</strong><br>
+                                <a href="https://wa.me/${o.whatsapp}" style="text-decoration:none; color:green; font-size:0.9rem;"><i class="fab fa-whatsapp"></i> Chat Pelanggan</a>
+                                ${o.status === 'ready' ? `<button class="btn-small btn-orange" onclick="driverAmbil('${k}')">AMBIL PESANAN</button>` : ''}
+                                ${o.status === 'onprogress' ? `<button class="btn-small btn-green" onclick="driverSelesai('${k}')">SELESAI DIANTAR</button>` : ''}
+                            `;
+                            driverList.prepend(card);
+                        }
+                    }
+                });
             });
-
-            // Update counts and empty states
-            document.getElementById('count-active').textContent = activeCount;
-            document.getElementById('noOrdersActive').style.display = activeCount === 0 ? 'block' : 'none';
-            document.getElementById('noOrdersHistory').style.display = historyCount === 0 ? 'block' : 'none';
-
-            // If active tab is history and there are new items, scroll to top
-            if (document.getElementById('history-content').classList.contains('active')) {
-                listHistory.scrollTop = 0;
-            }
-        });
-
-        // --- LOGIKA TAB VIEW ---
-        document.querySelectorAll('.tab-item').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                document.getElementById(this.dataset.tab + '-content').classList.add('active');
-            });
-        });
-
-        // Set tab default ke 'active' saat pertama kali dimuat
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('.tab-item[data-tab="active"]').click();
-        });
+        }
     </script>
 </body>
 </html>
-```http://googleusercontent.com/image_generation_content/1
