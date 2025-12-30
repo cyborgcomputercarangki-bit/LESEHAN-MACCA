@@ -5,221 +5,115 @@
     <meta charset="UTF-8">
     <title>DRIVER PANEL MACCA</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
         :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; --blue: #3a86ff; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 70px; }
-        
         .navbar { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .navbar h3 { margin: 0; font-size: 0.9rem; }
-        .refresh-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 10px; border-radius: 6px; font-size: 0.7rem; }
-
-        /* Login Screen Modifikasi */
         #driver-login { position: fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:1001; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; box-sizing:border-box; text-align: center; }
         .login-box { background: #fdfdfd; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 350px; }
-        input { width:100%; padding:15px; border-radius:12px; border:2px solid #eee; margin-bottom:15px; font-size:1.5rem; text-align: center; font-family: inherit; font-weight: bold; color: var(--primary); }
-        .login-hint { font-size: 0.8rem; color: #888; margin-top: 10px; line-height: 1.6; }
-
+        input { width:100%; padding:15px; border-radius:12px; border:2px solid #eee; margin-bottom:15px; font-size:1.5rem; text-align: center; font-family: inherit; font-weight: bold; color: var(--primary); outline: none; }
         .tab-bar { display: flex; background: white; position: sticky; top: 54px; z-index: 99; border-bottom: 1px solid #ddd; }
         .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-family: inherit; font-size: 0.7rem; font-weight: 700; color: #888; cursor: pointer; }
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
         .tab-btn i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
-
         .container { padding: 15px; max-width: 500px; margin: 0 auto; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
         .order-card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border-left: 6px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .order-card.new { border-left-color: #ccc; background: #fafafa; opacity: 0.8; }
         .order-card.ready { border-left-color: var(--orange); }
         .order-card.onprogress { border-left-color: var(--blue); }
         .order-card.delivered { border-left-color: var(--green); }
-
         .time-info { font-size: 0.65rem; color: #aaa; display: block; margin: 5px 0; }
         .btn-action { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: 700; margin-top: 15px; cursor: pointer; font-size: 1rem; color: white; font-family: inherit; }
+        .btn-locked { background: #ddd; color: #888; cursor: not-allowed; font-size: 0.8rem; }
         .btn-orange { background: var(--orange); }
         .btn-green { background: var(--green); }
         .wa-link { display: inline-block; color: #25d366; text-decoration: none; font-weight: 600; margin-top: 8px; font-size: 0.9rem; }
-
         table { width: 100%; border-collapse: collapse; }
         td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-
     <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" preload="auto"></audio>
-
-    <div id="driver-login">
-        <div class="login-box">
-            <i class="fas fa-id-card fa-3x" style="color:var(--primary); margin-bottom:15px;"></i>
-            <h2 style="margin-bottom: 5px;">Kode Driver</h2>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">Masukkan nomor ID Anda</p>
-            <input type="number" id="kode-input" placeholder="0" autofocus>
-            <button class="btn-action btn-orange" onclick="loginDenganKode()">MASUK SISTEM</button>
-            <div class="login-hint">
-                1: HASBI | 2: RIZKY | 3: ASWAR
-            </div>
-        </div>
-    </div>
-
-    <div class="navbar">
-        <h3 id="display-name">DRIVER</h3>
-        <button class="refresh-btn" onclick="forceUpdate()"><i class="fas fa-sync-alt"></i> UPDATE</button>
-    </div>
-
+    <div id="driver-login"><div class="login-box"><h2>Akses Driver</h2><input type="number" id="kode-input" placeholder="0"><button class="btn-action btn-orange" onclick="loginDenganKode()">MASUK</button><div style="font-size:0.8rem; margin-top:10px">1: HASBI | 2: RIZKY | 3: ASWAR</div></div></div>
+    <div class="navbar"><h3 id="display-name">DRIVER</h3><div><button class="refresh-btn" onclick="location.reload()" style="background:none; border:none; color:white;"><i class="fas fa-sync-alt"></i></button> <button onclick="logout()" style="background:none; border:none; color:white;"><i class="fas fa-sign-out-alt"></i></button></div></div>
     <div class="tab-bar">
         <button class="tab-btn active" onclick="openTab(event, 'tab-tugas')"><i class="fas fa-motorcycle"></i>TUGAS</button>
         <button class="tab-btn" onclick="openTab(event, 'tab-history')"><i class="fas fa-history"></i>SAYA</button>
         <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-trophy"></i>REKAP</button>
     </div>
-
     <div class="container">
-        <div id="tab-tugas" class="tab-content active">
-            <h4 id="task-status">Memuat Tugas...</h4>
-            <div id="tugas-list"></div>
-        </div>
-        <div id="tab-history" class="tab-content">
-            <h4>Riwayat Selesai Saya</h4>
-            <div id="history-pribadi"></div>
-        </div>
-        <div id="tab-rekap" class="tab-content">
-            <div style="background:white; padding:20px; border-radius:20px;">
-                <h4 style="margin:0 0 15px 0;">Ranking Pengantaran</h4>
-                <table><tbody id="rekap-all-driver"></tbody></table>
-            </div>
-        </div>
+        <div id="tab-tugas" class="tab-content active"><h4 id="task-status">Memuat...</h4><div id="tugas-list"></div></div>
+        <div id="tab-history" class="tab-content"><h4>History Saya</h4><div id="history-pribadi"></div></div>
+        <div id="tab-rekap" class="tab-content"><div style="background:white; padding:20px; border-radius:20px;"><h4>Ranking Bulan Ini</h4><table><tbody id="rekap-all-driver"></tbody></table></div></div>
     </div>
-
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
-            databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
-        // DAFTAR DRIVER RESMI
-        const daftarDriver = {
-            "1": "HASBI",
-            "2": "RIZKY",
-            "3": "ASWAR"
-        };
-
+        const daftarDriver = { "1": "HASBI", "2": "RIZKY", "3": "ASWAR" };
         let myName = localStorage.getItem('driverName') || '';
 
         function loginDenganKode() {
             const kode = document.getElementById('kode-input').value;
-            const namaDitemukan = daftarDriver[kode];
+            if (daftarDriver[kode]) { myName = daftarDriver[kode]; localStorage.setItem('driverName', myName); location.reload(); }
+            else { Swal.fire('Error', 'Kode salah!', 'error'); }
+        }
+        function logout() { localStorage.removeItem('driverName'); location.reload(); }
+        function openTab(evt, t) {
+            let i, c, b; c = document.getElementsByClassName("tab-content"); for (i=0; i<c.length; i++) c[i].classList.remove("active");
+            b = document.getElementsByClassName("tab-btn"); for (i=0; i<b.length; i++) b[i].classList.remove("active");
+            document.getElementById(t).classList.add("active"); evt.currentTarget.classList.add("active");
+        }
+        if(myName) { document.getElementById('driver-login').style.display='none'; document.getElementById('display-name').innerText="Driver: "+myName; startSync(); }
 
-            if (namaDitemukan) {
-                myName = namaDitemukan;
-                localStorage.setItem('driverName', myName);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Selamat Datang',
-                    text: 'Halo, ' + myName + '!',
-                    timer: 2000,
-                    showConfirmButton: false
-                }).then(() => {
-                    location.reload();
-                });
-            } else {
-                Swal.fire('Error', 'Kode Driver tidak dikenal!', 'error');
-            }
+        function updateStatus(k, s) {
+            let d = { status: s }; if(s === 'onprogress') d.driver = myName;
+            db.ref('orders/'+k).update(d);
         }
 
-        function forceUpdate() {
-            Swal.fire({ title: 'Update?', text: 'Memuat ulang sistem...', icon: 'info', confirmButtonText: 'OK' }).then(() => {
-                window.location.replace(window.location.href.split('?')[0] + '?u=' + new Date().getTime());
-            });
-        }
-
-        function formatWaktu(ts) {
-            const d = new Date(ts);
-            return `${d.getDate().toString().padStart(2, '0')} ${["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][d.getMonth()]} ${d.getFullYear()} - ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-        }
-
-        if(myName) {
-            document.getElementById('driver-login').style.display = 'none';
-            document.getElementById('display-name').innerText = "Driver: " + myName;
-            startSync();
-        }
-
-        function openTab(evt, tabId) {
-            let i, content, btns;
-            content = document.getElementsByClassName("tab-content");
-            for (i = 0; i < content.length; i++) content[i].classList.remove("active");
-            btns = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < btns.length; i++) btns[i].classList.remove("active");
-            document.getElementById(tabId).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        function updateStatus(key, stat) {
-            let d = { status: stat };
-            if(stat === 'onprogress') d.driver = myName;
-            db.ref('orders/' + key).update(d).then(() => {
-                Swal.fire({ icon: 'success', title: 'Berhasil', text: stat === 'onprogress' ? 'Pesanan Anda ambil' : 'Selesai diantar!', timer: 1500, showConfirmButton: false });
-            });
-        }
-
-        let lastOrderCount = -1;
+        let lastCount = -1;
         function startSync() {
             db.ref('orders').on('value', snap => {
-                const tugasList = document.getElementById('tugas-list');
-                const historyPribadi = document.getElementById('history-pribadi');
-                const rekapAll = document.getElementById('rekap-all-driver');
-                tugasList.innerHTML = historyPribadi.innerHTML = rekapAll.innerHTML = '';
-                let currentReadyCount = 0;
-                let rekapData = {};
+                const tl = document.getElementById('tugas-list'); const hp = document.getElementById('history-pribadi');
+                const ra = document.getElementById('rekap-all-driver'); tl.innerHTML = hp.innerHTML = ra.innerHTML = '';
+                let activeCount = 0; let rd = {}; const mNow = new Date().getMonth();
 
                 snap.forEach(child => {
-                    const o = child.val();
-                    const k = child.key;
-                    const waktu = formatWaktu(o.timestamp);
+                    const o = child.val(); const k = child.key; const dO = new Date(o.timestamp);
+                    const time = `${dO.getHours()}:${dO.getMinutes().toString().padStart(2, '0')}`;
 
-                    if(o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
-                        currentReadyCount++;
-                        const card = document.createElement('div');
-                        card.className = `order-card ${o.status}`;
-                        card.innerHTML = `
-                            <strong>${o.customer}</strong><br>
-                            <span class="time-info"><i class="far fa-clock"></i> ${waktu}</span>
-                            <a href="https://wa.me/${o.whatsapp}" class="wa-link"><i class="fab fa-whatsapp"></i> Chat WhatsApp</a>
-                            ${o.status === 'ready' ? 
-                                `<button class="btn-action btn-orange" onclick="updateStatus('${k}', 'onprogress')">AMBIL PESANAN</button>` : 
-                                `<button class="btn-action btn-green" onclick="updateStatus('${k}', 'delivered')">SELESAI ANTAR</button>`}
-                        `;
-                        tugasList.prepend(card);
-                    }
+                    // LOGIKA TAB TUGAS
+                    if(o.status === 'new' || o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
+                        activeCount++;
+                        const card = document.createElement('div'); card.className = `order-card ${o.status}`;
+                        let actionHTML = '';
+                        
+                        if(o.status === 'new') {
+                            actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-utensils"></i> SIAP2 BRO, SEDANG DIPROSES DI DAPUR</button>`;
+                        } else if(o.status === 'ready') {
+                            actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL PESANAN SEKARANG</button>`;
+                        } else {
+                            actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">SELESAI ANTAR</button>`;
+                        }
 
-                    if(o.status === 'delivered' && o.driver === myName) {
-                        const card = document.createElement('div');
-                        card.className = `order-card delivered`;
-                        card.innerHTML = `<strong>${o.customer}</strong><br><span class="time-info"><i class="fas fa-check"></i> ${waktu}</span>`;
-                        historyPribadi.prepend(card);
+                        card.innerHTML = `<strong>${o.customer}</strong><br><span class="time-info">${time}</span>${actionHTML}`;
+                        tl.prepend(card);
                     }
-
-                    if(o.status === 'delivered' && o.driver) {
-                        rekapData[o.driver] = (rekapData[o.driver] || 0) + 1;
-                    }
+                    // HISTORY & REKAP
+                    if(o.status === 'delivered' && o.driver === myName) { hp.innerHTML += `<div class="order-card delivered"><strong>${o.customer}</strong></div>`; }
+                    if(o.status === 'delivered' && o.driver && dO.getMonth() === mNow) { rd[o.driver] = (rd[o.driver] || 0) + 1; }
                 });
-
-                if (lastOrderCount !== -1 && currentReadyCount > lastOrderCount) {
-                    document.getElementById('notif-sound').play().catch(e => {});
-                    Swal.fire({ title: 'Pesanan Masuk!', icon: 'warning', toast: true, position: 'top-end', timer: 3000, showConfirmButton: false });
-                }
-                lastOrderCount = currentReadyCount;
-                document.getElementById('task-status').innerText = currentReadyCount > 0 ? "Tugas Aktif ("+currentReadyCount+")" : "Belum Ada Tugas";
-
-                for (let n in rekapData) {
-                    rekapAll.innerHTML += `<tr><td><b>${n}</b></td><td style="text-align:right;"><b>${rekapData[n]}</b> Selesai</td></tr>`;
-                }
+                if (lastCount !== -1 && activeCount > lastCount) document.getElementById('notif-sound').play();
+                lastCount = activeCount;
+                document.getElementById('task-status').innerText = activeCount > 0 ? "Tugas Aktif ("+activeCount+")" : "Kosong";
+                for (let n in rd) ra.innerHTML += `<tr><td>${n}</td><td style="text-align:right"><b>${rd[n]}</b></td></tr>`;
             });
         }
     </script>
