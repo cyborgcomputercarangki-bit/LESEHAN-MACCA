@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; }
+        :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; --blue: #3a86ff; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 70px; }
         
         .navbar { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; }
@@ -32,14 +32,16 @@
         .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; }
 
         .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.05); }
-        .order-card.ready, .order-card.onprogress { border-left-color: var(--green); }
+        .order-card.ready { border-left-color: var(--green); }
+        .order-card.onprogress { border-left-color: var(--blue); }
         .order-card.new { border-left-color: var(--orange); }
 
-        .status-btn { width: 100%; margin-top: 10px; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; font-family: inherit; }
+        .status-btn { width: 100%; margin-top: 10px; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; font-family: inherit; text-transform: uppercase; font-size: 0.8rem; }
         .btn-orange { background: var(--orange); }
         .btn-green { background: var(--green); }
+        .btn-blue { background: var(--blue); }
         
-        .driver-label { background: #e3f2fd; color: #3a86ff; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; display: inline-block; margin-top: 8px; }
+        .driver-info { margin-top: 10px; padding: 8px; background: #e3f2fd; border-radius: 8px; color: #3a86ff; font-size: 0.85rem; font-weight: 600; text-align: center; }
         
         table { width: 100%; border-collapse: collapse; }
         td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; }
@@ -62,12 +64,12 @@
                 <input type="tel" id="wa" placeholder="WhatsApp (08...)">
                 <button class="btn-send" onclick="buatPesanan()">TAMBAH PESANAN</button>
             </div>
-            <h4 style="margin: 20px 0 10px;">Pesanan Aktif</h4>
+            <h4 style="margin: 20px 0 10px;">Monitor Pengantaran</h4>
             <div id="active-orders-list"></div>
         </div>
 
         <div id="tab-history" class="tab-content">
-            <h4 style="margin-top:0;">Pesanan Selesai</h4>
+            <h4 style="margin-top:0;">Selesai Diantar</h4>
             <div id="history-list"></div>
         </div>
 
@@ -82,6 +84,7 @@
     </div>
 
     <script>
+        // Gunakan Firebase Config Anda sendiri jika berbeda
         const firebaseConfig = {
             apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
             databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -102,7 +105,7 @@
         function buatPesanan() {
             const n = document.getElementById('name').value;
             const w = document.getElementById('wa').value;
-            if(!n || !w) return alert("Isi Nama & WA!");
+            if(!n || !w) return alert("Isi Data!");
             db.ref('orders').push({ customer: n, whatsapp: w.replace(/\D/g, ''), status: 'new', timestamp: Date.now() });
             document.getElementById('name').value = ''; document.getElementById('wa').value = '';
         }
@@ -124,27 +127,29 @@
 
                 const card = document.createElement('div');
                 card.className = `order-card ${o.status}`;
-                
-                let content = `<strong>${o.customer}</strong><br><small>${o.whatsapp}</small><br>`;
-                
+                let detail = `<strong>${o.customer}</strong><br><small>${o.whatsapp}</small>`;
+
                 if (o.status !== 'delivered') {
-                    // MASUK TAB PESANAN (INPUT)
+                    // TAB 1: PESANAN AKTIF
                     if (o.status === 'new') {
-                        content += `<button class="status-btn btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
-                    } else {
-                        // Status 'ready' atau 'onprogress' jadi Hijau
-                        let driverInfo = o.driver ? `<div class="driver-label"><i class="fas fa-user"></i> ${o.driver}</div>` : `<div class="driver-label" style="background:#fff3e0; color:#ff9f1c;">Menunggu Driver...</div>`;
-                        content += `<button class="status-btn btn-green" disabled>PROSES</button> ${driverInfo}`;
+                        card.innerHTML = detail + `<button class="status-btn btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
+                    } 
+                    else if (o.status === 'ready') {
+                        // Belum ada driver yang ambil
+                        card.innerHTML = detail + `<button class="status-btn btn-green" disabled>PROSES (MENUNGGU DRIVER)</button>`;
+                    } 
+                    else if (o.status === 'onprogress') {
+                        // Driver sudah menekan AMBIL PESANAN
+                        card.innerHTML = detail + `<div class="driver-info"><i class="fas fa-truck"></i> Sedang Diantar oleh: <b>${o.driver}</b></div>`;
                     }
-                    card.innerHTML = content;
                     activeList.prepend(card);
                 } else {
-                    // MASUK TAB HISTORY
-                    card.innerHTML = content + `<div class="driver-label"><i class="fas fa-check"></i> Oleh: ${o.driver}</div><br>
+                    // TAB 2: HISTORY
+                    card.innerHTML = detail + `<div class="driver-info" style="background:#f1f8e9; color:#2e7d32;"><i class="fas fa-check-double"></i> Selesai oleh: ${o.driver}</div>
                                      <button onclick="hapusData('${k}')" style="border:none; color:red; background:none; font-size:0.7rem; margin-top:10px; cursor:pointer;">Hapus Permanen</button>`;
                     historyList.prepend(card);
                     
-                    // Hitung Rekap
+                    // Rekap Driver
                     if(o.driver) rekapData[o.driver] = (rekapData[o.driver] || 0) + 1;
                 }
             });
