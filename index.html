@@ -3,69 +3,52 @@
 <head>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta charset="UTF-8">
-    <title>ADMIN MACCA - Lesehan Macca</title>
+    <title>ADMIN MACCA</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
         :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; --blue: #3a86ff; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 70px; }
-        
-        .navbar { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .navbar h3 { margin: 0; font-size: 1rem; }
         .refresh-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
-
         .tab-bar { display: flex; background: white; position: sticky; top: 54px; z-index: 99; border-bottom: 1px solid #ddd; }
         .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-family: inherit; font-size: 0.7rem; font-weight: 700; color: #888; cursor: pointer; }
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
         .tab-btn i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
-
         .container { padding: 15px; max-width: 500px; margin: 0 auto; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
         .form-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
         input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1.5px solid #eee; box-sizing: border-box; font-family: inherit; }
         .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; }
-
         .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.05); }
         .order-card.ready { border-left-color: var(--green); }
         .order-card.onprogress { border-left-color: var(--blue); }
         .order-card.new { border-left-color: var(--orange); }
-
         .time-info { font-size: 0.65rem; color: #aaa; margin-top: 5px; display: block; }
         .status-btn { width: 100%; margin-top: 12px; border: none; color: white; padding: 12px; border-radius: 10px; font-weight: bold; font-family: inherit; text-transform: uppercase; font-size: 0.8rem; cursor: pointer; }
         .btn-orange { background: var(--orange); }
         .btn-green { background: var(--green); }
-        
         .driver-info { margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 10px; color: #3a86ff; font-size: 0.8rem; font-weight: 600; text-align: center; }
         .btn-delete { background: none; border: none; color: #ff4d4d; font-size: 0.7rem; font-weight: bold; margin-top: 10px; width: 100%; cursor: pointer; }
-
         .rekap-card { background: white; padding: 20px; border-radius: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
-        
         .btn-download { width: 100%; background: var(--secondary); color: white; padding: 12px; border-radius: 10px; border: none; font-weight: bold; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
-
-    <div class="navbar">
-        <h3>ADMIN MACCA</h3>
-        <button class="refresh-btn" onclick="forceUpdate()"><i class="fas fa-sync-alt"></i> UPDATE</button>
-    </div>
-
+    <div class="navbar"><h3>ADMIN MACCA</h3><button class="refresh-btn" onclick="location.reload()">UPDATE</button></div>
     <div class="tab-bar">
         <button class="tab-btn active" onclick="openTab(event, 'tab-input')"><i class="fas fa-motorcycle"></i>PESANAN</button>
         <button class="tab-btn" onclick="openTab(event, 'tab-history')"><i class="fas fa-check-circle"></i>HISTORY</button>
         <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-users"></i>REKAP</button>
     </div>
-
     <div class="container">
         <div id="tab-input" class="tab-content active">
             <div class="form-card">
@@ -73,132 +56,62 @@
                 <input type="tel" id="wa" placeholder="WhatsApp (08...)">
                 <button class="btn-send" onclick="buatPesanan()">TAMBAH PESANAN</button>
             </div>
-            <h4 style="margin: 20px 0 10px;">Monitor Pengantaran</h4>
             <div id="active-orders-list"></div>
         </div>
-
-        <div id="tab-history" class="tab-content">
-            <h4 style="margin-top:0;">Selesai Diantar</h4>
-            <div id="history-list"></div>
-        </div>
-
+        <div id="tab-history" class="tab-content"><div id="history-list"></div></div>
         <div id="tab-rekap" class="tab-content">
-            <div class="rekap-card">
-                <h4 id="rekap-title" style="margin:0 0 15px 0;">Performa Driver</h4>
-                <table><tbody id="rekap-driver-list"></tbody></table>
-                <button class="btn-download" onclick="downloadLaporan()"><i class="fas fa-file-excel"></i> DOWNLOAD LAPORAN (.CSV)</button>
-            </div>
+            <div class="rekap-card"><h4 id="rekap-title">Laporan Bulan Ini</h4><table><tbody id="rekap-driver-list"></tbody></table><button class="btn-download" onclick="downloadLaporan()">DOWNLOAD CSV</button></div>
         </div>
     </div>
-
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
-            databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
-        let currentRekapData = {}; // Simpan global untuk download
-
+        let currentRekapData = {};
         function formatWaktu(ts) {
             const d = new Date(ts);
-            const tgl = d.getDate().toString().padStart(2, '0');
-            const bln = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][d.getMonth()];
-            const thn = d.getFullYear();
-            const jam = d.getHours().toString().padStart(2, '0');
-            const min = d.getMinutes().toString().padStart(2, '0');
-            return `${tgl} ${bln} ${thn} - ${jam}:${min}`;
+            return `${d.getDate()} ${["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][d.getMonth()]} - ${d.getHours()}:${d.getMinutes().toString().padStart(2, '0')}`;
         }
-
-        function forceUpdate() {
-            Swal.fire({ title: 'Update?', text: 'Cek pembaruan kode...', icon: 'info' }).then(() => {
-                window.location.replace(window.location.href.split('?')[0] + '?u=' + new Date().getTime());
-            });
-        }
-
         function openTab(evt, tabId) {
             let i, content, btns;
-            content = document.getElementsByClassName("tab-content");
-            for (i = 0; i < content.length; i++) content[i].classList.remove("active");
-            btns = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < btns.length; i++) btns[i].classList.remove("active");
-            document.getElementById(tabId).classList.add("active");
-            evt.currentTarget.classList.add("active");
+            content = document.getElementsByClassName("tab-content"); for (i = 0; i < content.length; i++) content[i].classList.remove("active");
+            btns = document.getElementsByClassName("tab-btn"); for (i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+            document.getElementById(tabId).classList.add("active"); evt.currentTarget.classList.add("active");
         }
-
         function buatPesanan() {
-            const n = document.getElementById('name').value;
-            const w = document.getElementById('wa').value;
+            const n = document.getElementById('name').value; const w = document.getElementById('wa').value;
             if(!n || !w) return Swal.fire('Error', 'Isi nama & WA!', 'error');
             db.ref('orders').push({ customer: n, whatsapp: w.replace(/\D/g, ''), status: 'new', timestamp: Date.now() })
-            .then(() => {
-                Swal.fire({ icon: 'success', title: 'Berhasil', timer: 1000, showConfirmButton: false });
-                document.getElementById('name').value = ''; document.getElementById('wa').value = '';
-            });
+            .then(() => { Swal.fire({ icon: 'success', title: 'Ditambah ke Dapur', timer: 1000, showConfirmButton: false }); document.getElementById('name').value = ''; document.getElementById('wa').value = ''; });
         }
-
         function setReady(k) { db.ref('orders/' + k).update({ status: 'ready' }); }
-        
-        function hapusData(k) {
-            Swal.fire({ title: 'Hapus Permanen?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus' })
-            .then((res) => { if(res.isConfirmed) db.ref('orders/'+k).remove(); });
-        }
-
-        // FUNGSI DOWNLOAD CSV
+        function hapusData(k) { Swal.fire({ title: 'Hapus?', icon: 'warning', showCancelButton: true }).then((res) => { if(res.isConfirmed) db.ref('orders/'+k).remove(); }); }
         function downloadLaporan() {
-            const bulan = document.getElementById('rekap-title').innerText;
-            let csvContent = "data:text/csv;charset=utf-8,Laporan Performa Driver\n" + bulan + "\n\nNama Driver,Total Pengantaran\n";
-            for(let name in currentRekapData) { csvContent += `${name},${currentRekapData[name]}\n`; }
-            
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Laporan_Macca_${new Date().getMonth()+1}.csv`);
-            document.body.appendChild(link);
-            link.click();
+            let csv = "Nama Driver,Total\n"; for(let n in currentRekapData) csv += `${n},${currentRekapData[n]}\n`;
+            const link = document.createElement("a"); link.href = encodeURI("data:text/csv;charset=utf-8," + csv); link.download = "laporan.csv"; link.click();
         }
-
         db.ref('orders').on('value', snap => {
             const activeList = document.getElementById('active-orders-list');
             const historyList = document.getElementById('history-list');
             const rekapList = document.getElementById('rekap-driver-list');
             activeList.innerHTML = historyList.innerHTML = rekapList.innerHTML = '';
-            
-            currentRekapData = {};
-            const dNow = new Date();
-            const mNow = dNow.getMonth();
-            const yNow = dNow.getFullYear();
-
+            currentRekapData = {}; const dNow = new Date();
             snap.forEach(child => {
-                const o = child.val();
-                const k = child.key;
-                const dOrder = new Date(o.timestamp);
-                const detail = `<strong>${o.customer}</strong><br><small>${o.whatsapp}</small><br><span class="time-info">${formatWaktu(o.timestamp)}</span>`;
-                const card = document.createElement('div');
-                card.className = `order-card ${o.status}`;
-
+                const o = child.val(); const k = child.key; const dOrder = new Date(o.timestamp);
+                const detail = `<strong>${o.customer}</strong><br><span class="time-info">${formatWaktu(o.timestamp)}</span>`;
+                const card = document.createElement('div'); card.className = `order-card ${o.status}`;
                 if (o.status !== 'delivered') {
                     if (o.status === 'new') card.innerHTML = detail + `<button class="status-btn btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
-                    else if (o.status === 'ready') card.innerHTML = detail + `<button class="status-btn btn-green" disabled>PROSES (MENUNGGU)</button>`;
-                    else if (o.status === 'onprogress') card.innerHTML = detail + `<div class="driver-info"><i class="fas fa-truck"></i> Sedang Diantar oleh: <b>${o.driver}</b></div>`;
+                    else if (o.status === 'ready') card.innerHTML = detail + `<button class="status-btn btn-green" disabled>SIAP! (MENUNGGU DRIVER)</button>`;
+                    else if (o.status === 'onprogress') card.innerHTML = detail + `<div class="driver-info">Diantar: ${o.driver}</div>`;
                     activeList.prepend(card);
                 } else {
-                    card.innerHTML = detail + `<div class="driver-info" style="background:#f1f8e9; color:#2e7d32;"><i class="fas fa-check-double"></i> Selesai diantar oleh: <b>${o.driver}</b></div><button class="btn-delete" onclick="hapusData('${k}')"><i class="fas fa-trash"></i> HAPUS</button>`;
+                    card.innerHTML = detail + `<div class="driver-info">Selesai diantar oleh: ${o.driver}</div><button class="btn-delete" onclick="hapusData('${k}')">HAPUS</button>`;
                     historyList.prepend(card);
-                    
-                    // Filter Bulanan untuk Rekap
-                    if(o.driver && dOrder.getMonth() === mNow && dOrder.getFullYear() === yNow) {
-                        currentRekapData[o.driver] = (currentRekapData[o.driver] || 0) + 1;
-                    }
+                    if(o.driver && dOrder.getMonth() === dNow.getMonth()) currentRekapData[o.driver] = (currentRekapData[o.driver] || 0) + 1;
                 }
             });
-
-            const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            document.getElementById('rekap-title').innerText = `Performa Driver (${namaBulan[mNow]} ${yNow})`;
-            for (let name in currentRekapData) {
-                rekapList.innerHTML += `<tr><td><b>${name}</b></td><td style="text-align:right; color:var(--green); font-weight:bold;">${currentRekapData[name]} Selesai</td></tr>`;
-            }
+            for (let name in currentRekapData) rekapList.innerHTML += `<tr><td>${name}</td><td style="text-align:right"><b>${currentRekapData[name]}</b></td></tr>`;
         });
     </script>
 </body>
