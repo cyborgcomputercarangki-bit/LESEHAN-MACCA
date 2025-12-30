@@ -1,121 +1,61 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta charset="UTF-8">
-    <title>DRIVER PANEL MACCA</title>
+    <title>DRIVER MACCA</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ef233c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; --blue: #3a86ff; --yellow: #fff3bf; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 70px; }
-        
+        :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; --yellow: #fff3bf; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); padding-bottom: 70px; }
         .navbar { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .tab-bar { display: flex; background: white; position: sticky; top: 54px; z-index: 99; border-bottom: 1px solid #ddd; }
-        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-family: inherit; font-size: 0.7rem; font-weight: 700; color: #888; cursor: pointer; }
+        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-size: 0.7rem; font-weight: 700; color: #888; cursor: pointer; }
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
-        .tab-btn i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
-
         .container { padding: 15px; max-width: 500px; margin: 0 auto; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
-        /* Animasi Kopi (Empty State) */
-        .empty-state { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            padding: 50px 20px; text-align: center; color: #aab; 
-        }
-        .coffee-icon { 
-            font-size: 4rem; color: #6f4e37; margin-bottom: 20px; position: relative; 
-            animation: coffee-float 3s ease-in-out infinite;
-        }
-        .steam { 
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%); 
-            font-size: 1.5rem; opacity: 0; animation: steam-rise 2s infinite; 
-        }
-        @keyframes coffee-float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes steam-rise {
-            0% { transform: translate(-50%, 0); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: translate(-50%, -20px); opacity: 0; }
-        }
-        .tagline { font-weight: 700; color: #8d6e63; font-size: 1.1rem; margin-top: 10px; }
-
-        /* Order Cards */
-        .order-card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border-left: 6px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .order-card.new { border-left-color: var(--orange); background: var(--yellow); animation: pulse-yellow 2s infinite; }
-        .order-card.ready { border-left-color: var(--orange); }
-        .order-card.onprogress { border-left-color: var(--blue); }
-        .order-card.delivered { border-left-color: var(--green); }
-
-        .btn-action { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: 700; margin-top: 15px; cursor: pointer; font-size: 1rem; color: white; font-family: inherit; }
-        .btn-locked { background: white; color: #d84315; border: 2px dashed #ffab91; cursor: not-allowed; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        /* Empty State Kopi */
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
+        .coffee-icon { font-size: 4rem; color: #6f4e37; position: relative; animation: float 3s infinite; }
+        .steam { position: absolute; top: -15px; font-size: 1.2rem; opacity: 0; animation: steam 2s infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes steam { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 0.5; } 100% { transform: translateY(-20px); opacity: 0; } }
+        
+        .order-card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border-left: 6px solid #ddd; }
+        .order-card.new { background: var(--yellow); border-left-color: var(--orange); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,159,28,0.4); } 70% { box-shadow: 0 0 0 10px rgba(255,159,28,0); } }
+        .btn-action { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: 700; margin-top: 15px; cursor: pointer; color: white; font-family: inherit; }
+        .btn-locked { background: white; color: #d84315; border: 2px dashed #ffab91; cursor: not-allowed; }
         .btn-orange { background: var(--orange); }
         .btn-green { background: var(--green); }
-        
-        .flicker { animation: flicker-icon 1s infinite; color: var(--primary); }
-        @keyframes flicker-icon { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        @keyframes pulse-yellow { 0% { box-shadow: 0 0 0 0 rgba(255, 159, 28, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 159, 28, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 159, 28, 0); } }
-
-        .time-info { font-size: 0.65rem; color: #888; display: block; margin: 5px 0; font-weight: bold; }
-
-        #driver-login { position: fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:1001; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; box-sizing:border-box; text-align: center; }
-        .login-box { background: #fdfdfd; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 350px; }
-        input { width:100%; padding:15px; border-radius:12px; border:2px solid #eee; margin-bottom:15px; font-size:1.5rem; text-align: center; font-family: inherit; }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
+        .time-info { font-size: 0.65rem; color: #888; font-weight: bold; }
+        #driver-login { position: fixed; inset: 0; background: white; z-index: 1001; display: flex; align-items: center; justify-content: center; padding: 30px; }
     </style>
 </head>
 <body>
-    <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" preload="auto"></audio>
-
-    <div id="driver-login">
-        <div class="login-box">
-            <i class="fas fa-motorcycle fa-3x" style="color:var(--primary); margin-bottom:15px;"></i>
-            <h2>Akses Driver</h2>
-            <input type="number" id="kode-input" pattern="\d*" inputmode="numeric" placeholder="Kode">
-            <button class="btn-action btn-orange" onclick="loginDenganKode()">MASUK</button>
-            <div style="font-size:0.7rem; color:#aaa; margin-top:15px;">1: HASBI | 2: RIZKY | 3: ASWAR</div>
-        </div>
-    </div>
-
-    <div class="navbar">
-        <h3 id="display-name">DRIVER PANEL</h3>
-        <div>
-            <button onclick="location.reload()" style="background:none; border:none; color:white; margin-right:10px;"><i class="fas fa-sync-alt"></i></button> 
-            <button onclick="logout()" style="background:none; border:none; color:white;"><i class="fas fa-sign-out-alt"></i></button>
-        </div>
-    </div>
-
+    <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/1355/1355-preview.mp3" preload="auto"></audio>
+    <div id="driver-login"><div style="text-align:center;width:100%;max-width:300px;"><h2>Akses Driver</h2><input type="number" id="kode-input" style="width:100%;padding:15px;border-radius:12px;border:1px solid #ddd;font-size:1.5rem;text-align:center;margin-bottom:15px;"><button class="btn-action btn-orange" onclick="loginDenganKode()">MASUK</button></div></div>
+    
+    <div class="navbar"><h3 id="display-name">DRIVER</h3><button onclick="mintaNotif()" style="background:#25d366;border:none;color:white;padding:5px 10px;border-radius:5px;font-size:0.6rem;"><i class="fas fa-bell"></i> AKTIFKAN NOTIF</button></div>
     <div class="tab-bar">
-        <button class="tab-btn active" onclick="openTab(event, 'tab-tugas')"><i class="fas fa-list-ul"></i>TUGAS</button>
+        <button class="tab-btn active" onclick="openTab(event, 'tab-tugas')"><i class="fas fa-list"></i>TUGAS</button>
         <button class="tab-btn" onclick="openTab(event, 'tab-history')"><i class="fas fa-history"></i>SAYA</button>
-        <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-trophy"></i>REKAP</button>
     </div>
 
     <div class="container">
-        <div id="tab-tugas" class="tab-content active">
-            <div id="tugas-list"></div>
-        </div>
-        
-        <div id="tab-history" class="tab-content">
-            <h4>Riwayat Selesai Saya</h4>
-            <div id="history-pribadi"></div>
-        </div>
-
-        <div id="tab-rekap" class="tab-content">
-            <div style="background:white; padding:20px; border-radius:20px;">
-                <h4 id="rekap-title">Laporan Bulan Ini</h4>
-                <table><tbody id="rekap-all-driver"></tbody></table>
-            </div>
-        </div>
+        <div id="tab-tugas" class="tab-content active"><div id="tugas-list"></div></div>
+        <div id="tab-history" class="tab-content"><h4>Riwayat Saya</h4><div id="history-pribadi"></div></div>
     </div>
 
     <script>
@@ -124,17 +64,20 @@
         const db = firebase.database();
         const daftarDriver = { "1": "HASBI", "2": "RIZKY", "3": "ASWAR" };
         let myName = localStorage.getItem('driverName') || '';
+        let lastCount = -1;
 
         function loginDenganKode() {
-            const kode = document.getElementById('kode-input').value;
-            if (daftarDriver[kode]) { myName = daftarDriver[kode]; localStorage.setItem('driverName', myName); location.reload(); }
-            else { Swal.fire('Error', 'Kode tidak terdaftar!', 'error'); }
+            const k = document.getElementById('kode-input').value;
+            if(daftarDriver[k]) { myName = daftarDriver[k]; localStorage.setItem('driverName', myName); location.reload(); }
         }
-        function logout() { localStorage.removeItem('driverName'); location.reload(); }
-        
-        function formatWaktuLengkap(ts) {
+
+        function mintaNotif() {
+            Notification.requestPermission().then(p => { if(p === 'granted') Swal.fire('Aktif!', 'Notifikasi diizinkan', 'success'); });
+        }
+
+        function formatWaktu(ts) {
             const d = new Date(ts);
-            return `${d.getDate()} ${["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][d.getMonth()]} ${d.getFullYear()} - ${d.getHours()}:${d.getMinutes().toString().padStart(2, '0')}`;
+            return `${d.getDate()} ${["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][d.getMonth()]} ${d.getFullYear()} - ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
         }
 
         function openTab(evt, t) {
@@ -142,66 +85,52 @@
             b = document.getElementsByClassName("tab-btn"); for (i=0; i<b.length; i++) b[i].classList.remove("active");
             document.getElementById(t).classList.add("active"); evt.currentTarget.classList.add("active");
         }
-        
-        if(myName) { document.getElementById('driver-login').style.display='none'; document.getElementById('display-name').innerText="Driver: "+myName; startSync(); }
 
-        function updateStatus(k, s) {
-            let d = { status: s }; if(s === 'onprogress') d.driver = myName;
-            db.ref('orders/'+k).update(d);
+        if(myName) { 
+            document.getElementById('driver-login').style.display='none'; 
+            document.getElementById('display-name').innerText=myName;
+            startSync(); 
         }
 
-        let lastCount = -1;
         function startSync() {
             db.ref('orders').on('value', snap => {
                 const tl = document.getElementById('tugas-list'); const hp = document.getElementById('history-pribadi');
-                const ra = document.getElementById('rekap-all-driver'); 
-                tl.innerHTML = hp.innerHTML = ra.innerHTML = '';
+                tl.innerHTML = hp.innerHTML = '';
+                let activeCount = 0;
                 
-                let activeCount = 0; let rd = {}; const mNow = new Date().getMonth();
-
                 snap.forEach(child => {
-                    const o = child.val(); const k = child.key; const dO = new Date(o.timestamp);
-                    const tInfo = `<span class="time-info">${formatWaktuLengkap(o.timestamp)}</span>`;
-
+                    const o = child.val(); const k = child.key;
+                    const tInfo = `<span class="time-info">${formatWaktu(o.timestamp)}</span>`;
+                    
                     if(o.status === 'new' || o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
                         activeCount++;
                         const card = document.createElement('div'); card.className = `order-card ${o.status}`;
-                        let actionHTML = '';
+                        let btn = '';
+                        if(o.status === 'new') btn = `<button class="btn-action btn-locked" disabled><i class="fas fa-bell"></i> SIAP2 BRO! DI DAPUR</button>`;
+                        else if(o.status === 'ready') btn = `<button class="btn-action btn-orange" onclick="db.ref('orders/${k}').update({status:'onprogress', driver:'${myName}'})">AMBIL SEKARANG</button>`;
+                        else btn = `<button class="btn-action btn-green" onclick="db.ref('orders/${k}').update({status:'delivered'})">SELESAI ANTAR</button>`;
                         
-                        if(o.status === 'new') {
-                            actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-bell flicker"></i> SIAP2 BRO! SEDANG DIPROSES DAPUR</button>`;
-                        } else if(o.status === 'ready') {
-                            actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL PESANAN SEKARANG</button>`;
-                        } else {
-                            actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">SELESAI ANTAR</button>`;
-                        }
-                        card.innerHTML = `<strong>${o.customer}</strong><br>${tInfo}${actionHTML}`;
+                        card.innerHTML = `<strong>${o.customer}</strong><br>${tInfo}${btn}`;
                         tl.prepend(card);
+                    } else if(o.status === 'delivered' && o.driver === myName) {
+                        hp.innerHTML += `<div class="order-card"><strong>${o.customer}</strong><br>${tInfo}</div>`;
                     }
-                    if(o.status === 'delivered' && o.driver === myName) { 
-                        hp.innerHTML += `<div class="order-card delivered"><strong>${o.customer}</strong><br>${tInfo}</div>`; 
-                    }
-                    if(o.status === 'delivered' && o.driver && dO.getMonth() === mNow) { rd[o.driver] = (rd[o.driver] || 0) + 1; }
                 });
 
-                // EFEK KOPI JIKA KOSONG
-                if (activeCount === 0) {
-                    tl.innerHTML = `
-                        <div class="empty-state">
-                            <div class="coffee-icon">
-                                <i class="fas fa-coffee"></i>
-                                <i class="fas fa-cloud steam" style="left: 40%; animation-delay: 0.5s;"></i>
-                                <i class="fas fa-cloud steam" style="left: 60%;"></i>
-                            </div>
-                            <div class="tagline">Santai dulu bro,<br>belum ada pesanan...</div>
-                        </div>`;
+                if(activeCount === 0) {
+                    tl.innerHTML = `<div class="empty-state"><div class="coffee-icon"><i class="fas fa-coffee"></i><i class="fas fa-cloud steam" style="left:30%"></i><i class="fas fa-cloud steam" style="left:60%"></i></div><div style="font-weight:bold;margin-top:15px;color:#8d6e63;">Santai dulu bro,<br>belum ada pesanan...</div></div>`;
                 }
 
-                if (lastCount !== -1 && activeCount > lastCount) document.getElementById('notif-sound').play();
+                if(lastCount !== -1 && activeCount > lastCount) {
+                    document.getElementById('notif-sound').play();
+                    if(Notification.permission === 'granted') new Notification("MACCA", { body: "Ada pesanan baru masuk!" });
+                }
                 lastCount = activeCount;
-                for (let n in rd) ra.innerHTML += `<tr><td><b>${n}</b></td><td style="text-align:right"><b>${rd[n]} Selesai</b></td></tr>`;
             });
         }
+        
+        // PWA Standalone Script
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
     </script>
 </body>
 </html>
