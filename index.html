@@ -3,14 +3,13 @@
 <head>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta charset="UTF-8">
-    <title>ADMIN MACCA V2.2</title>
+    <title>ADMIN MACCA - Lesehan Macca</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
@@ -34,7 +33,7 @@
         input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1.5px solid #eee; box-sizing: border-box; font-family: inherit; }
         .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; }
 
-        .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.05); position: relative; }
+        .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.05); }
         .order-card.ready { border-left-color: var(--green); }
         .order-card.onprogress { border-left-color: var(--blue); }
         .order-card.new { border-left-color: var(--orange); }
@@ -47,8 +46,11 @@
         .driver-info { margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 10px; color: #3a86ff; font-size: 0.8rem; font-weight: 600; text-align: center; }
         .btn-delete { background: none; border: none; color: #ff4d4d; font-size: 0.7rem; font-weight: bold; margin-top: 10px; width: 100%; cursor: pointer; }
 
-        table { width: 100%; border-collapse: collapse; }
+        .rekap-card { background: white; padding: 20px; border-radius: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
+        
+        .btn-download { width: 100%; background: var(--secondary); color: white; padding: 12px; border-radius: 10px; border: none; font-weight: bold; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -61,7 +63,7 @@
     <div class="tab-bar">
         <button class="tab-btn active" onclick="openTab(event, 'tab-input')"><i class="fas fa-motorcycle"></i>PESANAN</button>
         <button class="tab-btn" onclick="openTab(event, 'tab-history')"><i class="fas fa-check-circle"></i>HISTORY</button>
-        <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-users"></i>DRIVERS</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-users"></i>REKAP</button>
     </div>
 
     <div class="container">
@@ -81,11 +83,10 @@
         </div>
 
         <div id="tab-rekap" class="tab-content">
-            <div style="background:white; padding:20px; border-radius:20px;">
-                <h4 style="margin:0 0 15px 0;">Performa Driver</h4>
-                <table id="rekap-table">
-                    <tbody id="rekap-driver-list"></tbody>
-                </table>
+            <div class="rekap-card">
+                <h4 id="rekap-title" style="margin:0 0 15px 0;">Performa Driver</h4>
+                <table><tbody id="rekap-driver-list"></tbody></table>
+                <button class="btn-download" onclick="downloadLaporan()"><i class="fas fa-file-excel"></i> DOWNLOAD LAPORAN (.CSV)</button>
             </div>
         </div>
     </div>
@@ -98,20 +99,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        function forceUpdate() {
-            Swal.fire({
-                title: 'Perbarui Sistem?',
-                text: "Aplikasi akan memuat ulang versi terbaru.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#ef233c',
-                confirmButtonText: 'Ya, Update'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.replace(window.location.href.split('?')[0] + '?u=' + new Date().getTime());
-                }
-            })
-        }
+        let currentRekapData = {}; // Simpan global untuk download
 
         function formatWaktu(ts) {
             const d = new Date(ts);
@@ -121,6 +109,12 @@
             const jam = d.getHours().toString().padStart(2, '0');
             const min = d.getMinutes().toString().padStart(2, '0');
             return `${tgl} ${bln} ${thn} - ${jam}:${min}`;
+        }
+
+        function forceUpdate() {
+            Swal.fire({ title: 'Update?', text: 'Cek pembaruan kode...', icon: 'info' }).then(() => {
+                window.location.replace(window.location.href.split('?')[0] + '?u=' + new Date().getTime());
+            });
         }
 
         function openTab(evt, tabId) {
@@ -136,40 +130,33 @@
         function buatPesanan() {
             const n = document.getElementById('name').value;
             const w = document.getElementById('wa').value;
-            if(!n || !w) return Swal.fire('Error', 'Nama dan WA harus diisi!', 'error');
+            if(!n || !w) return Swal.fire('Error', 'Isi nama & WA!', 'error');
+            db.ref('orders').push({ customer: n, whatsapp: w.replace(/\D/g, ''), status: 'new', timestamp: Date.now() })
+            .then(() => {
+                Swal.fire({ icon: 'success', title: 'Berhasil', timer: 1000, showConfirmButton: false });
+                document.getElementById('name').value = ''; document.getElementById('wa').value = '';
+            });
+        }
+
+        function setReady(k) { db.ref('orders/' + k).update({ status: 'ready' }); }
+        
+        function hapusData(k) {
+            Swal.fire({ title: 'Hapus Permanen?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus' })
+            .then((res) => { if(res.isConfirmed) db.ref('orders/'+k).remove(); });
+        }
+
+        // FUNGSI DOWNLOAD CSV
+        function downloadLaporan() {
+            const bulan = document.getElementById('rekap-title').innerText;
+            let csvContent = "data:text/csv;charset=utf-8,Laporan Performa Driver\n" + bulan + "\n\nNama Driver,Total Pengantaran\n";
+            for(let name in currentRekapData) { csvContent += `${name},${currentRekapData[name]}\n`; }
             
-            db.ref('orders').push({ 
-                customer: n, 
-                whatsapp: w.replace(/\D/g, ''), 
-                status: 'new', 
-                timestamp: Date.now() 
-            }).then(() => {
-                Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Pesanan ditambahkan!', timer: 1500, showConfirmButton: false });
-                document.getElementById('name').value = ''; 
-                document.getElementById('wa').value = '';
-            });
-        }
-
-        function setReady(key) {
-            db.ref('orders/' + key).update({ status: 'ready' }).then(() => {
-                Swal.fire({ icon: 'info', title: 'Siap!', text: 'Status diubah ke Siap Antar', timer: 1500, showConfirmButton: false });
-            });
-        }
-
-        function hapusData(key) {
-            Swal.fire({
-                title: 'Hapus Pesanan?',
-                text: "Data akan dihapus permanen dari riwayat.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef233c',
-                confirmButtonText: 'Ya, Hapus'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    db.ref('orders/' + key).remove();
-                    Swal.fire('Terhapus!', 'Data telah dihapus.', 'success');
-                }
-            })
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Laporan_Macca_${new Date().getMonth()+1}.csv`);
+            document.body.appendChild(link);
+            link.click();
         }
 
         db.ref('orders').on('value', snap => {
@@ -177,32 +164,40 @@
             const historyList = document.getElementById('history-list');
             const rekapList = document.getElementById('rekap-driver-list');
             activeList.innerHTML = historyList.innerHTML = rekapList.innerHTML = '';
-            let rekapData = {};
+            
+            currentRekapData = {};
+            const dNow = new Date();
+            const mNow = dNow.getMonth();
+            const yNow = dNow.getFullYear();
 
             snap.forEach(child => {
                 const o = child.val();
                 const k = child.key;
+                const dOrder = new Date(o.timestamp);
+                const detail = `<strong>${o.customer}</strong><br><small>${o.whatsapp}</small><br><span class="time-info">${formatWaktu(o.timestamp)}</span>`;
                 const card = document.createElement('div');
                 card.className = `order-card ${o.status}`;
-                const detail = `<strong>${o.customer}</strong><br><small>${o.whatsapp}</small><br><span class="time-info"><i class="far fa-clock"></i> ${formatWaktu(o.timestamp)}</span>`;
 
                 if (o.status !== 'delivered') {
-                    if (o.status === 'new') {
-                        card.innerHTML = detail + `<button class="status-btn btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
-                    } else if (o.status === 'ready') {
-                        card.innerHTML = detail + `<button class="status-btn btn-green" disabled>PROSES (MENUNGGU DRIVER)</button>`;
-                    } else if (o.status === 'onprogress') {
-                        card.innerHTML = detail + `<div class="driver-info"><i class="fas fa-truck"></i> Sedang Diantar oleh: <b>${o.driver}</b></div>`;
-                    }
+                    if (o.status === 'new') card.innerHTML = detail + `<button class="status-btn btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
+                    else if (o.status === 'ready') card.innerHTML = detail + `<button class="status-btn btn-green" disabled>PROSES (MENUNGGU)</button>`;
+                    else if (o.status === 'onprogress') card.innerHTML = detail + `<div class="driver-info"><i class="fas fa-truck"></i> Sedang Diantar oleh: <b>${o.driver}</b></div>`;
                     activeList.prepend(card);
                 } else {
-                    card.innerHTML = detail + `<div class="driver-info" style="background:#f1f8e9; color:#2e7d32;"><i class="fas fa-check-double"></i> Selesai diantar oleh: <b>${o.driver}</b></div><button class="btn-delete" onclick="hapusData('${k}')"><i class="fas fa-trash"></i> HAPUS PERMANEN</button>`;
+                    card.innerHTML = detail + `<div class="driver-info" style="background:#f1f8e9; color:#2e7d32;"><i class="fas fa-check-double"></i> Selesai diantar oleh: <b>${o.driver}</b></div><button class="btn-delete" onclick="hapusData('${k}')"><i class="fas fa-trash"></i> HAPUS</button>`;
                     historyList.prepend(card);
-                    if(o.driver) rekapData[o.driver] = (rekapData[o.driver] || 0) + 1;
+                    
+                    // Filter Bulanan untuk Rekap
+                    if(o.driver && dOrder.getMonth() === mNow && dOrder.getFullYear() === yNow) {
+                        currentRekapData[o.driver] = (currentRekapData[o.driver] || 0) + 1;
+                    }
                 }
             });
-            for (let name in rekapData) {
-                rekapList.innerHTML += `<tr><td><b>${name}</b></td><td style="text-align:right; color:var(--green); font-weight:bold;">${rekapData[name]} Selesai</td></tr>`;
+
+            const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            document.getElementById('rekap-title').innerText = `Performa Driver (${namaBulan[mNow]} ${yNow})`;
+            for (let name in currentRekapData) {
+                rekapList.innerHTML += `<tr><td><b>${name}</b></td><td style="text-align:right; color:var(--green); font-weight:bold;">${currentRekapData[name]} Selesai</td></tr>`;
             }
         });
     </script>
