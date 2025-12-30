@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>DRIVER PANEL MACCA</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#ef233c">
@@ -30,15 +29,12 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Animasi Kopi (Empty State) */
         .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
         .coffee-icon { font-size: 4rem; color: #6f4e37; margin-bottom: 20px; position: relative; animation: coffee-float 3s ease-in-out infinite; }
         .steam { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 1.5rem; opacity: 0; animation: steam-rise 2s infinite; }
         @keyframes coffee-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         @keyframes steam-rise { 0% { transform: translate(-50%, 0); opacity: 0; } 50% { opacity: 0.5; } 100% { transform: translate(-50%, -20px); opacity: 0; } }
-        .tagline { font-weight: 700; color: #8d6e63; font-size: 1.1rem; margin-top: 10px; }
-
-        /* Order Cards */
+        
         .order-card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border-left: 6px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .order-card.new { border-left-color: var(--orange); background: var(--yellow); }
         .order-card.ready { border-left-color: var(--orange); }
@@ -46,20 +42,19 @@
         .order-card.delivered { border-left-color: var(--green); }
 
         .customer-name { font-size: 1.1rem; font-weight: 700; display: block; color: var(--secondary); }
-        
-        /* Tombol WA dioptimalkan */
         .wa-btn-container { margin: 10px 0; }
-        .wa-link { display: inline-flex; align-items: center; background: #25d366; color: white; padding: 8px 15px; border-radius: 10px; font-size: 0.85rem; font-weight: bold; gap: 8px; border: none; cursor: pointer; transition: 0.2s; }
-        .wa-link:active { transform: scale(0.95); background: #128c7e; }
+        .wa-link { display: inline-flex; align-items: center; background: #25d366; color: white; padding: 8px 15px; border-radius: 10px; font-size: 0.85rem; font-weight: bold; gap: 8px; border: none; cursor: pointer; }
 
         .btn-action { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: 700; margin-top: 10px; cursor: pointer; font-size: 1rem; color: white; font-family: inherit; }
         .btn-locked { background: #fff; color: #d84315; border: 2px dashed #ffab91; cursor: not-allowed; font-size: 0.85rem; }
-        .btn-orange { background: var(--orange); box-shadow: 0 4px 10px rgba(255, 159, 28, 0.3); }
-        .btn-green { background: var(--green); box-shadow: 0 4px 10px rgba(46, 196, 182, 0.3); }
+        .btn-orange { background: var(--orange); }
+        .btn-green { background: var(--green); }
         
         .time-info { font-size: 0.65rem; color: #999; display: block; margin: 4px 0; font-weight: bold; }
+        .driver-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; margin-top: 8px; }
+        .badge-otw { background: #e3f2fd; color: #1976d2; border: 1px solid #1976d2; }
+        .badge-sukses { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
 
-        /* Login Screen */
         #driver-login { position: fixed; inset: 0; background: white; z-index: 1001; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
         .login-box { background: #fdfdfd; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 350px; }
         .login-box input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #eee; margin-bottom: 15px; font-size: 1.5rem; text-align: center; box-sizing: border-box; }
@@ -84,20 +79,25 @@
     <div class="navbar">
         <h3 id="display-name" style="margin:0; font-size:1.1rem;">DRIVER PANEL</h3>
         <div>
-            <button onclick="location.reload()" style="background:none; border:none; color:white; margin-right:12px; font-size: 1.1rem;"><i class="fas fa-sync-alt"></i></button> 
-            <button onclick="logout()" style="background:none; border:none; color:white; font-size: 1.1rem;"><i class="fas fa-sign-out-alt"></i></button>
+            <button onclick="location.reload()" style="background:none; border:none; color:white; margin-right:12px;"><i class="fas fa-sync-alt"></i></button> 
+            <button onclick="logout()" style="background:none; border:none; color:white;"><i class="fas fa-sign-out-alt"></i></button>
         </div>
     </div>
 
     <div class="tab-bar">
-        <button class="tab-btn active" onclick="openTab(event, 'tab-tugas')"><i class="fas fa-list-ul"></i>TUGAS</button>
-        <button class="tab-btn" onclick="openTab(event, 'tab-history')"><i class="fas fa-history"></i>SAYA</button>
+        <button class="tab-btn active" onclick="openTab(event, 'tab-tugas')"><i class="fas fa-motorcycle"></i>ANTRIAN</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-global-status')"><i class="fas fa-map-marker-alt"></i>STATUS</button>
         <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-trophy"></i>REKAP</button>
     </div>
 
     <div class="container">
         <div id="tab-tugas" class="tab-content active"><div id="tugas-list"></div></div>
-        <div id="tab-history" class="tab-content"><h4>Riwayat Selesai Saya</h4><div id="history-pribadi"></div></div>
+        
+        <div id="tab-global-status" class="tab-content">
+            <h4 style="margin-bottom:10px;">Status Pengiriman Tim</h4>
+            <div id="status-global-list"></div>
+        </div>
+        
         <div id="tab-rekap" class="tab-content">
             <div style="background:white; padding:20px; border-radius:20px;">
                 <h4 style="margin-top:0;">Laporan Bulan Ini</h4>
@@ -144,7 +144,6 @@
         }
 
         function bukaWA(nomor) {
-            // Menggunakan window.location untuk transisi yang lebih stabil di HP
             window.open(`https://wa.me/${nomor}`, '_blank');
         }
 
@@ -158,9 +157,9 @@
         function startSync() {
             db.ref('orders').on('value', snap => {
                 const tl = document.getElementById('tugas-list'); 
-                const hp = document.getElementById('history-pribadi');
+                const sgl = document.getElementById('status-global-list');
                 const ra = document.getElementById('rekap-all-driver'); 
-                tl.innerHTML = hp.innerHTML = ra.innerHTML = '';
+                tl.innerHTML = sgl.innerHTML = ra.innerHTML = '';
                 
                 let activeCount = 0; 
                 let rd = {}; 
@@ -171,10 +170,9 @@
                     const k = child.key; 
                     const dO = new Date(o.timestamp);
                     const tInfo = `<span class="time-info">${formatWaktu(o.timestamp)}</span>`;
-                    
-                    // Tombol WA menggunakan fungsi JavaScript agar tidak membebani History browser
                     const waBtn = `<div class="wa-btn-container"><button class="wa-link" onclick="bukaWA('${o.whatsapp}')"><i class="fab fa-whatsapp"></i> Chat Pelanggan</button></div>`;
 
+                    // LOGIKA TAB ANTRIAN (Hanya pesanan baru/siap/yang sedang kita bawa)
                     if(o.status === 'new' || o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
                         activeCount++;
                         const card = document.createElement('div'); 
@@ -182,23 +180,32 @@
                         
                         let actionHTML = '';
                         if(o.status === 'new') {
-                            actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-hourglass-half"></i> LAGI DIPROSES DAPUR</button>`;
+                            actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-hourglass-half"></i> MASIH DI DAPUR</button>`;
                         } else if(o.status === 'ready') {
                             actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL SEKARANG</button>`;
                         } else {
                             actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">SELESAI ANTAR</button>`;
                         }
-
                         card.innerHTML = `<span class="customer-name">${o.customer}</span>${tInfo}${waBtn}${actionHTML}`;
                         tl.prepend(card);
                     }
                     
-                    if(o.status === 'delivered' && o.driver === myName) { 
-                        hp.innerHTML += `<div class="order-card delivered"><span class="customer-name">${o.customer}</span>${tInfo}</div>`; 
-                    }
-                    
-                    if(o.status === 'delivered' && o.driver && dO.getMonth() === mNow) { 
-                        rd[o.driver] = (rd[o.driver] || 0) + 1; 
+                    // LOGIKA TAB STATUS GLOBAL (Riwayat OTW dan Sukses semua driver)
+                    if(o.status === 'onprogress') {
+                        const cardStatus = document.createElement('div');
+                        cardStatus.className = 'order-card onprogress';
+                        cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${tInfo}<div class="driver-badge badge-otw"><i class="fas fa-shipping-fast"></i> Sedang diantar oleh: ${o.driver}</div>`;
+                        sgl.prepend(cardStatus);
+                    } else if(o.status === 'delivered') {
+                        const cardStatus = document.createElement('div');
+                        cardStatus.className = 'order-card delivered';
+                        cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${tInfo}<div class="driver-badge badge-sukses"><i class="fas fa-check-circle"></i> SUKSES diantar oleh : ${o.driver}</div>`;
+                        sgl.prepend(cardStatus);
+                        
+                        // Hitung Rekap Bulan Ini
+                        if(o.driver && dO.getMonth() === mNow) { 
+                            rd[o.driver] = (rd[o.driver] || 0) + 1; 
+                        }
                     }
                 });
 
@@ -207,12 +214,10 @@
                 }
 
                 if (lastCount !== -1 && activeCount > lastCount) {
-                    const sound = document.getElementById('notif-sound');
-                    sound.play().catch(e => console.log("Audio play blocked"));
+                    document.getElementById('notif-sound').play().catch(e => {});
                 }
                 lastCount = activeCount;
                 
-                // Menampilkan Rekap
                 for (let n in rd) {
                     ra.innerHTML += `<tr><td><b>${n}</b></td><td style="text-align:right"><b>${rd[n]} Selesai</b></td></tr>`;
                 }
@@ -221,4 +226,3 @@
     </script>
 </body>
 </html>
-
