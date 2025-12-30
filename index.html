@@ -12,45 +12,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; }
+        :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 70px; }
         
-        /* Navbar */
-        .navbar { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; }
         .navbar h3 { margin: 0; font-size: 1.1rem; }
 
-        /* Tab Navigation */
         .tab-bar { display: flex; background: white; position: sticky; top: 54px; z-index: 99; border-bottom: 1px solid #ddd; }
-        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-family: inherit; font-size: 0.75rem; font-weight: 700; color: #888; cursor: pointer; transition: 0.3s; }
+        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-family: inherit; font-size: 0.75rem; font-weight: 700; color: #888; cursor: pointer; }
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
         .tab-btn i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
 
         .container { padding: 15px; max-width: 500px; margin: 0 auto; }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .tab-content.active { display: block; }
 
-        /* Card Styles */
-        .form-card, .rekap-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        input { width: 100%; padding: 14px; margin: 10px 0 15px 0; border-radius: 12px; border: 1.5px solid #eee; box-sizing: border-box; font-size: 1rem; }
-        .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        .form-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1.5px solid #eee; box-sizing: border-box; }
+        .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; }
 
         .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.05); }
-        .order-card.ready { border-left-color: #ff9f1c; }
-        .order-card.onprogress { border-left-color: #3a86ff; }
-        .order-card.delivered { border-left-color: #2ec4b6; }
-        
-        .status-badge { float: right; font-size: 0.6rem; padding: 3px 8px; border-radius: 4px; font-weight: 800; text-transform: uppercase; color: white; }
-        .bg-new { background: #8d99ae; }
-        .bg-ready { background: #ff9f1c; }
-        .bg-progress { background: #3a86ff; }
-        .bg-done { background: #2ec4b6; }
+        .order-card.ready, .order-card.onprogress { border-left-color: var(--green); }
+        .order-card.new { border-left-color: var(--orange); }
 
-        /* Table Rekap */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; font-size: 0.8rem; color: #888; padding: 10px; border-bottom: 2px solid #eee; }
-        td { padding: 12px 10px; font-size: 0.9rem; border-bottom: 1px solid #f9f9f9; }
-        .driver-count { background: #e3f2fd; color: #3a86ff; padding: 2px 8px; border-radius: 20px; font-weight: bold; }
+        .status-btn { width: 100%; margin-top: 10px; border: none; color: white; padding: 10px; border-radius: 8px; font-weight: bold; font-family: inherit; }
+        .btn-orange { background: var(--orange); }
+        .btn-green { background: var(--green); }
+        
+        .driver-label { background: #e3f2fd; color: #3a86ff; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; display: inline-block; margin-top: 8px; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; }
     </style>
 </head>
 <body>
@@ -58,35 +50,31 @@
     <div class="navbar"><h3>ADMIN MACCA</h3></div>
 
     <div class="tab-bar">
-        <button class="tab-btn active" onclick="openTab(event, 'tab-input')"><i class="fas fa-plus-circle"></i>INPUT</button>
-        <button class="tab-btn" onclick="openTab(event, 'tab-history')"><i class="fas fa-history"></i>HISTORY</button>
-        <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-chart-line"></i>REKAP</button>
+        <button class="tab-btn active" onclick="openTab(event, 'tab-input')"><i class="fas fa-motorcycle"></i>PESANAN</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-history')"><i class="fas fa-check-circle"></i>HISTORY</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-users"></i>DRIVERS</button>
     </div>
 
     <div class="container">
         <div id="tab-input" class="tab-content active">
             <div class="form-card">
-                <h4 style="margin:0;">Pesanan Baru</h4>
                 <input type="text" id="name" placeholder="Nama Pelanggan">
                 <input type="tel" id="wa" placeholder="WhatsApp (08...)">
-                <button class="btn-send" onclick="buatPesanan()">KIRIM KE DRIVER</button>
+                <button class="btn-send" onclick="buatPesanan()">TAMBAH PESANAN</button>
             </div>
-            <h4 style="margin: 20px 0 10px;">Antrian Dapur (Belum Ready)</h4>
-            <div id="new-orders-list"></div>
+            <h4 style="margin: 20px 0 10px;">Pesanan Aktif</h4>
+            <div id="active-orders-list"></div>
         </div>
 
         <div id="tab-history" class="tab-content">
-            <h4 style="margin-top:0;">Monitoring Driver & Selesai</h4>
-            <div id="monitoring-list"></div>
+            <h4 style="margin-top:0;">Pesanan Selesai</h4>
+            <div id="history-list"></div>
         </div>
 
         <div id="tab-rekap" class="tab-content">
-            <div class="rekap-card">
-                <h4 style="margin:0 0 10px 0;">Total Pengantaran</h4>
-                <table>
-                    <thead>
-                        <tr><th>Nama Driver</th><th style="text-align:right;">Selesai</th></tr>
-                    </thead>
+            <div style="background:white; padding:20px; border-radius:20px;">
+                <h4 style="margin:0 0 15px 0;">Performa Driver</h4>
+                <table id="rekap-table">
                     <tbody id="rekap-driver-list"></tbody>
                 </table>
             </div>
@@ -114,51 +102,55 @@
         function buatPesanan() {
             const n = document.getElementById('name').value;
             const w = document.getElementById('wa').value;
-            if(!n || !w) return alert("Isi Data!");
+            if(!n || !w) return alert("Isi Nama & WA!");
             db.ref('orders').push({ customer: n, whatsapp: w.replace(/\D/g, ''), status: 'new', timestamp: Date.now() });
             document.getElementById('name').value = ''; document.getElementById('wa').value = '';
         }
 
-        function updateStatus(key, stat) { db.ref('orders/' + key).update({ status: stat }); }
-        function hapusData(key) { if(confirm("Hapus?")) db.ref('orders/' + key).remove(); }
+        function setReady(key) { db.ref('orders/' + key).update({ status: 'ready' }); }
+        function hapusData(key) { if(confirm("Hapus permanen dari history?")) db.ref('orders/' + key).remove(); }
 
-        // --- REALTIME SYNC & REKAP ---
         db.ref('orders').on('value', snap => {
-            const newList = document.getElementById('new-orders-list');
-            const historyList = document.getElementById('monitoring-list');
+            const activeList = document.getElementById('active-orders-list');
+            const historyList = document.getElementById('history-list');
             const rekapList = document.getElementById('rekap-driver-list');
             
-            newList.innerHTML = ''; historyList.innerHTML = ''; rekapList.innerHTML = '';
+            activeList.innerHTML = historyList.innerHTML = rekapList.innerHTML = '';
             let rekapData = {};
 
             snap.forEach(child => {
                 const o = child.val();
                 const k = child.key;
 
-                // Hitung Rekap Driver (hanya yang statusnya delivered)
-                if(o.status === 'delivered' && o.driver) {
-                    rekapData[o.driver] = (rekapData[o.driver] || 0) + 1;
-                }
-
                 const card = document.createElement('div');
                 card.className = `order-card ${o.status}`;
-                const baseInfo = `<span class="status-badge bg-${o.status === 'new' ? 'new' : (o.status === 'ready' ? 'ready' : (o.status === 'onprogress' ? 'progress' : 'done'))}">${o.status}</span>
-                                  <strong>${o.customer}</strong><br><small>${o.whatsapp}</small>`;
-
-                if(o.status === 'new') {
-                    card.innerHTML = baseInfo + `<button onclick="updateStatus('${k}','ready')" style="width:100%; margin-top:10px; background:orange; border:none; color:white; padding:8px; border-radius:8px; font-weight:bold;">SIAP ANTAR</button>`;
-                    newList.prepend(card);
+                
+                let content = `<strong>${o.customer}</strong><br><small>${o.whatsapp}</small><br>`;
+                
+                if (o.status !== 'delivered') {
+                    // MASUK TAB PESANAN (INPUT)
+                    if (o.status === 'new') {
+                        content += `<button class="status-btn btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
+                    } else {
+                        // Status 'ready' atau 'onprogress' jadi Hijau
+                        let driverInfo = o.driver ? `<div class="driver-label"><i class="fas fa-user"></i> ${o.driver}</div>` : `<div class="driver-label" style="background:#fff3e0; color:#ff9f1c;">Menunggu Driver...</div>`;
+                        content += `<button class="status-btn btn-green" disabled>PROSES</button> ${driverInfo}`;
+                    }
+                    card.innerHTML = content;
+                    activeList.prepend(card);
                 } else {
-                    card.innerHTML = baseInfo + (o.driver ? `<div style="color:#3a86ff; font-size:0.8rem; margin-top:5px;"><b>Driver:</b> ${o.driver}</div>` : '') +
-                                     (o.status === 'delivered' ? `<button onclick="hapusData('${k}')" style="border:none; color:red; background:none; font-size:0.7rem; margin-top:10px;">Hapus Permanen</button>` : '');
+                    // MASUK TAB HISTORY
+                    card.innerHTML = content + `<div class="driver-label"><i class="fas fa-check"></i> Oleh: ${o.driver}</div><br>
+                                     <button onclick="hapusData('${k}')" style="border:none; color:red; background:none; font-size:0.7rem; margin-top:10px; cursor:pointer;">Hapus Permanen</button>`;
                     historyList.prepend(card);
+                    
+                    // Hitung Rekap
+                    if(o.driver) rekapData[o.driver] = (rekapData[o.driver] || 0) + 1;
                 }
             });
 
-            // Tampilkan Rekap Driver
             for (let name in rekapData) {
-                const row = `<tr><td>${name}</td><td style="text-align:right;"><span class="driver-count">${rekapData[name]} Pesanan</span></td></tr>`;
-                rekapList.innerHTML += row;
+                rekapList.innerHTML += `<tr><td><b>${name}</b></td><td style="text-align:right; color:var(--green); font-weight:bold;">${rekapData[name]} Selesai</td></tr>`;
             }
         });
     </script>
