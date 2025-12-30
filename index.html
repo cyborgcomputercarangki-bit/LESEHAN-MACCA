@@ -12,112 +12,88 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --primary: #ef233c;
-            --secondary: #2b2d42;
-            --bg: #f4f7f6;
-            --white: #ffffff;
-        }
-
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 50px; }
+        :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 70px; }
         
         /* Navbar */
-        .navbar { 
-            background: var(--primary); color: white; padding: 15px 20px; 
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .navbar h3 { margin: 0; font-size: 1.1rem; letter-spacing: 1px; }
+        .navbar { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar h3 { margin: 0; font-size: 1.1rem; }
+
+        /* Tab Navigation */
+        .tab-bar { display: flex; background: white; position: sticky; top: 54px; z-index: 99; border-bottom: 1px solid #ddd; }
+        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-family: inherit; font-size: 0.75rem; font-weight: 700; color: #888; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
+        .tab-btn i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
 
         .container { padding: 15px; max-width: 500px; margin: 0 auto; }
-        
-        /* Input Form */
-        .form-card { 
-            background: white; padding: 20px; border-radius: 20px; 
-            margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
-        }
-        .form-card h4 { margin: 0 0 15px 0; color: var(--secondary); display: flex; align-items: center; gap: 8px; }
-        
-        input { 
-            width: 100%; padding: 14px; margin: 8px 0 15px 0; border-radius: 12px; 
-            border: 1.5px solid #eee; box-sizing: border-box; font-size: 1rem; font-family: inherit;
-        }
-        input:focus { border-color: var(--primary); outline: none; background: #fffafa; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .btn-send { 
-            width: 100%; padding: 15px; background: var(--primary); color: white; 
-            border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; 
-            cursor: pointer; transition: 0.2s;
-        }
-        .btn-send:active { transform: scale(0.98); opacity: 0.9; }
+        /* Card Styles */
+        .form-card, .rekap-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        input { width: 100%; padding: 14px; margin: 10px 0 15px 0; border-radius: 12px; border: 1.5px solid #eee; box-sizing: border-box; font-size: 1rem; }
+        .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-        /* Order Cards */
-        .section-title { font-size: 0.9rem; font-weight: 700; margin: 25px 0 15px; color: #8d99ae; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .order-card { 
-            background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; 
-            position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border-left: 6px solid #ddd; transition: 0.3s;
-        }
-        .order-card.new { border-left-color: #8d99ae; }
+        .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.05); }
         .order-card.ready { border-left-color: #ff9f1c; }
         .order-card.onprogress { border-left-color: #3a86ff; }
-        .order-card.delivered { border-left-color: #2ec4b6; opacity: 0.7; }
+        .order-card.delivered { border-left-color: #2ec4b6; }
+        
+        .status-badge { float: right; font-size: 0.6rem; padding: 3px 8px; border-radius: 4px; font-weight: 800; text-transform: uppercase; color: white; }
+        .bg-new { background: #8d99ae; }
+        .bg-ready { background: #ff9f1c; }
+        .bg-progress { background: #3a86ff; }
+        .bg-done { background: #2ec4b6; }
 
-        .status-badge { 
-            float: right; font-size: 0.65rem; padding: 4px 10px; border-radius: 6px; 
-            font-weight: 800; text-transform: uppercase; 
-        }
-        .badge-new { background: #f0f0f0; color: #888; }
-        .badge-ready { background: #fff3e0; color: #ff9f1c; }
-        .badge-progress { background: #e3f2fd; color: #3a86ff; }
-        .badge-done { background: #e8f5e9; color: #2ec4b6; }
-
-        .cust-name { font-size: 1.1rem; font-weight: 700; display: block; margin-bottom: 5px; }
-        .wa-link { color: #25d366; text-decoration: none; font-size: 0.85rem; font-weight: 600; }
-
-        .btn-action { 
-            width: 100%; padding: 12px; border: none; border-radius: 10px; 
-            font-weight: 700; margin-top: 15px; cursor: pointer; transition: 0.2s;
-        }
-        .btn-orange { background: #ff9f1c; color: white; }
-        .btn-delete { background: #fee2e2; color: #ef4444; border: 1px dashed #fca5a5; font-size: 0.75rem; margin-top: 15px; }
-
-        .driver-info { 
-            margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee; 
-            font-size: 0.8rem; color: #3a86ff; font-weight: 600; display: flex; align-items: center; gap: 5px;
-        }
+        /* Table Rekap */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; font-size: 0.8rem; color: #888; padding: 10px; border-bottom: 2px solid #eee; }
+        td { padding: 12px 10px; font-size: 0.9rem; border-bottom: 1px solid #f9f9f9; }
+        .driver-count { background: #e3f2fd; color: #3a86ff; padding: 2px 8px; border-radius: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <h3><i class="fas fa-store"></i> ADMIN MACCA</h3>
-        <div id="online-indicator" style="font-size: 0.7rem; background: #2ec4b6; padding: 2px 8px; border-radius: 10px;">ONLINE</div>
+    <div class="navbar"><h3>ADMIN MACCA</h3></div>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="openTab(event, 'tab-input')"><i class="fas fa-plus-circle"></i>INPUT</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-history')"><i class="fas fa-history"></i>HISTORY</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-chart-line"></i>REKAP</button>
     </div>
 
     <div class="container">
-        <div class="form-card">
-            <h4><i class="fas fa-plus-circle"></i> Pesanan Baru</h4>
-            <label style="font-size: 0.8rem; font-weight: 600;">Nama Pelanggan</label>
-            <input type="text" id="name" placeholder="Contoh: Bpk. Agus">
-            
-            <label style="font-size: 0.8rem; font-weight: 600;">Nomor WhatsApp</label>
-            <input type="tel" id="wa" placeholder="Contoh: 08123456789">
-            
-            <button class="btn-send" onclick="buatPesanan()">
-                <i class="fas fa-paper-plane"></i> TERUSKAN KE DRIVER
-            </button>
+        <div id="tab-input" class="tab-content active">
+            <div class="form-card">
+                <h4 style="margin:0;">Pesanan Baru</h4>
+                <input type="text" id="name" placeholder="Nama Pelanggan">
+                <input type="tel" id="wa" placeholder="WhatsApp (08...)">
+                <button class="btn-send" onclick="buatPesanan()">KIRIM KE DRIVER</button>
+            </div>
+            <h4 style="margin: 20px 0 10px;">Antrian Dapur (Belum Ready)</h4>
+            <div id="new-orders-list"></div>
         </div>
 
-        <div class="section-title">Pantauan Pengantaran</div>
-        <div id="admin-display">
-            <p style="text-align: center; color: #aaa; font-size: 0.9rem; margin-top: 20px;">Memuat data...</p>
+        <div id="tab-history" class="tab-content">
+            <h4 style="margin-top:0;">Monitoring Driver & Selesai</h4>
+            <div id="monitoring-list"></div>
+        </div>
+
+        <div id="tab-rekap" class="tab-content">
+            <div class="rekap-card">
+                <h4 style="margin:0 0 10px 0;">Total Pengantaran</h4>
+                <table>
+                    <thead>
+                        <tr><th>Nama Driver</th><th style="text-align:right;">Selesai</th></tr>
+                    </thead>
+                    <tbody id="rekap-driver-list"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- KONFIGURASI FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
             databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -125,88 +101,65 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // --- FUNGSI TAMBAH DATA ---
+        function openTab(evt, tabId) {
+            let i, content, btns;
+            content = document.getElementsByClassName("tab-content");
+            for (i = 0; i < content.length; i++) content[i].classList.remove("active");
+            btns = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
         function buatPesanan() {
-            const nameInput = document.getElementById('name');
-            const waInput = document.getElementById('wa');
-            
-            if(!nameInput.value || !waInput.value) {
-                alert("Harap isi Nama dan Nomor WA!");
-                return;
-            }
-
-            db.ref('orders').push({
-                customer: nameInput.value,
-                whatsapp: waInput.value.replace(/\D/g, ''), // Hanya ambil angka
-                status: 'new',
-                timestamp: Date.now()
-            }).then(() => {
-                nameInput.value = '';
-                waInput.value = '';
-            });
+            const n = document.getElementById('name').value;
+            const w = document.getElementById('wa').value;
+            if(!n || !w) return alert("Isi Data!");
+            db.ref('orders').push({ customer: n, whatsapp: w.replace(/\D/g, ''), status: 'new', timestamp: Date.now() });
+            document.getElementById('name').value = ''; document.getElementById('wa').value = '';
         }
 
-        // --- FUNGSI UPDATE STATUS ---
-        function setSiap(key) {
-            db.ref('orders/' + key).update({ status: 'ready' });
-        }
+        function updateStatus(key, stat) { db.ref('orders/' + key).update({ status: stat }); }
+        function hapusData(key) { if(confirm("Hapus?")) db.ref('orders/' + key).remove(); }
 
-        function hapusPesanan(key) {
-            if(confirm("Hapus pesanan ini dari daftar?")) {
-                db.ref('orders/' + key).remove();
-            }
-        }
-
-        // --- REALTIME SYNC ---
+        // --- REALTIME SYNC & REKAP ---
         db.ref('orders').on('value', snap => {
-            const display = document.getElementById('admin-display');
-            display.innerHTML = '';
+            const newList = document.getElementById('new-orders-list');
+            const historyList = document.getElementById('monitoring-list');
+            const rekapList = document.getElementById('rekap-driver-list');
             
-            if(!snap.exists()) {
-                display.innerHTML = '<p style="text-align: center; color: #aaa; font-size: 0.9rem; margin-top: 20px;">Belum ada pesanan.</p>';
-                return;
-            }
+            newList.innerHTML = ''; historyList.innerHTML = ''; rekapList.innerHTML = '';
+            let rekapData = {};
 
             snap.forEach(child => {
                 const o = child.val();
                 const k = child.key;
 
+                // Hitung Rekap Driver (hanya yang statusnya delivered)
+                if(o.status === 'delivered' && o.driver) {
+                    rekapData[o.driver] = (rekapData[o.driver] || 0) + 1;
+                }
+
                 const card = document.createElement('div');
                 card.className = `order-card ${o.status}`;
-                
-                // Logika Badge Status
-                let badgeClass = 'badge-new';
-                if(o.status === 'ready') badgeClass = 'badge-ready';
-                if(o.status === 'onprogress') badgeClass = 'badge-progress';
-                if(o.status === 'delivered') badgeClass = 'badge-done';
+                const baseInfo = `<span class="status-badge bg-${o.status === 'new' ? 'new' : (o.status === 'ready' ? 'ready' : (o.status === 'onprogress' ? 'progress' : 'done'))}">${o.status}</span>
+                                  <strong>${o.customer}</strong><br><small>${o.whatsapp}</small>`;
 
-                card.innerHTML = `
-                    <span class="status-badge ${badgeClass}">${o.status}</span>
-                    <span class="cust-name">${o.customer}</span>
-                    <a href="https://wa.me/${o.whatsapp}" class="wa-link" target="_blank">
-                        <i class="fab fa-whatsapp"></i> ${o.whatsapp}
-                    </a>
-                    
-                    ${o.status === 'new' ? `
-                        <button class="btn-action btn-orange" onclick="setSiap('${k}')">
-                            <i class="fas fa-bell"></i> SIAP ANTAR (KIRIM NOTIF)
-                        </button>
-                    ` : ''}
-
-                    ${o.driver ? `
-                        <div class="driver-info">
-                            <i class="fas fa-biking"></i> Driver: ${o.driver}
-                        </div>
-                    ` : ''}
-
-                    ${o.status === 'delivered' ? `
-                        <button class="btn-action btn-delete" onclick="hapusPesanan('${k}')">
-                            <i class="fas fa-trash-alt"></i> HAPUS RIWAYAT
-                        </button>
-                    ` : ''}
-                `;
-                display.prepend(card);
+                if(o.status === 'new') {
+                    card.innerHTML = baseInfo + `<button onclick="updateStatus('${k}','ready')" style="width:100%; margin-top:10px; background:orange; border:none; color:white; padding:8px; border-radius:8px; font-weight:bold;">SIAP ANTAR</button>`;
+                    newList.prepend(card);
+                } else {
+                    card.innerHTML = baseInfo + (o.driver ? `<div style="color:#3a86ff; font-size:0.8rem; margin-top:5px;"><b>Driver:</b> ${o.driver}</div>` : '') +
+                                     (o.status === 'delivered' ? `<button onclick="hapusData('${k}')" style="border:none; color:red; background:none; font-size:0.7rem; margin-top:10px;">Hapus Permanen</button>` : '');
+                    historyList.prepend(card);
+                }
             });
+
+            // Tampilkan Rekap Driver
+            for (let name in rekapData) {
+                const row = `<tr><td>${name}</td><td style="text-align:right;"><span class="driver-count">${rekapData[name]} Pesanan</span></td></tr>`;
+                rekapList.innerHTML += row;
+            }
         });
     </script>
 </body>
