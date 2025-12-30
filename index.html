@@ -25,31 +25,14 @@
         .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         
         .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid #ddd; position: relative; }
-        
-        /* Tombol Siap Antar tetap lebar agar mudah diklik */
         .btn-orange { width: 100%; margin-top: 10px; padding: 12px; border-radius: 10px; border: none; color: white; font-weight: bold; background: var(--orange); cursor: pointer; font-family: inherit; }
 
-        /* Kotak Menunggu Driver & OTW dibuat pas di tengah dan tidak terlalu lebar */
         .status-container { display: flex; justify-content: center; margin-top: 10px; }
-        
-        .btn-waiting { 
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;
-            background: #e0f2fe; color: #0369a1; border: 1.5px dashed #0ea5e9; 
-        }
-        
-        .driver-info-otw { 
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;
-            background: var(--light-green); color: var(--dark-green); border: 1.5px solid var(--green); 
-        }
+        .btn-waiting { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; background: #e0f2fe; color: #0369a1; border: 1.5px dashed #0ea5e9; }
+        .driver-info-otw { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; background: var(--light-green); color: var(--dark-green); border: 1.5px solid var(--green); }
         
         .bell-anim { animation: ring 0.5s infinite; font-size: 1rem; }
-        @keyframes ring {
-            0% { transform: rotate(0); } 10% { transform: rotate(15deg); } 20% { transform: rotate(-15deg); }
-            30% { transform: rotate(10deg); } 40% { transform: rotate(-10deg); } 50% { transform: rotate(0); } 100% { transform: rotate(0); }
-        }
-
+        @keyframes ring { 0% { transform: rotate(0); } 10% { transform: rotate(15deg); } 20% { transform: rotate(-15deg); } 30% { transform: rotate(10deg); } 40% { transform: rotate(-10deg); } 50% { transform: rotate(0); } 100% { transform: rotate(0); } }
         .motor-anim { animation: moveMotor 2s infinite linear; font-size: 1.1rem; }
         @keyframes moveMotor { 0% { transform: translateX(-10px); opacity: 0; } 50% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(10px); opacity: 0; } }
 
@@ -82,6 +65,15 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Toast Notification Config
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+
         function formatWaktu(ts) {
             const d = new Date(ts);
             return `${d.getDate()} ${["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][d.getMonth()]} ${d.getFullYear()} - ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
@@ -96,13 +88,38 @@
 
         function buatPesanan() {
             const n = document.getElementById('name').value; const w = document.getElementById('wa').value;
-            if(!n || !w) return Swal.fire('Error', 'Lengkapi data!', 'error');
+            if(!n || !w) return Swal.fire('Oops!', 'Nama dan WA harus diisi!', 'warning');
+            
             db.ref('orders').push({ customer: n, whatsapp: w.replace(/\D/g, ''), status: 'new', timestamp: Date.now() })
-            .then(() => { document.getElementById('name').value = ''; document.getElementById('wa').value = ''; });
+            .then(() => { 
+                document.getElementById('name').value = ''; 
+                document.getElementById('wa').value = ''; 
+                Toast.fire({ icon: 'success', title: 'Pesanan ditambahkan' });
+            });
         }
 
-        function setReady(k) { db.ref('orders/' + k).update({ status: 'ready' }); }
-        function hapusData(k) { Swal.fire({ title: 'Hapus?', icon: 'warning', showCancelButton: true }).then((res) => { if(res.isConfirmed) db.ref('orders/'+k).remove(); }); }
+        function setReady(k) { 
+            db.ref('orders/' + k).update({ status: 'ready' })
+            .then(() => Toast.fire({ icon: 'info', title: 'Status: Menunggu Driver' })); 
+        }
+
+        function hapusData(k) { 
+            Swal.fire({ 
+                title: 'Hapus Pesanan?', 
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: 'warning', 
+                showCancelButton: true,
+                confirmButtonColor: '#ef233c',
+                cancelButtonColor: '#2b2d42',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((res) => { 
+                if(res.isConfirmed) {
+                    db.ref('orders/'+k).remove()
+                    .then(() => Toast.fire({ icon: 'success', title: 'Data berhasil dihapus' }));
+                } 
+            }); 
+        }
 
         db.ref('orders').on('value', snap => {
             const al = document.getElementById('active-orders-list'); const hl = document.getElementById('history-list');
