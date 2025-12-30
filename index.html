@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>Lesehan Macca - Delivery System</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesehan Macca System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -14,52 +14,81 @@
     <style>
         :root {
             --primary: #ef233c;
-            --primary-dark: #d90429;
             --secondary: #2b2d42;
             --bg: #f4f7f6;
             --white: #ffffff;
         }
 
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); }
-        
-        /* --- LOGIN PAGE --- */
-        #login-page {
-            height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, var(--primary), #ff4d6d); color: white; padding: 20px;
+        body, html { 
+            margin: 0; padding: 0; 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg);
+            scroll-behavior: smooth;
         }
-        .login-box { background: white; padding: 30px; border-radius: 20px; width: 100%; max-width: 350px; color: var(--secondary); box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
-        .login-box h2 { margin-bottom: 20px; color: var(--primary); }
-        .btn-role { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+
+        /* --- LOGIN PAGE (FULL SCREEN) --- */
+        #login-page {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary), #ff4d6d);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9999; transition: 0.5s;
+        }
+        .login-box { 
+            background: white; padding: 35px 25px; border-radius: 25px; 
+            width: 85%; max-width: 350px; text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+        }
+        .btn-role { 
+            width: 100%; padding: 16px; margin: 12px 0; border: none; 
+            border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
         .btn-admin { background: var(--secondary); color: white; }
         .btn-driver { background: var(--primary); color: white; }
 
-        /* --- COMMON LAYOUT --- */
-        .navbar { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .navbar h3 { margin: 0; color: var(--primary); font-size: 1.2rem; }
-        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        /* --- APP CONTENT --- */
+        #app-page { display: none; min-height: 100vh; }
         
-        /* --- ADMIN STYLES --- */
-        .form-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-family: inherit; }
-        .btn-send { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .navbar { 
+            background: var(--primary); color: white; padding: 15px 20px; 
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .navbar h3 { margin: 0; font-size: 1.1rem; }
+        .btn-logout { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; }
 
-        /* --- CARD STYLES --- */
-        .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; border-left: 6px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.05); position: relative; }
+        .container { padding: 15px; max-width: 500px; margin: 0 auto; }
+        
+        /* Form Admin */
+        .form-card { background: white; padding: 20px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1.5px solid #eee; box-sizing: border-box; font-size: 1rem; }
+        input:focus { border-color: var(--primary); outline: none; }
+        .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; }
+
+        /* Order Cards */
+        .order-card { 
+            background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; 
+            position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-left: 6px solid #ddd; animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .order-card.ready { border-left-color: #ff9f1c; }
         .order-card.onprogress { border-left-color: #3a86ff; }
-        .order-card.delivered { border-left-color: #2ec4b6; opacity: 0.7; }
-        
-        .status-badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 5px; font-weight: 700; text-transform: uppercase; float: right; }
-        .badge-new { background: #edf2f4; color: #8d99ae; }
-        .badge-ready { background: #ff9f1c; color: white; }
-        .badge-progress { background: #3a86ff; color: white; }
+        .order-card.delivered { border-left-color: #2ec4b6; }
 
-        .btn-small { padding: 8px 15px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; margin-top: 10px; width: 100%; }
+        .status-badge { float: right; font-size: 0.65rem; padding: 4px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; }
+        .badge-new { background: #f0f0f0; color: #888; }
+        .badge-ready { background: #fff3e0; color: #ff9f1c; }
+        .badge-progress { background: #e3f2fd; color: #3a86ff; }
+        .badge-done { background: #e8f5e9; color: #2ec4b6; }
+
+        .btn-action { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: 700; margin-top: 12px; cursor: pointer; }
         .btn-orange { background: #ff9f1c; color: white; }
-        .btn-blue { background: #3a86ff; color: white; }
         .btn-green { background: #2ec4b6; color: white; }
+        .btn-delete { background: #fee2e2; color: #ef4444; border: 1px dashed #fca5a5; font-size: 0.8rem; margin-top: 15px; }
 
-        .hidden { display: none; }
+        .wa-link { display: inline-block; color: #25d366; text-decoration: none; font-weight: 600; font-size: 0.9rem; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -67,41 +96,48 @@
     <div id="login-page">
         <div class="login-box">
             <i class="fas fa-utensils fa-3x" style="color: var(--primary); margin-bottom: 15px;"></i>
-            <h2>Lesehan Macca</h2>
-            <p>Silakan pilih akses Anda:</p>
-            <button class="btn-role btn-admin" onclick="showApp('admin')">LOG IN ADMIN</button>
-            <button class="btn-role btn-driver" onclick="showApp('driver')">LOG IN DRIVER</button>
+            <h2 style="margin:0;">Lesehan Macca</h2>
+            <p style="color:#777; font-size: 0.9rem; margin-bottom: 25px;">Sistem Delivery Terpadu</p>
+            
+            <button class="btn-role btn-admin" onclick="openApp('admin')">
+                <i class="fas fa-user-shield"></i> PANEL ADMIN
+            </button>
+            <button class="btn-role btn-driver" onclick="openApp('driver')">
+                <i class="fas fa-motorcycle"></i> PANEL DRIVER
+            </button>
         </div>
+        <p style="margin-top:20px; font-size: 0.7rem; opacity: 0.8;">v2.0 - Stabilized Connection</p>
     </div>
 
-    <div id="app-page" class="hidden">
+    <div id="app-page">
         <div class="navbar">
-            <h3 id="app-title">Lesehan Macca</h3>
-            <button onclick="location.reload()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+            <h3 id="role-title">Lesehan Macca</h3>
+            <button class="btn-logout" onclick="location.reload()">Keluar <i class="fas fa-sign-out-alt"></i></button>
         </div>
 
         <div class="container">
-            <div id="admin-ui" class="hidden">
+            <div id="admin-section" style="display:none;">
                 <div class="form-card">
-                    <h4 style="margin-top:0;">Input Pesanan Baru</h4>
-                    <input type="text" id="cust-name" placeholder="Nama Pelanggan">
-                    <input type="tel" id="cust-wa" placeholder="Nomor WhatsApp">
-                    <button class="btn-send" onclick="adminKirim()"><i class="fas fa-paper-plane"></i> TERUSKAN KE DRIVER</button>
+                    <h4 style="margin:0 0 15px 0;">Input Pesanan</h4>
+                    <input type="text" id="name" placeholder="Nama Pelanggan">
+                    <input type="tel" id="wa" placeholder="Nomor WA (Contoh: 0812...)">
+                    <button class="btn-send" onclick="buatPesanan()">KIRIM KE DRIVER</button>
                 </div>
-                <h4>Daftar Pantauan</h4>
-                <div id="admin-list"></div>
+                <h4 style="margin-bottom:15px;"><i class="fas fa-list"></i> Monitoring Pesanan</h4>
+                <div id="admin-display"></div>
             </div>
 
-            <div id="driver-ui" class="hidden">
-                <div id="driver-info" style="margin-bottom: 15px; font-weight: 600;"></div>
-                <h4>Tugas Pengantaran</h4>
-                <div id="driver-list"></div>
+            <div id="driver-section" style="display:none;">
+                <div style="background:#fff; padding:12px; border-radius:12px; margin-bottom:20px; border:1px solid #ddd;">
+                    <i class="fas fa-user-circle"></i> Driver: <b id="driver-display-name"></b>
+                </div>
+                <h4 style="margin-bottom:15px;"><i class="fas fa-tasks"></i> Tugas Anda</h4>
+                <div id="driver-display"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- CONFIG FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
             databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -109,99 +145,101 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         
-        let currentRole = '';
-        let driverName = '';
+        let userRole = '';
+        let myName = '';
 
-        // --- NAVIGATION ---
-        function showApp(role) {
-            currentRole = role;
-            document.getElementById('login-page').classList.add('hidden');
-            document.getElementById('app-page').classList.remove('hidden');
-            
-            if(role === 'admin') {
-                document.getElementById('admin-ui').classList.remove('hidden');
-                document.getElementById('app-title').innerText = "Admin Panel";
+        // --- FUNGSI BUKA APLIKASI ---
+        function openApp(role) {
+            userRole = role;
+            if(role === 'driver') {
+                myName = prompt("Masukkan Nama Driver:");
+                if(!myName) return;
+                document.getElementById('driver-display-name').innerText = myName;
+                document.getElementById('driver-section').style.display = 'block';
+                document.getElementById('role-title').innerText = "Driver Panel";
             } else {
-                driverName = prompt("Masukkan Nama Driver:");
-                if(!driverName) return location.reload();
-                document.getElementById('driver-ui').classList.remove('hidden');
-                document.getElementById('app-title').innerText = "Driver Panel";
-                document.getElementById('driver-info').innerText = "Driver: " + driverName;
+                document.getElementById('admin-section').style.display = 'block';
+                document.getElementById('role-title').innerText = "Admin Panel";
             }
-            startListener();
+
+            // Transisi Visual
+            document.getElementById('login-page').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('app-page').style.display = 'block';
+                window.scrollTo(0,0); // Pastikan layar di paling atas
+            }, 500);
+
+            startSync();
         }
 
-        // --- LOGIC ADMIN ---
-        function adminKirim() {
-            const name = document.getElementById('cust-name').value;
-            const wa = document.getElementById('cust-wa').value;
-            if(!name || !wa) return alert("Mohon lengkapi data!");
+        // --- LOGIKA DATA ---
+        function buatPesanan() {
+            const n = document.getElementById('name').value;
+            const w = document.getElementById('wa').value;
+            if(!n || !w) return alert("Lengkapi data!");
 
             db.ref('orders').push({
-                customer: name,
-                whatsapp: wa,
+                customer: n,
+                whatsapp: w.replace(/\D/g, ''),
                 status: 'new',
-                time: Date.now()
+                timestamp: Date.now()
             });
-            document.getElementById('cust-name').value = '';
-            document.getElementById('cust-wa').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('wa').value = '';
         }
 
-        function adminSiap(key) {
-            db.ref('orders/' + key).update({ status: 'ready' });
+        function updateStatus(key, newStatus) {
+            let data = { status: newStatus };
+            if(newStatus === 'onprogress') data.driver = myName;
+            db.ref('orders/' + key).update(data);
         }
 
-        // --- LOGIC DRIVER ---
-        function driverAmbil(key) {
-            db.ref('orders/' + key).update({ 
-                status: 'onprogress',
-                driver: driverName
-            });
+        function hapusPesanan(key) {
+            if(confirm("Hapus pesanan ini dari riwayat?")) {
+                db.ref('orders/' + key).remove();
+            }
         }
 
-        function driverSelesai(key) {
-            db.ref('orders/' + key).update({ status: 'delivered' });
-        }
-
-        // --- REALTIME MONITOR ---
-        function startListener() {
+        // --- REALTIME SYNC ---
+        function startSync() {
             db.ref('orders').on('value', snap => {
-                const adminList = document.getElementById('admin-list');
-                const driverList = document.getElementById('driver-list');
-                adminList.innerHTML = '';
-                driverList.innerHTML = '';
+                const aDiv = document.getElementById('admin-display');
+                const dDiv = document.getElementById('driver-display');
+                aDiv.innerHTML = dDiv.innerHTML = '';
 
                 snap.forEach(child => {
                     const o = child.val();
                     const k = child.key;
 
-                    // TAMPILAN UNTUK ADMIN
-                    if(currentRole === 'admin') {
-                        const card = document.createElement('div');
-                        card.className = `order-card ${o.status}`;
-                        card.innerHTML = `
-                            <span class="status-badge badge-${o.status}">${o.status}</span>
-                            <strong>${o.customer}</strong><br>
-                            <small>${o.whatsapp}</small><br>
-                            ${o.status === 'new' ? `<button class="btn-small btn-orange" onclick="adminSiap('${k}')">SIAP DIANTAR</button>` : ''}
-                            ${o.driver ? `<div style="margin-top:5px; font-size:0.8rem; color:blue;">Driver: ${o.driver}</div>` : ''}
+                    // Template Kartu
+                    const card = document.createElement('div');
+                    card.className = `order-card ${o.status}`;
+                    
+                    const htmlContent = `
+                        <span class="status-badge badge-${o.status === 'new' ? 'new' : (o.status === 'ready' ? 'ready' : (o.status === 'onprogress' ? 'progress' : 'done'))}">${o.status}</span>
+                        <strong>${o.customer}</strong><br>
+                        <a href="https://wa.me/${o.whatsapp}" class="wa-link"><i class="fab fa-whatsapp"></i> ${o.whatsapp}</a>
+                    `;
+
+                    // Render Admin
+                    if(userRole === 'admin') {
+                        card.innerHTML = htmlContent + `
+                            ${o.status === 'new' ? `<button class="btn-action btn-orange" onclick="updateStatus('${k}', 'ready')">SIAP ANTAR</button>` : ''}
+                            ${o.driver ? `<div style="font-size:0.8rem; color:blue; margin-top:5px;">Driver: ${o.driver}</div>` : ''}
+                            ${o.status === 'delivered' ? `<button class="btn-action btn-delete" onclick="hapusPesanan('${k}')">HAPUS DARI LIST</button>` : ''}
                         `;
-                        adminList.prepend(card);
+                        aDiv.prepend(card);
                     }
 
-                    // TAMPILAN UNTUK DRIVER
-                    if(currentRole === 'driver') {
-                        // Driver hanya melihat jika status 'ready' ATAU pesanan itu miliknya
-                        if(o.status === 'ready' || (o.status === 'onprogress' && o.driver === driverName)) {
-                            const card = document.createElement('div');
-                            card.className = `order-card ${o.status}`;
-                            card.innerHTML = `
-                                <strong>${o.customer}</strong><br>
-                                <a href="https://wa.me/${o.whatsapp}" style="text-decoration:none; color:green; font-size:0.9rem;"><i class="fab fa-whatsapp"></i> Chat Pelanggan</a>
-                                ${o.status === 'ready' ? `<button class="btn-small btn-orange" onclick="driverAmbil('${k}')">AMBIL PESANAN</button>` : ''}
-                                ${o.status === 'onprogress' ? `<button class="btn-small btn-green" onclick="driverSelesai('${k}')">SELESAI DIANTAR</button>` : ''}
+                    // Render Driver
+                    if(userRole === 'driver') {
+                        if(o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
+                            card.innerHTML = htmlContent + `
+                                ${o.status === 'ready' ? `<button class="btn-action btn-orange" onclick="updateStatus('${k}', 'onprogress')">AMBIL PESANAN</button>` : ''}
+                                ${o.status === 'onprogress' ? `<button class="btn-action btn-green" onclick="updateStatus('${k}', 'delivered')">SELESAI ANTAR</button>` : ''}
                             `;
-                            driverList.prepend(card);
+                            dDiv.prepend(card);
                         }
                     }
                 });
