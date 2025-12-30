@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>ADMIN - Lesehan Macca</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <title>ADMIN MACCA V2.1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
 
@@ -15,8 +19,11 @@
         :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; --blue: #3a86ff; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 70px; }
         
-        .navbar { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; }
-        .navbar h3 { margin: 0; font-size: 1.1rem; }
+        .navbar { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .navbar h3 { margin: 0; font-size: 1rem; }
+        
+        /* Tombol Update Kecil di Pojok */
+        .refresh-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.7rem; cursor: pointer; }
 
         .tab-bar { display: flex; background: white; position: sticky; top: 54px; z-index: 99; border-bottom: 1px solid #ddd; }
         .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-family: inherit; font-size: 0.75rem; font-weight: 700; color: #888; cursor: pointer; }
@@ -49,7 +56,12 @@
 </head>
 <body>
 
-    <div class="navbar"><h3>ADMIN MACCA</h3></div>
+    <div class="navbar">
+        <h3>ADMIN MACCA</h3>
+        <button class="refresh-btn" onclick="forceUpdate()">
+            <i class="fas fa-sync-alt"></i> Update Sistem
+        </button>
+    </div>
 
     <div class="tab-bar">
         <button class="tab-btn active" onclick="openTab(event, 'tab-input')"><i class="fas fa-motorcycle"></i>PESANAN</button>
@@ -76,15 +88,21 @@
         <div id="tab-rekap" class="tab-content">
             <div style="background:white; padding:20px; border-radius:20px;">
                 <h4 style="margin:0 0 15px 0;">Performa Driver</h4>
-                <table id="rekap-table">
-                    <tbody id="rekap-driver-list"></tbody>
-                </table>
+                <table><tbody id="rekap-driver-list"></tbody></table>
             </div>
         </div>
     </div>
 
     <script>
-        // Gunakan Firebase Config Anda sendiri jika berbeda
+        // FUNGSI UNTUK MEMAKSA UPDATE TANPA UNINSTAL
+        function forceUpdate() {
+            if(confirm("Update sistem ke versi terbaru dari GitHub?")) {
+                // Menambahkan timestamp unik agar browser menganggap ini link baru
+                const newUrl = window.location.href.split('?')[0] + '?update=' + new Date().getTime();
+                window.location.replace(newUrl);
+            }
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
             databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -92,6 +110,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Fungsi Tab dan Firebase lainnya tetap sama...
         function openTab(evt, tabId) {
             let i, content, btns;
             content = document.getElementsByClassName("tab-content");
@@ -111,49 +130,33 @@
         }
 
         function setReady(key) { db.ref('orders/' + key).update({ status: 'ready' }); }
-        function hapusData(key) { if(confirm("Hapus permanen dari history?")) db.ref('orders/' + key).remove(); }
+        function hapusData(key) { if(confirm("Hapus?")) db.ref('orders/' + key).remove(); }
 
         db.ref('orders').on('value', snap => {
             const activeList = document.getElementById('active-orders-list');
             const historyList = document.getElementById('history-list');
             const rekapList = document.getElementById('rekap-driver-list');
-            
             activeList.innerHTML = historyList.innerHTML = rekapList.innerHTML = '';
             let rekapData = {};
 
             snap.forEach(child => {
                 const o = child.val();
                 const k = child.key;
-
                 const card = document.createElement('div');
                 card.className = `order-card ${o.status}`;
                 let detail = `<strong>${o.customer}</strong><br><small>${o.whatsapp}</small>`;
 
                 if (o.status !== 'delivered') {
-                    // TAB 1: PESANAN AKTIF
-                    if (o.status === 'new') {
-                        card.innerHTML = detail + `<button class="status-btn btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
-                    } 
-                    else if (o.status === 'ready') {
-                        // Belum ada driver yang ambil
-                        card.innerHTML = detail + `<button class="status-btn btn-green" disabled>PROSES (MENUNGGU DRIVER)</button>`;
-                    } 
-                    else if (o.status === 'onprogress') {
-                        // Driver sudah menekan AMBIL PESANAN
-                        card.innerHTML = detail + `<div class="driver-info"><i class="fas fa-truck"></i> Sedang Diantar oleh: <b>${o.driver}</b></div>`;
-                    }
+                    if (o.status === 'new') card.innerHTML = detail + `<button class="status-btn btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
+                    else if (o.status === 'ready') card.innerHTML = detail + `<button class="status-btn btn-green" disabled>PROSES (MENUNGGU DRIVER)</button>`;
+                    else if (o.status === 'onprogress') card.innerHTML = detail + `<div class="driver-info"><i class="fas fa-truck"></i> Sedang Diantar oleh: <b>${o.driver}</b></div>`;
                     activeList.prepend(card);
                 } else {
-                    // TAB 2: HISTORY
-                    card.innerHTML = detail + `<div class="driver-info" style="background:#f1f8e9; color:#2e7d32;"><i class="fas fa-check-double"></i> Selesai oleh: ${o.driver}</div>
-                                     <button onclick="hapusData('${k}')" style="border:none; color:red; background:none; font-size:0.7rem; margin-top:10px; cursor:pointer;">Hapus Permanen</button>`;
+                    card.innerHTML = detail + `<div class="driver-info" style="background:#f1f8e9; color:#2e7d32;"><i class="fas fa-check-double"></i> Selesai oleh: ${o.driver}</div><button onclick="hapusData('${k}')" style="border:none; color:red; background:none; font-size:0.7rem; margin-top:10px; cursor:pointer;">Hapus</button>`;
                     historyList.prepend(card);
-                    
-                    // Rekap Driver
                     if(o.driver) rekapData[o.driver] = (rekapData[o.driver] || 0) + 1;
                 }
             });
-
             for (let name in rekapData) {
                 rekapList.innerHTML += `<tr><td><b>${name}</b></td><td style="text-align:right; color:var(--green); font-weight:bold;">${rekapData[name]} Selesai</td></tr>`;
             }
