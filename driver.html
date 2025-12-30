@@ -50,7 +50,7 @@
     </div>
     <div class="container">
         <div id="tab-tugas" class="tab-content active"><h4 id="task-status">Memuat...</h4><div id="tugas-list"></div></div>
-        <div id="tab-history" class="tab-content"><h4>History Saya</h4><div id="history-pribadi"></div></div>
+        <div id="tab-history" class="tab-content"><h4>Riwayat Selesai Saya</h4><div id="history-pribadi"></div></div>
         <div id="tab-rekap" class="tab-content"><div style="background:white; padding:20px; border-radius:20px;"><h4>Ranking Bulan Ini</h4><table><tbody id="rekap-all-driver"></tbody></table></div></div>
     </div>
     <script>
@@ -71,6 +71,17 @@
             b = document.getElementsByClassName("tab-btn"); for (i=0; i<b.length; i++) b[i].classList.remove("active");
             document.getElementById(t).classList.add("active"); evt.currentTarget.classList.add("active");
         }
+        
+        function formatWaktuLengkap(ts) {
+            const d = new Date(ts);
+            const tgl = d.getDate().toString().padStart(2, '0');
+            const bln = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][d.getMonth()];
+            const thn = d.getFullYear();
+            const jam = d.getHours().toString().padStart(2, '0');
+            const min = d.getMinutes().toString().padStart(2, '0');
+            return `${tgl} ${bln} ${thn} - ${jam}:${min}`;
+        }
+
         if(myName) { document.getElementById('driver-login').style.display='none'; document.getElementById('display-name').innerText="Driver: "+myName; startSync(); }
 
         function updateStatus(k, s) {
@@ -87,27 +98,21 @@
 
                 snap.forEach(child => {
                     const o = child.val(); const k = child.key; const dO = new Date(o.timestamp);
-                    const time = `${dO.getHours()}:${dO.getMinutes().toString().padStart(2, '0')}`;
+                    const waktuCard = formatWaktuLengkap(o.timestamp);
 
-                    // LOGIKA TAB TUGAS
                     if(o.status === 'new' || o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
                         activeCount++;
                         const card = document.createElement('div'); card.className = `order-card ${o.status}`;
                         let actionHTML = '';
-                        
-                        if(o.status === 'new') {
-                            actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-utensils"></i> SIAP2 BRO, SEDANG DIPROSES DI DAPUR</button>`;
-                        } else if(o.status === 'ready') {
-                            actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL PESANAN SEKARANG</button>`;
-                        } else {
-                            actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">SELESAI ANTAR</button>`;
-                        }
-
-                        card.innerHTML = `<strong>${o.customer}</strong><br><span class="time-info">${time}</span>${actionHTML}`;
+                        if(o.status === 'new') actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-utensils"></i> SIAP2 BRO, SEDANG DIPROSES DI DAPUR</button>`;
+                        else if(o.status === 'ready') actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL PESANAN SEKARANG</button>`;
+                        else actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">SELESAI ANTAR</button>`;
+                        card.innerHTML = `<strong>${o.customer}</strong><br><span class="time-info">${waktuCard}</span>${actionHTML}`;
                         tl.prepend(card);
                     }
-                    // HISTORY & REKAP
-                    if(o.status === 'delivered' && o.driver === myName) { hp.innerHTML += `<div class="order-card delivered"><strong>${o.customer}</strong></div>`; }
+                    if(o.status === 'delivered' && o.driver === myName) { 
+                        hp.innerHTML += `<div class="order-card delivered"><strong>${o.customer}</strong><br><span class="time-info">${waktuCard}</span></div>`; 
+                    }
                     if(o.status === 'delivered' && o.driver && dO.getMonth() === mNow) { rd[o.driver] = (rd[o.driver] || 0) + 1; }
                 });
                 if (lastCount !== -1 && activeCount > lastCount) document.getElementById('notif-sound').play();
