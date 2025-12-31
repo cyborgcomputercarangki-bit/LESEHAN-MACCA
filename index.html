@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>ADMIN MACCA</title>
+    <title>ADMIN MACCA - Sistem Terpadu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -10,143 +10,209 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; --blue: #3a86ff; --dark-green: #1b5e20; --light-green: #e8f5e9; }
+        :root { --primary: #ef233c; --secondary: #2b2d42; --bg: #f4f7f6; --green: #2ec4b6; --orange: #ff9f1c; --blue: #3a86ff; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--secondary); padding-bottom: 70px; }
+        
         .navbar { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        
         .tab-bar { display: flex; background: white; position: sticky; top: 54px; z-index: 99; border-bottom: 1px solid #ddd; }
-        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: none; font-size: 0.7rem; font-weight: 700; color: #888; cursor: pointer; }
+        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: none; font-size: 0.65rem; font-weight: 700; color: #888; cursor: pointer; position: relative; }
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
-        .tab-btn i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
+        .tab-btn i { display: block; font-size: 1.1rem; margin-bottom: 3px; }
+        
+        .badge { position: absolute; top: 5px; right: 15%; background: var(--primary); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; display: none; border: 2px solid white; }
+
         .container { padding: 15px; max-width: 500px; margin: 0 auto; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .form-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+
+        /* FORM INPUT SIMPEL OFFLINE */
+        .form-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #eee; }
+        .form-card h4 { margin: 0 0 15px; font-size: 0.9rem; color: var(--secondary); border-left: 4px solid var(--primary); padding-left: 10px; }
         input { width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid #eee; font-family: inherit; outline: none; box-sizing: border-box; margin-bottom: 10px; font-size: 1rem; }
-        .btn-send { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; }
-        
-        .order-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid #ddd; position: relative; }
-        .btn-orange { width: 100%; margin-top: 10px; padding: 12px; border-radius: 10px; border: none; color: white; font-weight: bold; background: var(--orange); cursor: pointer; font-family: inherit; }
+        .btn-send { width: 100%; padding: 15px; background: var(--secondary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; }
 
-        .status-container { display: flex; justify-content: center; margin-top: 10px; }
-        .btn-waiting { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; background: #e0f2fe; color: #0369a1; border: 1.5px dashed #0ea5e9; }
-        .driver-info-otw { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; background: var(--light-green); color: var(--dark-green); border: 1.5px solid var(--green); }
+        /* CARDS PESANAN */
+        .order-card { background: white; padding: 15px; border-radius: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 6px solid #ddd; position: relative; }
+        .order-card.new { border-left-color: var(--blue); background: #f0f7ff; }
+        .order-card.offline { border-left-color: #555; }
         
-        .bell-anim { animation: ring 0.5s infinite; font-size: 1rem; }
-        @keyframes ring { 0% { transform: rotate(0); } 10% { transform: rotate(15deg); } 20% { transform: rotate(-15deg); } 30% { transform: rotate(10deg); } 40% { transform: rotate(-10deg); } 50% { transform: rotate(0); } 100% { transform: rotate(0); } }
-        .motor-anim { animation: moveMotor 2s infinite linear; font-size: 1.1rem; }
-        @keyframes moveMotor { 0% { transform: translateX(-10px); opacity: 0; } 50% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(10px); opacity: 0; } }
+        .tag-online { background: var(--blue); color: white; font-size: 0.65rem; padding: 3px 8px; border-radius: 5px; font-weight: bold; margin-bottom: 8px; display: inline-block; }
+        .tag-offline { background: #555; color: white; font-size: 0.65rem; padding: 3px 8px; border-radius: 5px; font-weight: bold; margin-bottom: 8px; display: inline-block; }
+        
+        .cust-name { font-weight: 800; font-size: 1.1rem; color: #1a1a1a; display: block; margin-bottom: 2px; }
+        .time-info { font-size: 0.75rem; color: #888; margin-bottom: 10px; display: block; }
+        
+        .detail-box { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 12px; margin: 10px 0; }
+        .detail-box strong { font-size: 0.85rem; color: var(--primary); display: block; margin-bottom: 5px; border-bottom: 1px solid #eee; padding-bottom: 3px; }
+        .items-list { font-size: 0.9rem; color: #333; line-height: 1.5; white-space: pre-line; }
+        
+        .address-box { font-size: 0.8rem; color: #666; margin-top: 8px; padding-left: 24px; position: relative; }
+        .address-box i { position: absolute; left: 0; top: 2px; color: var(--primary); }
 
-        .time-info { font-size: 0.65rem; color: #aaa; }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; }
+        .btn-gps { display: flex; align-items: center; justify-content: center; gap: 8px; background: #e3f2fd; color: #1976d2; text-decoration: none; font-size: 0.85rem; padding: 12px; border-radius: 10px; margin: 10px 0; font-weight: 700; border: 1px solid #bbdefb; }
+        .btn-gps i { font-size: 1.1rem; }
+
+        .btn-action { width: 100%; padding: 14px; border-radius: 12px; border: none; color: white; font-weight: 800; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-size: 0.9rem; }
+        .btn-approve { background: var(--blue); box-shadow: 0 4px 10px rgba(58, 134, 255, 0.3); }
+        .btn-ready { background: var(--orange); box-shadow: 0 4px 10px rgba(255, 159, 28, 0.3); }
+        
+        .divider { height: 1px; background: #ddd; margin: 30px 0; position: relative; }
+        .divider span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--bg); padding: 0 15px; font-size: 0.75rem; color: #999; font-weight: bold; letter-spacing: 1.5px; }
+
+        .status-info { text-align: center; padding: 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; margin-top: 10px; }
+        .status-ready { background: #fff7ed; color: #c2410c; border: 1px dashed var(--orange); }
+        .status-otw { background: #f0fdf4; color: #15803d; border: 1px solid var(--green); }
     </style>
 </head>
 <body>
-    <div class="navbar"><h3>ADMIN MACCA</h3><button onclick="location.reload()" style="background:none;border:none;color:white;"><i class="fas fa-sync-alt"></i></button></div>
-    <div class="tab-bar">
-        <button class="tab-btn active" onclick="openTab(event, 'tab-input')"><i class="fas fa-motorcycle"></i>PESANAN</button>
-        <button class="tab-btn" onclick="openTab(event, 'tab-history')"><i class="fas fa-check-circle"></i>HISTORY</button>
-        <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-users"></i>REKAP</button>
+
+    <div class="navbar">
+        <h3 style="margin:0; font-size:1.2rem; letter-spacing:1px;">ADMIN MACCA</h3>
+        <button onclick="location.reload()" style="background:none;border:none;color:white;font-size:1.2rem;"><i class="fas fa-redo-alt"></i></button>
     </div>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="openTab(event, 'tab-inbox')">
+            <span class="badge" id="badge-inbox">0</span>
+            <i class="fas fa-bell"></i>INBOX
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-active')">
+            <i class="fas fa-receipt"></i>PESANAN
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-history')">
+            <i class="fas fa-check-double"></i>HISTORY
+        </button>
+    </div>
+
     <div class="container">
-        <div id="tab-input" class="tab-content active">
+        <div id="tab-inbox" class="tab-content active">
+            <div id="inbox-list"></div>
+        </div>
+
+        <div id="tab-active" class="tab-content">
             <div class="form-card">
+                <h4><i class="fas fa-plus-circle"></i> Input Offline</h4>
                 <input type="text" id="name" placeholder="Nama Pelanggan">
-                <input type="tel" id="wa" placeholder="WhatsApp (62812...)">
-                <button class="btn-send" onclick="buatPesanan()">TAMBAH PESANAN</button>
+                <input type="tel" id="wa" placeholder="WhatsApp (08...)">
+                <button class="btn-send" onclick="buatPesananOffline()">TAMBAH KE ANTREAN</button>
             </div>
+
+            <div class="divider"><span>ANTREAN AKTIF</span></div>
+            
             <div id="active-orders-list"></div>
         </div>
-        <div id="tab-history" class="tab-content"><div id="history-list"></div></div>
-        <div id="tab-rekap" class="tab-content"><div style="background:white;padding:20px;border-radius:20px;"><h4>Laporan Bulan Ini</h4><table><tbody id="rekap-driver-list"></tbody></table></div></div>
+
+        <div id="tab-history" class="tab-content">
+            <div id="history-list"></div>
+        </div>
     </div>
+
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", 
+            databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app" 
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Toast Notification Config
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        });
-
-        function formatWaktu(ts) {
-            const d = new Date(ts);
-            return `${d.getDate()} ${["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][d.getMonth()]} ${d.getFullYear()} - ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-        }
-
         function openTab(evt, tabId) {
-            let i, content, btns;
-            content = document.getElementsByClassName("tab-content"); for (i = 0; i < content.length; i++) content[i].classList.remove("active");
-            btns = document.getElementsByClassName("tab-btn"); for (i = 0; i < btns.length; i++) btns[i].classList.remove("active");
-            document.getElementById(tabId).classList.add("active"); evt.currentTarget.classList.add("active");
+            document.querySelectorAll(".tab-content, .tab-btn").forEach(x => x.classList.remove("active"));
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
         }
 
-        function buatPesanan() {
-            const n = document.getElementById('name').value; const w = document.getElementById('wa').value;
+        function buatPesananOffline() {
+            const n = document.getElementById('name').value; 
+            const w = document.getElementById('wa').value;
             if(!n || !w) return Swal.fire('Oops!', 'Nama dan WA harus diisi!', 'warning');
             
-            db.ref('orders').push({ customer: n, whatsapp: w.replace(/\D/g, ''), status: 'new', timestamp: Date.now() })
-            .then(() => { 
+            db.ref('orders').push({ 
+                customer: n, 
+                whatsapp: w.replace(/\D/g, ''), 
+                status: 'approved', // Masuk ke antrean proses dapur
+                type: 'offline',
+                timestamp: Date.now() 
+            }).then(() => { 
                 document.getElementById('name').value = ''; 
                 document.getElementById('wa').value = ''; 
-                Toast.fire({ icon: 'success', title: 'Pesanan ditambahkan' });
+                Swal.fire('Berhasil', 'Pesanan offline ditambahkan', 'success');
             });
         }
 
-        function setReady(k) { 
-            db.ref('orders/' + k).update({ status: 'ready' })
-            .then(() => Toast.fire({ icon: 'info', title: 'Status: Menunggu Driver' })); 
-        }
-
+        function approveOrder(k) { db.ref('orders/' + k).update({ status: 'approved' }); }
+        function setReady(k) { db.ref('orders/' + k).update({ status: 'ready' }); }
         function hapusData(k) { 
-            Swal.fire({ 
-                title: 'Hapus Pesanan?', 
-                text: "Data yang dihapus tidak bisa dikembalikan!",
-                icon: 'warning', 
-                showCancelButton: true,
-                confirmButtonColor: '#ef233c',
-                cancelButtonColor: '#2b2d42',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((res) => { 
-                if(res.isConfirmed) {
-                    db.ref('orders/'+k).remove()
-                    .then(() => Toast.fire({ icon: 'success', title: 'Data berhasil dihapus' }));
-                } 
-            }); 
+            Swal.fire({ title: 'Hapus Pesanan?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef233c' }).then(r => {
+                if(r.isConfirmed) db.ref('orders/'+k).remove(); 
+            });
         }
 
         db.ref('orders').on('value', snap => {
-            const al = document.getElementById('active-orders-list'); const hl = document.getElementById('history-list');
-            const rl = document.getElementById('rekap-driver-list'); al.innerHTML = hl.innerHTML = rl.innerHTML = '';
-            let rd = {}; const mNow = new Date().getMonth();
+            const inboxL = document.getElementById('inbox-list');
+            const activeL = document.getElementById('active-orders-list');
+            const historyL = document.getElementById('history-list');
+            const badgeI = document.getElementById('badge-inbox');
+
+            inboxL.innerHTML = activeL.innerHTML = historyL.innerHTML = '';
+            let countNew = 0;
+
             snap.forEach(child => {
-                const o = child.val(); const k = child.key; const dO = new Date(o.timestamp);
-                const detail = `<strong>${o.customer}</strong><br><span class="time-info">${formatWaktu(o.timestamp)}</span>`;
-                const card = document.createElement('div'); card.className = `order-card ${o.status}`;
-                if (o.status !== 'delivered') {
-                    if (o.status === 'new') {
-                        card.innerHTML = detail + `<button class="btn-orange" onclick="setReady('${k}')">SIAP ANTAR</button>`;
-                    }
-                    else if (o.status === 'ready') {
-                        card.innerHTML = detail + `<div class="status-container"><div class="btn-waiting"><i class="fas fa-bell bell-anim"></i> MENUNGGU DRIVER</div></div>`;
-                    }
-                    else if (o.status === 'onprogress') {
-                        card.innerHTML = detail + `<div class="status-container"><div class="driver-info-otw"><i class="fas fa-motorcycle motor-anim"></i> OTW: ${o.driver}</div></div>`;
-                    }
-                    al.prepend(card);
-                } else {
-                    card.innerHTML = detail + `<div class="status-container"><div class="driver-info-otw" style="background:#f1f8e9; border:none;">SUKSES diantar oleh : ${o.driver}</div></div><button onclick="hapusData('${k}')" style="background:none;border:none;color:red;font-size:0.7rem;width:100%;margin-top:5px;cursor:pointer;">HAPUS</button>`;
-                    hl.prepend(card);
-                    if(o.driver && dO.getMonth() === mNow) rd[o.driver] = (rd[o.driver] || 0) + 1;
+                const o = child.val();
+                const k = child.key;
+                const card = document.createElement('div');
+                card.className = `order-card ${o.status} ${o.type || ''}`;
+                
+                const d = new Date(o.timestamp);
+                const timeStr = d.getHours().toString().padStart(2, '0') + ":" + d.getMinutes().toString().padStart(2, '0');
+                
+                // HTML UNTUK DETAIL PESANAN & ALAMAT (LENGKAP)
+                let orderDetailsHtml = `
+                    ${o.type === 'offline' ? '<span class="tag-offline">OFFLINE</span>' : '<span class="tag-online">ONLINE DELIVERY</span>'}
+                    <span class="cust-name">${o.customer}</span>
+                    <span class="time-info"><i class="far fa-clock"></i> Jam: ${timeStr} | WA: ${o.whatsapp}</span>
+                    
+                    <div class="detail-box">
+                        <strong>RINCIAN PESANAN:</strong>
+                        <div class="items-list">${o.items || 'Input Manual (Offline)'}</div>
+                    </div>
+
+                    ${o.alamat ? `
+                    <div class="address-box">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <strong>Alamat:</strong><br>${o.alamat}
+                    </div>` : ''}
+
+                    ${o.gps ? `
+                    <a href="${o.gps}" target="_blank" class="btn-gps">
+                        <i class="fas fa-directions"></i> BUKA LOKASI GOOGLE MAPS
+                    </a>` : ''}
+
+                    <div style="font-size:0.9rem; margin-top:10px;">Total Tagihan: <b style="color:var(--primary)">${o.total || '-'}</b> (${o.pembayaran || 'COD'})</div>
+                `;
+
+                if(o.status === 'new') {
+                    countNew++;
+                    card.innerHTML = orderDetailsHtml + `<button class="btn-action btn-approve" onclick="approveOrder('${k}')"><i class="fas fa-check"></i> TERIMA & PROSES</button>`;
+                    inboxL.prepend(card);
+                } 
+                else if(o.status === 'approved' || o.status === 'ready' || o.status === 'onprogress') {
+                    let footer = "";
+                    if(o.status === 'approved') footer = `<button class="btn-action btn-ready" onclick="setReady('${k}')"><i class="fas fa-utensils"></i> MAKANAN SIAP / PANGGIL DRIVER</button>`;
+                    else if(o.status === 'ready') footer = `<div class="status-info status-ready"><i class="fas fa-hourglass-half"></i> Menunggu Driver Mengambil...</div>`;
+                    else if(o.status === 'onprogress') footer = `<div class="status-info status-otw"><i class="fas fa-motorcycle"></i> Sedang Diantar oleh: ${o.driver}</div>`;
+                    
+                    card.innerHTML = orderDetailsHtml + footer;
+                    activeL.prepend(card);
+                }
+                else if(o.status === 'delivered') {
+                    card.innerHTML = orderDetailsHtml + `<div style="color:green; font-weight:bold; font-size:0.85rem; margin-top:15px; border-top:1px solid #eee; padding-top:10px;">✅ SELESAI (Driver: ${o.driver})</div><button onclick="hapusData('${k}')" style="background:none;border:none;color:#999;font-size:0.7rem;cursor:pointer;width:100%;margin-top:8px;">Hapus dari riwayat</button>`;
+                    historyL.prepend(card);
                 }
             });
-            for (let n in rd) rl.innerHTML += `<tr><td><b>${n}</b></td><td style="text-align:right"><b>${rd[n]} Selesai</b></td></tr>`;
+
+            badgeI.innerText = countNew;
+            badgeI.style.display = countNew > 0 ? 'block' : 'none';
         });
     </script>
 </body>
