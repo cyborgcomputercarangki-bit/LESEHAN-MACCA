@@ -29,29 +29,29 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
-        .coffee-icon { font-size: 4rem; color: #6f4e37; margin-bottom: 20px; position: relative; animation: coffee-float 3s ease-in-out infinite; }
-        .steam { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 1.5rem; opacity: 0; animation: steam-rise 2s infinite; }
-        @keyframes coffee-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes steam-rise { 0% { transform: translate(-50%, 0); opacity: 0; } 50% { opacity: 0.5; } 100% { transform: translate(-50%, -20px); opacity: 0; } }
-        
+        /* Order Card Styling */
         .order-card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border-left: 6px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .order-card.new { border-left-color: var(--orange); background: var(--yellow); }
         .order-card.ready { border-left-color: var(--orange); }
         .order-card.onprogress { border-left-color: var(--blue); }
         .order-card.delivered { border-left-color: var(--green); }
 
-        .customer-name { font-size: 1.1rem; font-weight: 700; display: block; color: var(--secondary); }
-        .wa-btn-container { margin: 10px 0; }
-        .wa-link { display: inline-flex; align-items: center; background: #25d366; color: white; padding: 8px 15px; border-radius: 10px; font-size: 0.85rem; font-weight: bold; gap: 8px; border: none; cursor: pointer; }
+        .customer-name { font-size: 1.1rem; font-weight: 700; display: block; color: var(--secondary); margin-bottom: 5px; }
+        
+        /* Detail Box for Menu & Address */
+        .detail-box { background: #f9f9f9; border: 1px solid #eee; border-radius: 12px; padding: 12px; margin: 10px 0; font-size: 0.85rem; line-height: 1.5; }
+        .detail-box hr { border: 0; border-top: 1px solid #eee; margin: 8px 0; }
+        
+        .time-info { font-size: 0.7rem; color: #777; display: block; margin-bottom: 5px; font-weight: 600; }
+        
+        .wa-link { display: inline-flex; align-items: center; background: #25d366; color: white; padding: 8px 15px; border-radius: 10px; font-size: 0.85rem; font-weight: bold; gap: 8px; border: none; cursor: pointer; width: 100%; justify-content: center; text-decoration: none; margin-bottom: 10px; }
 
-        .btn-action { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: 700; margin-top: 10px; cursor: pointer; font-size: 1rem; color: white; font-family: inherit; }
+        .btn-action { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: 700; margin-top: 5px; cursor: pointer; font-size: 1rem; color: white; font-family: inherit; }
         .btn-locked { background: #fff; color: #d84315; border: 2px dashed #ffab91; cursor: not-allowed; font-size: 0.85rem; }
         .btn-orange { background: var(--orange); }
         .btn-green { background: var(--green); }
         
-        .time-info { font-size: 0.65rem; color: #999; display: block; margin: 4px 0; font-weight: bold; }
-        .driver-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; margin-top: 8px; }
+        .driver-badge { display: inline-block; padding: 6px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; width: 100%; text-align: center; box-sizing: border-box; margin-top: 5px; }
         .badge-otw { background: #e3f2fd; color: #1976d2; border: 1px solid #1976d2; }
         .badge-sukses { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
 
@@ -61,6 +61,10 @@
         
         table { width: 100%; border-collapse: collapse; }
         td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
+
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
+        .coffee-icon { font-size: 4rem; color: #6f4e37; margin-bottom: 20px; position: relative; animation: coffee-float 3s ease-in-out infinite; }
+        @keyframes coffee-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
 <body>
@@ -110,6 +114,7 @@
         const firebaseConfig = { apiKey: "AIzaSyBjEI1iiOjfrpyaZzEntRCGuiiorgxol0", databaseURL: "https://lesehan-macca-new-default-rtdb.asia-southeast1.firebasedatabase.app" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        
         const daftarDriver = { "1": "HASBI", "2": "RIZKY", "3": "ASWAR" };
         let myName = localStorage.getItem('driverName') || '';
 
@@ -125,9 +130,11 @@
         }
         function logout() { localStorage.removeItem('driverName'); location.reload(); }
         
-        function formatWaktu(ts) {
+        // Fungsi Format Waktu Lengkap (Tanggal, Jam, Menit, Detik, Bulan, Tahun)
+        function formatWaktuLengkap(ts) {
             const d = new Date(ts);
-            return `${d.getDate()} ${["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][d.getMonth()]} - ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+            const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()} | ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')} WITA`;
         }
 
         function openTab(evt, t) {
@@ -141,10 +148,6 @@
             document.getElementById('driver-login').style.display='none'; 
             document.getElementById('display-name').innerText="Driver: " + myName; 
             startSync(); 
-        }
-
-        function bukaWA(nomor) {
-            window.open(`https://wa.me/${nomor}`, '_blank');
         }
 
         function updateStatus(k, s) {
@@ -169,37 +172,47 @@
                     const o = child.val(); 
                     const k = child.key; 
                     const dO = new Date(o.timestamp);
-                    const tInfo = `<span class="time-info">${formatWaktu(o.timestamp)}</span>`;
-                    const waBtn = `<div class="wa-btn-container"><button class="wa-link" onclick="bukaWA('${o.whatsapp}')"><i class="fab fa-whatsapp"></i> Chat Pelanggan</button></div>`;
+                    
+                    const timeHTML = `<span class="time-info"><i class="far fa-calendar-alt"></i> ${formatWaktuLengkap(o.timestamp)}</span>`;
+                    const waBtn = `<button class="wa-link" onclick="window.open('https://wa.me/${o.whatsapp}', '_blank')"><i class="fab fa-whatsapp"></i> Chat Pelanggan</button>`;
+                    
+                    const detailHTML = `
+                        <div class="detail-box">
+                            <strong>PESANAN:</strong><br>${o.items.replace(/\n/g,'<br>')}
+                            <hr>
+                            <strong>ALAMAT:</strong><br>${o.alamat}<br>
+                            <strong>TOTAL:</strong> ${o.total} (${o.pembayaran})
+                        </div>`;
 
-                    // LOGIKA TAB ANTRIAN (Hanya pesanan baru/siap/yang sedang kita bawa)
-                    if(o.status === 'new' || o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
+                    // LOGIKA TAB ANTRIAN
+                    if(o.status === 'new' || o.status === 'approved' || o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
                         activeCount++;
                         const card = document.createElement('div'); 
                         card.className = `order-card ${o.status}`;
                         
                         let actionHTML = '';
-                        if(o.status === 'new') {
+                        if(o.status === 'new' || o.status === 'approved') {
                             actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-hourglass-half"></i> MASIH DI DAPUR</button>`;
                         } else if(o.status === 'ready') {
                             actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL SEKARANG</button>`;
-                        } else {
+                        } else if(o.status === 'onprogress') {
                             actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">SELESAI ANTAR</button>`;
                         }
-                        card.innerHTML = `<span class="customer-name">${o.customer}</span>${tInfo}${waBtn}${actionHTML}`;
+
+                        card.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}${o.status !== 'new' ? waBtn : ''}${actionHTML}`;
                         tl.prepend(card);
                     }
                     
-                    // LOGIKA TAB STATUS GLOBAL (Riwayat OTW dan Sukses semua driver)
+                    // LOGIKA TAB STATUS GLOBAL
                     if(o.status === 'onprogress') {
                         const cardStatus = document.createElement('div');
                         cardStatus.className = 'order-card onprogress';
-                        cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${tInfo}<div class="driver-badge badge-otw"><i class="fas fa-shipping-fast"></i> Sedang diantar oleh: ${o.driver}</div>`;
+                        cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}<div class="driver-badge badge-otw"><i class="fas fa-shipping-fast"></i> Sedang diantar oleh: ${o.driver}</div>`;
                         sgl.prepend(cardStatus);
                     } else if(o.status === 'delivered') {
                         const cardStatus = document.createElement('div');
                         cardStatus.className = 'order-card delivered';
-                        cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${tInfo}<div class="driver-badge badge-sukses"><i class="fas fa-check-circle"></i> SUKSES diantar oleh : ${o.driver}</div>`;
+                        cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}<div class="driver-badge badge-sukses"><i class="fas fa-check-circle"></i> SUKSES diantar oleh : ${o.driver}</div>`;
                         sgl.prepend(cardStatus);
                         
                         // Hitung Rekap Bulan Ini
@@ -210,7 +223,7 @@
                 });
 
                 if (activeCount === 0) {
-                    tl.innerHTML = `<div class="empty-state"><div class="coffee-icon"><i class="fas fa-coffee"></i><i class="fas fa-cloud steam" style="left: 40%; animation-delay: 0.5s;"></i><i class="fas fa-cloud steam" style="left: 60%;"></i></div><div class="tagline">Santai dulu bro,<br>belum ada pesanan...</div></div>`;
+                    tl.innerHTML = `<div class="empty-state"><div class="coffee-icon"><i class="fas fa-coffee"></i></div><div class="tagline">Santai dulu bro,<br>belum ada pesanan...</div></div>`;
                 }
 
                 if (lastCount !== -1 && activeCount > lastCount) {
