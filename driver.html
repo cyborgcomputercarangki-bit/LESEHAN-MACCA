@@ -142,17 +142,13 @@
             db.ref('orders/'+k).update(d);
         }
 
-        // FUNGSI PERBAIKAN: Memastikan format internasional (62)
+        // PERBAIKAN: Fungsi pembersih nomor WA agar link wa.me tidak gagal
         function cleanPhoneNumber(phone) {
             if (!phone) return "";
-            let cleaned = phone.toString().replace(/\D/g, ''); // Hapus semua karakter non-angka
-            
-            // Jika diawali '0', ubah jadi '62'
+            let cleaned = phone.toString().replace(/\D/g, ''); 
             if (cleaned.startsWith('0')) {
                 cleaned = '62' + cleaned.substring(1);
-            }
-            // Jika diawali '8', tambahkan '62'
-            else if (cleaned.startsWith('8')) {
+            } else if (cleaned.startsWith('8')) {
                 cleaned = '62' + cleaned;
             }
             return cleaned;
@@ -174,7 +170,7 @@
                     const dO = new Date(o.timestamp);
                     
                     const cleanedPhone = cleanPhoneNumber(o.whatsapp);
-                    // Gunakan format wa.me yang lebih universal untuk aplikasi mobile
+                    // PERBAIKAN: Gunakan format wa.me yang lebih universal
                     const waUrl = `https://wa.me/${cleanedPhone}`;
 
                     const timeHTML = `<span class="time-info"><i class="far fa-clock"></i> ${formatWaktuLengkap(o.timestamp)}</span>`;
@@ -202,7 +198,6 @@
                             actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">KONFIRMASI SELESAI</button>`;
                         }
 
-                        // Tampilkan tombol WA jika status bukan 'new'
                         const waSection = (o.status !== 'new') ? (waDisplayHTML + waBtn) : '';
                         card.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}${waSection}${actionHTML}`;
                         tl.prepend(card);
