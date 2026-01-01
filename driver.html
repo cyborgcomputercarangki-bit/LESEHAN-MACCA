@@ -142,7 +142,6 @@
             db.ref('orders/'+k).update(d);
         }
 
-        // PERBAIKAN: Fungsi pembersih nomor WA agar link wa.me tidak gagal
         function cleanPhoneNumber(phone) {
             if (!phone) return "";
             let cleaned = phone.toString().replace(/\D/g, ''); 
@@ -168,51 +167,55 @@
                     const o = child.val(); 
                     const k = child.key; 
                     const dO = new Date(o.timestamp);
-                    
-                    const cleanedPhone = cleanPhoneNumber(o.whatsapp);
-                    // PERBAIKAN: Gunakan format wa.me yang lebih universal
-                    const waUrl = `https://wa.me/${cleanedPhone}`;
 
-                    const timeHTML = `<span class="time-info"><i class="far fa-clock"></i> ${formatWaktuLengkap(o.timestamp)}</span>`;
-                    const waDisplayHTML = `<a href="${waUrl}" target="_blank" class="wa-number-display"><i class="fab fa-whatsapp"></i> WA: ${o.whatsapp}</a>`;
-                    const waBtn = `<a href="${waUrl}" target="_blank" class="wa-link"><i class="fas fa-comment-dots"></i> CHAT PELANGGAN</a>`;
-                    
-                    const detailHTML = `
-                        <div class="detail-box">
-                            <strong>PESANAN:</strong><br>${o.items ? o.items.replace(/\n/g,'<br>') : '-'}
-                            <hr>
-                            <strong>ALAMAT:</strong><br>${o.alamat || '-'}<br>
-                            <strong>TOTAL:</strong> ${o.total || '0'} (${o.pembayaran || '-'})
-                        </div>`;
-
-                    if(o.status === 'new' || o.status === 'approved' || o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
-                        const card = document.createElement('div'); 
-                        card.className = `order-card ${o.status}`;
+                    // --- PENAMBAHAN FILTER: HANYA TAMPILKAN JIKA TIPE PESANAN ADALAH "ANTAR" ---
+                    if(o.orderType === 'ANTAR') {
                         
-                        let actionHTML = '';
-                        if(o.status === 'new' || o.status === 'approved') {
-                            actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-hourglass-half"></i> PROSES DAPUR</button>`;
-                        } else if(o.status === 'ready') {
-                            actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL PESANAN</button>`;
-                        } else if(o.status === 'onprogress') {
-                            actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">KONFIRMASI SELESAI</button>`;
+                        const cleanedPhone = cleanPhoneNumber(o.whatsapp);
+                        const waUrl = `https://wa.me/${cleanedPhone}`;
+
+                        const timeHTML = `<span class="time-info"><i class="far fa-clock"></i> ${formatWaktuLengkap(o.timestamp)}</span>`;
+                        const waDisplayHTML = `<a href="${waUrl}" target="_blank" class="wa-number-display"><i class="fab fa-whatsapp"></i> WA: ${o.whatsapp}</a>`;
+                        const waBtn = `<a href="${waUrl}" target="_blank" class="wa-link"><i class="fas fa-comment-dots"></i> CHAT PELANGGAN</a>`;
+                        
+                        const detailHTML = `
+                            <div class="detail-box">
+                                <strong style="color:var(--primary)">PESANAN ANTAR (KURIR)</strong><hr>
+                                <strong>ITEM:</strong><br>${o.items ? o.items.replace(/\n/g,'<br>') : '-'}
+                                <hr>
+                                <strong>ALAMAT:</strong><br>${o.alamat || '-'}<br>
+                                <strong>TOTAL:</strong> ${o.total || '0'} (${o.pembayaran || '-'})
+                            </div>`;
+
+                        if(o.status === 'new' || o.status === 'approved' || o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
+                            const card = document.createElement('div'); 
+                            card.className = `order-card ${o.status}`;
+                            
+                            let actionHTML = '';
+                            if(o.status === 'new' || o.status === 'approved') {
+                                actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-hourglass-half"></i> PROSES DAPUR</button>`;
+                            } else if(o.status === 'ready') {
+                                actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL PESANAN</button>`;
+                            } else if(o.status === 'onprogress') {
+                                actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">KONFIRMASI SELESAI</button>`;
+                            }
+
+                            const waSection = (o.status !== 'new') ? (waDisplayHTML + waBtn) : '';
+                            card.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}${waSection}${actionHTML}`;
+                            tl.prepend(card);
                         }
-
-                        const waSection = (o.status !== 'new') ? (waDisplayHTML + waBtn) : '';
-                        card.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}${waSection}${actionHTML}`;
-                        tl.prepend(card);
-                    }
-                    
-                    if(o.status === 'onprogress' || o.status === 'delivered') {
-                        const cardStatus = document.createElement('div');
-                        cardStatus.className = `order-card ${o.status}`;
-                        const badge = o.status === 'onprogress' ? 
-                            `<div class="driver-badge" style="background:#e3f2fd; color:#1976d2; padding:8px; border-radius:8px; text-align:center; font-size:0.8rem; margin-top:10px;"><b>OTW:</b> ${o.driver}</div>` : 
-                            `<div class="driver-badge" style="background:#e8f5e9; color:#2e7d32; padding:8px; border-radius:8px; text-align:center; font-size:0.8rem; margin-top:10px;"><b>SUKSES:</b> ${o.driver}</div>`;
                         
-                        cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}${badge}`;
-                        sgl.prepend(cardStatus);
-                        if(o.status === 'delivered' && o.driver && dO.getMonth() === mNow) rd[o.driver] = (rd[o.driver] || 0) + 1;
+                        if(o.status === 'onprogress' || o.status === 'delivered') {
+                            const cardStatus = document.createElement('div');
+                            cardStatus.className = `order-card ${o.status}`;
+                            const badge = o.status === 'onprogress' ? 
+                                `<div class="driver-badge" style="background:#e3f2fd; color:#1976d2; padding:8px; border-radius:8px; text-align:center; font-size:0.8rem; margin-top:10px;"><b>OTW:</b> ${o.driver}</div>` : 
+                                `<div class="driver-badge" style="background:#e8f5e9; color:#2e7d32; padding:8px; border-radius:8px; text-align:center; font-size:0.8rem; margin-top:10px;"><b>SUKSES:</b> ${o.driver}</div>`;
+                            
+                            cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}${badge}`;
+                            sgl.prepend(cardStatus);
+                            if(o.status === 'delivered' && o.driver && dO.getMonth() === mNow) rd[o.driver] = (rd[o.driver] || 0) + 1;
+                        }
                     }
                 });
 
