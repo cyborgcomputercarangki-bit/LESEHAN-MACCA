@@ -276,7 +276,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Konfigurasi Notifikasi Toast
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -359,7 +358,6 @@
             if(!cart[n]) cart[n] = {qty: 0, p: p};
             cart[n].qty += d;
             
-            // Notifikasi Toast Modern
             if(d > 0) Toast.fire({ icon: 'success', title: n + ' ditambah' });
             else Toast.fire({ icon: 'info', title: n + ' dikurangi' });
 
@@ -471,8 +469,29 @@
                 const o = child.val(), k = child.key;
                 const card = document.createElement('div'); card.className = `order-card ${o.status}`;
                 
+                // Format Waktu dan Tanggal yang ditambahkan
+                const orderDate = new Date(o.timestamp);
+                const timeStr = orderDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                const dateStr = orderDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                const fullDateTime = `${dateStr}, ${timeStr}`;
+
                 let proofHTML = o.proof ? `<div class="proof-container"><span class="proof-label">BUKTI TRANSFER:</span><img src="${o.proof}" class="proof-img" onclick="Swal.fire({imageUrl: '${o.proof}', showConfirmButton: false})"></div>` : "";
-                let detail = `<div style="position:absolute; top:20px; right:20px; font-size:0.7rem; color:#a0aec0;">${new Date(o.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div><span style="font-weight:800; font-size:1.05rem;">${o.customer}</span> <span style="font-size:0.65rem; background:#eee; padding:2px 6px; border-radius:5px;">${o.orderType || 'ANTAR'}</span><br><a href="https://wa.me/${o.whatsapp}" class="wa-link"><i class="fab fa-whatsapp"></i> ${o.whatsapp}</a><div class="detail-box"><strong>MENU:</strong><br>${o.items.replace(/\n/g,'<br>')} <div class="detail-item"><span>Alamat:</span><b>${o.alamat}</b></div><div class="detail-item"><span>Metode:</span><b>${o.pembayaran}</b></div><div class="detail-item" style="border-top:1px dashed #ddd; margin-top:10px; padding-top:10px; font-size:1.1rem; color:var(--green)"><strong>TOTAL:</strong><strong>${o.total}</strong></div></div>${proofHTML}`;
+                
+                let detail = `
+                    <div style="position:absolute; top:20px; right:20px; font-size:0.65rem; color:#a0aec0; text-align:right;">
+                        <i class="fas fa-calendar-alt"></i> ${fullDateTime}
+                    </div>
+                    <span style="font-weight:800; font-size:1.05rem;">${o.customer}</span> 
+                    <span style="font-size:0.65rem; background:#eee; padding:2px 6px; border-radius:5px;">${o.orderType || 'ANTAR'}</span><br>
+                    <a href="https://wa.me/${o.whatsapp}" class="wa-link"><i class="fab fa-whatsapp"></i> ${o.whatsapp}</a>
+                    <div class="detail-box">
+                        <strong>MENU:</strong><br>${o.items.replace(/\n/g,'<br>')} 
+                        <div class="detail-item"><span>Alamat:</span><b>${o.alamat}</b></div>
+                        <div class="detail-item"><span>Metode:</span><b>${o.pembayaran}</b></div>
+                        <div class="detail-item" style="border-top:1px dashed #ddd; margin-top:10px; padding-top:10px; font-size:1.1rem; color:var(--green)">
+                            <strong>TOTAL:</strong><strong>${o.total}</strong>
+                        </div>
+                    </div>${proofHTML}`;
 
                 if(o.status === 'delivered') {
                     totalSukes++;
