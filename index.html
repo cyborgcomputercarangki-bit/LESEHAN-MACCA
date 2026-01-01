@@ -43,7 +43,6 @@
             background: #f8fafc; cursor: pointer; font-weight: 700; font-size: 0.8rem; 
             transition: 0.3s; color: #4a5568; font-family: inherit;
         }
-        /* Style Tombol Saat Terpilih */
         .select-btn.selected { background: var(--blue); color: white; border-color: var(--blue); box-shadow: 0 4px 10px rgba(58, 134, 255, 0.3); }
 
         .btn-menu-trigger { 
@@ -59,38 +58,69 @@
             font-size: 1.05rem; box-shadow: 0 6px 15px rgba(43, 45, 66, 0.2); box-sizing: border-box;
         }
 
-        .rekap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .rekap-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .rekap-card i { font-size: 1.5rem; margin-bottom: 8px; display: block; }
-        .rekap-val { font-size: 1.2rem; font-weight: 800; display: block; }
-        .rekap-label { font-size: 0.7rem; color: #718096; font-weight: 600; }
-
         .order-card { background: white; padding: 20px; border-radius: 24px; margin-bottom: 18px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); border-left: 8px solid #cbd5e0; box-sizing: border-box; position: relative; }
-        .order-card.approved { border-left-color: var(--blue); }
-        .order-card.ready { border-left-color: var(--orange); }
-        .order-card.onprogress { border-left-color: var(--primary); }
+        .order-card.new { border-left-color: var(--primary); background: #fffcfc; }
         .order-card.delivered { border-left-color: var(--green); }
 
-        .order-time { position: absolute; top: 20px; right: 20px; font-size: 0.7rem; color: #a0aec0; font-weight: 600; }
         .detail-box { background: #f7fafc; border-radius: 16px; padding: 15px; margin: 12px 0; font-size: 0.88rem; border: 1px solid #edf2f7; }
         .detail-item { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e0; }
 
-        .tf-proof-container { margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid #ddd; }
-        .tf-proof-img { width: 100%; height: auto; display: block; cursor: pointer; transition: 0.3s; }
+        .proof-container { margin-top: 10px; border-radius: 12px; overflow: hidden; border: 2px solid #e2e8f0; background: #fff; }
+        .proof-label { font-size: 0.7rem; font-weight: 800; color: var(--blue); padding: 5px 10px; display: block; background: #ebf8ff; border-bottom: 1px solid #bee3f8; }
+        .proof-img { width: 100%; height: auto; max-height: 250px; object-fit: contain; cursor: pointer; display: block; }
+
+        .rekap-container { display: flex; flex-direction: column; gap: 15px; }
+        .rekap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .rekap-card { 
+            background: white; padding: 15px; border-radius: 20px; 
+            text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            border: 1px solid #f0f0f0; position: relative;
+        }
+        .rekap-card i { font-size: 1.2rem; margin-bottom: 8px; }
+        .rekap-val { display: block; font-size: 1.1rem; font-weight: 800; color: var(--secondary); margin: 2px 0; }
+        .rekap-label { font-size: 0.6rem; font-weight: 600; color: #a0aec0; text-transform: uppercase; }
         
-        /* Modal General */
+        .driver-stat-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; background: #ffffff; border-radius: 16px; margin-bottom: 10px;
+            border: 1px solid #edf2f7; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .driver-info { display: flex; align-items: center; gap: 12px; }
+        .driver-img-circle { 
+            width: 40px; height: 40px; background: var(--secondary); color: white; 
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem;
+        }
+        .trip-badge {
+            background: #edf2ff; color: var(--blue); padding: 2px 10px; border-radius: 8px; 
+            font-size: 0.7rem; font-weight: 800; margin-top: 3px; display: inline-block;
+            border: 1px solid #d0e0ff;
+        }
+        .kasir-badge {
+            background: #f7fafc; color: #4a5568; padding: 2px 10px; border-radius: 8px; 
+            font-size: 0.7rem; font-weight: 800; margin-top: 3px; display: inline-block;
+            border: 1px solid #e2e8f0;
+        }
+        .income-pill {
+            background: #e6fffa; color: var(--green); padding: 6px 12px; border-radius: 12px; 
+            font-size: 0.8rem; font-weight: 800; border: 1px solid #b2f5ea;
+        }
+
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
         .modal-content { background: white; width: 92%; max-width: 450px; margin: 20px auto; border-radius: 28px; max-height: 85vh; overflow-y: auto; position: relative; }
-        
-        .cat-box { margin: 10px 15px; padding: 10px 15px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .cat-red { background: #fff5f5; color: #c53030; border-left: 5px solid #c53030; }
-        .cat-blue { background: #ebf8ff; color: #2b6cb0; border-left: 5px solid #2b6cb0; }
-        .cat-green { background: #f0fff4; color: #2f855a; border-left: 5px solid #2f855a; }
-        .cat-orange { background: #fffaf0; color: #c05621; border-left: 5px solid #c05621; }
+        .wa-link { color: #25d366; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+        .q-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #ddd; background: white; font-weight: bold; cursor: pointer; }
 
-        .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #f0f4f8; }
-        .q-btn { width: 34px; height: 34px; border-radius: 10px; border: none; background: #edf2f7; font-weight: bold; cursor: pointer; }
-        .wa-link { color: #25d366; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; padding: 5px 0; }
+        /* Kategori Design */
+        .cat-header { padding: 12px 15px; font-weight: 800; font-size: 0.75rem; color: white; text-transform: uppercase; margin-top: 10px; }
+        .cat-paket { background: linear-gradient(90deg, #ff9f1c, #ffbf69); }
+        .cat-mie { background: linear-gradient(90deg, #ef233c, #ff4d6d); }
+        .cat-nasi { background: linear-gradient(90deg, #3a86ff, #8ecae6); }
+        .cat-sayur { background: linear-gradient(90deg, #2ec4b6, #c7f9cc); }
+        .cat-tahu { background: linear-gradient(90deg, #7209b7, #b185db); }
+        .cat-lauk { background: linear-gradient(90deg, #2b2d42, #8d99ae); }
+
+        .search-container { padding: 15px; position: sticky; top: 60px; background: white; z-index: 9; border-bottom: 1px solid #eee; }
+        .menu-item-row { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; background: white; }
     </style>
 </head>
 <body>
@@ -118,12 +148,13 @@
 
     <div class="container">
         <div id="tab-inbox" class="tab-content">
+            <h4 style="margin: 5px 0 15px; color: var(--primary); font-size: 0.9rem;"><i class="fas fa-bell"></i> Pesanan Masuk (Online)</h4>
             <div id="inbox-list"></div>
         </div>
 
         <div id="tab-active" class="tab-content active">
             <div class="form-card">
-                <h4 style="margin:0 0 15px;"><i class="fas fa-plus-circle"></i> Pesanan Manual</h4>
+                <h4 style="margin:0 0 15px; font-size: 0.9rem;"><i class="fas fa-plus-circle"></i> Pesanan Manual</h4>
                 <input type="text" id="c-name" placeholder="Nama Pelanggan">
                 <input type="tel" id="c-wa" placeholder="WhatsApp (08...)">
                 
@@ -140,7 +171,7 @@
 
                 <div id="cart-preview" style="display:none; font-size:0.85rem; background:#fffaf0; padding:15px; border-radius:15px; margin-bottom:12px; border:1px solid #feebc8;"></div>
                 
-                <div id="price-calculation" style="display:none; margin-bottom:15px; background: #f0f7ff; padding: 15px; border-radius: 18px; border: 1px solid #c3dafe; box-sizing: border-box;">
+                <div id="price-calculation" style="display:none; margin-bottom:15px; background: #f0f7ff; padding: 15px; border-radius: 18px; border: 1px solid #c3dafe;">
                     <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:10px;">
                         <span>SUBTOTAL:</span>
                         <span id="display-subtotal">Rp 0</span>
@@ -149,8 +180,8 @@
                         <span class="selector-label">Pilih Ongkir:</span>
                         <div class="grid-selector" id="ongkir-group">
                             <button class="select-btn" id="btn-ong-0" onclick="setOngkir(0)">FREE</button>
-                            <button class="select-btn" id="btn-ong-5" onclick="setOngkir(5000)">Rp 5.000</button>
-                            <button class="select-btn" id="btn-ong-10" onclick="setOngkir(10000)">Rp 10.000</button>
+                            <button class="select-btn" id="btn-ong-5" onclick="setOngkir(5000)">Rp 5k</button>
+                            <button class="select-btn" id="btn-ong-10" onclick="setOngkir(10000)">Rp 10k</button>
                         </div>
                     </div>
                     <div style="display:flex; justify-content:space-between; font-size:1.1rem; font-weight:800; color:var(--green); border-top:1px dashed #a3bffa; margin-top:5px; padding-top:10px;">
@@ -163,8 +194,8 @@
 
                 <span class="selector-label">Metode Pembayaran:</span>
                 <div class="grid-selector" id="payment-group">
-                    <button class="select-btn" id="pay-cod" onclick="setPayment('Bayar Langsung (COD)')">BAYAR LANGSUNG (COD)</button>
-                    <button class="select-btn" id="pay-tf" onclick="setPayment('Transfer / QRIS')">TRANSFER / QRIS</button>
+                    <button class="select-btn" id="pay-cod" onclick="setPayment('Bayar Langsung (COD)')">COD</button>
+                    <button class="select-btn" id="pay-tf" onclick="setPayment('Transfer / QRIS')">TRANSFER</button>
                 </div>
                 <button class="btn-send" onclick="simpanPesanan()">SIMPAN KE ANTREAN</button>
             </div>
@@ -174,44 +205,54 @@
         <div id="tab-history" class="tab-content"><div id="history-list"></div></div>
 
         <div id="tab-rekap" class="tab-content">
-            <h4 style="margin-bottom:15px;"><i class="fas fa-chart-line"></i> Ringkasan Pengiriman</h4>
-            <div class="rekap-grid">
-                <div class="rekap-card">
-                    <i class="fas fa-calendar-day" style="color:var(--blue)"></i>
-                    <span class="rekap-val" id="stat-day">0</span>
-                    <span class="rekap-label">Hari Ini</span>
+            <div class="rekap-container">
+                <h4 style="margin: 5px 0; color: var(--secondary); font-size: 0.9rem;"><i class="fas fa-chart-line"></i> Dashboard Performa</h4>
+                <div class="rekap-grid">
+                    <div class="rekap-card" style="border-bottom: 3px solid var(--blue);">
+                        <i class="fas fa-shopping-basket" style="color:var(--blue)"></i>
+                        <span class="rekap-val" id="stat-day">0</span>
+                        <span class="rekap-label">Order Hari Ini</span>
+                    </div>
+                    <div class="rekap-card" style="border-bottom: 3px solid var(--green);">
+                        <i class="fas fa-money-bill-wave" style="color:var(--green)"></i>
+                        <span class="rekap-val" id="income-day">Rp 0</span>
+                        <span class="rekap-label">Omzet Hari Ini</span>
+                    </div>
                 </div>
-                <div class="rekap-card">
-                    <i class="fas fa-calendar-alt" style="color:var(--orange)"></i>
-                    <span class="rekap-val" id="stat-month">0</span>
-                    <span class="rekap-label">Bulan Ini</span>
+                <div class="rekap-grid">
+                    <div class="rekap-card">
+                        <i class="fas fa-check-double" style="color:var(--orange)"></i>
+                        <span class="rekap-val" id="stat-total">0</span>
+                        <span class="rekap-label">Total Sukses</span>
+                    </div>
+                    <div class="rekap-card">
+                        <i class="fas fa-wallet" style="color:var(--primary)"></i>
+                        <span class="rekap-val" id="income-total">Rp 0</span>
+                        <span class="rekap-label">Total Omzet</span>
+                    </div>
                 </div>
-                <div class="rekap-card">
-                    <i class="fas fa-layer-group" style="color:var(--primary)"></i>
-                    <span class="rekap-val" id="stat-year">0</span>
-                    <span class="rekap-label">Tahun Ini</span>
+                <div class="form-card" style="margin-top:10px;">
+                    <h4 style="margin:0 0 15px; font-size: 0.85rem;"><i class="fas fa-users"></i> DATA PENJUALAN & DRIVER</h4>
+                    <div id="driver-list"></div>
                 </div>
-                <div class="rekap-card">
-                    <i class="fas fa-truck-loading" style="color:var(--green)"></i>
-                    <span class="rekap-val" id="stat-total">0</span>
-                    <span class="rekap-label">Total Sukses</span>
-                </div>
-            </div>
-            <div class="form-card" style="margin-top:20px;">
-                <h4 style="margin:0 0 10px;"><i class="fas fa-crown"></i> Performa Driver</h4>
-                <div id="driver-list"></div>
             </div>
         </div>
     </div>
 
     <div id="menuModal" class="modal">
         <div class="modal-content">
-            <div style="padding:20px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:white; z-index:10;">
-                <h3 style="margin:0;">Menu Macca</h3>
+            <div style="padding:20px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:white; z-index:11;">
+                <h3 style="margin:0; font-size: 1.1rem;">Menu Lengkap Macca</h3>
                 <button onclick="toggleModal('menuModal')" style="background:none; border:none; font-size:1.5rem;">&times;</button>
             </div>
+            
+            <div class="search-container">
+                <input type="text" id="menuSearch" placeholder="Cari nama menu..." onkeyup="filterMenu()" style="margin-bottom:0; padding:10px 15px; border-radius:10px;">
+            </div>
+
             <div id="menu-items-container" style="padding-bottom:20px;"></div>
-            <div style="padding:20px; position:sticky; bottom:0; background:white; border-top:1px solid #eee;">
+            
+            <div style="padding:20px; position:sticky; bottom:0; background:white; border-top:1px solid #eee; z-index:10;">
                 <button class="btn-send" onclick="toggleModal('menuModal')" style="background:var(--green)">Selesai Memilih</button>
             </div>
         </div>
@@ -219,16 +260,13 @@
 
     <div id="paymentModal" class="modal">
         <div class="modal-content" style="text-align:center; padding:20px;">
-            <h3 style="margin-top:0; color:var(--blue);">Info Pembayaran</h3>
+            <h3 style="margin-top:0; color:var(--blue); font-size: 1.1rem;">Info Pembayaran</h3>
             <div style="background:#f7fafc; padding:15px; border-radius:15px; margin-bottom:15px; border:1px solid #cbd5e0;">
-                <p style="margin:0; font-size:0.8rem; color:#668;">NOMOR REKENING:</p>
-                <b style="font-size:1.2rem; color:var(--secondary);">0403 0101 2546 539</b><br>
-                <span style="font-weight:600;">BRI an Sulkifli</span>
+                <p style="margin:0; font-size:0.7rem; color:#668;">NOMOR REKENING:</p>
+                <b style="font-size:1.1rem; color:var(--secondary);">0403 0101 2546 539</b><br>
+                <span style="font-weight:600; font-size: 0.9rem;">BRI an Sulkifli</span>
             </div>
-            <p style="margin-bottom:10px; font-weight:bold; font-size:0.9rem;">ATAU SCAN QRIS DIBAWAH:</p>
-            <div class="tf-proof-container" style="border:2px solid var(--blue);">
-                <img src="https://i.ibb.co.com/mC8SDk1j/Whats-App-Image-2026-01-01-at-16-20-37.jpg" style="width:100%; display:block;">
-            </div>
+            <img src="https://i.ibb.co.com/mC8SDk1j/Whats-App-Image-2026-01-01-at-16-20-37.jpg" style="width:100%; border-radius:12px;">
             <button class="btn-send" onclick="toggleModal('paymentModal')" style="margin-top:20px; background:var(--primary);">TUTUP</button>
         </div>
     </div>
@@ -238,168 +276,258 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Konfigurasi Notifikasi Toast
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true
+        });
+
         const MENU_DATA = {
-            "PAKET HEMAT (+ ES TEH)": { class: "cat-red", items: [{n: "P.H Ayam Bakar + Es Teh", p: 22000}, {n: "P.H Ayam Goreng + Es Teh", p: 22000}, {n: "P.H Bandeng Bakar + Es Teh", p: 20000}, {n: "P.H Bandeng Goreng + Es Teh", p: 20000}] },
-            "PAKET HEMAT (+ SAYUR)": { class: "cat-green", items: [{n: "P.H Ayam Bakar+Sayur", p: 22000}, {n: "P.H Ayam Goreng+Sayur", p: 22000}, {n: "P.H Ikan Bakar+Sayur", p: 20000}, {n: "P.H Ikan Goreng+Sayur", p: 20000}, {n: "P.H Ikan Layang Bakar+Sayur", p: 22000}, {n: "P.H Kakap/Katamba Bakar+Sayur", p: 35000}] },
-            "MENU AYAM": { class: "cat-blue", items: [{n: "Ayam Bakar Macca", p: 14000}, {n: "Ayam Goreng Macca", p: 14000}, {n: "Ayam Goreng Tepung", p: 16000}, {n: "Ayam Saos Mentega", p: 17000}] },
-            "MENU IKAN": { class: "cat-orange", items: [{n: "Bandeng Bakar", p: 13000}, {n: "Bandeng Goreng", p: 13000}, {n: "Bandeng Pallumara", p: 20000}, {n: "Ikan Layang Bakar/Goreng", p: 15000}, {n: "Kakap/Katamba Bakar/Goreng", p: 30000}] },
-            "NASI & MIE": { class: "cat-blue", items: [{n: "Nasi Putih", p: 5000}, {n: "Nasi Goreng Jakarta", p: 18000}, {n: "Mie Goreng Biasa", p: 15000}, {n: "Mie Kering Ayam", p: 23000}] },
-            "SAYUR & UDANG": { class: "cat-green", items: [{n: "Udang Bakar/Goreng", p: 28000}, {n: "Udang Saos Pedas", p: 30000}, {n: "Kangkung/Sawi Cah", p: 8000}, {n: "Sayur Sup/Santan", p: 7000}] }
+            "PAKET HEMAT (+ ES TEH)": { class: "cat-paket", items: [
+                {n: "P.H Ayam Bakar + Es Teh", p: 22000}, {n: "P.H Ayam Goreng + Es Teh", p: 22000}, {n: "P.H Bandeng Bakar + Es Teh", p: 20000}, {n: "P.H Bandeng Goreng + Es Teh", p: 20000}
+            ]},
+            "PAKET HEMAT (+ SAYUR)": { class: "cat-paket", items: [
+                {n: "P.H Ayam Bakar+Sayur", p: 22000}, {n: "P.H Ayam Goreng+Sayur", p: 22000}, {n: "P.H Ikan Bakar+Sayur", p: 20000}, {n: "P.H Ikan Goreng+Sayur", p: 20000}, {n: "P.H Ikan Layang Bakar+Sayur", p: 22000}, {n: "P.H Kakap/Katamba Bakar+Sayur", p: 35000}
+            ]},
+            "MENU MIE": { class: "cat-mie", items: [
+                {n: "Mie Goreng Biasa", p: 15000}, {n: "Mie Goreng Jakarta", p: 18000}, {n: "Mie Goreng Seafood", p: 23000}, {n: "Mie Kering Ayam", p: 23000}
+            ]},
+            "MENU NASI": { class: "cat-nasi", items: [
+                {n: "Nasi Putih", p: 5000}, {n: "Nasi Goreng Biasa", p: 15000}, {n: "Nasi Goreng Jakarta", p: 18000}, {n: "Nasi Goreng Seafood", p: 23000}, {n: "Nasi Goreng Special", p: 25000}
+            ]},
+            "MENU SAYUR": { class: "cat-sayur", items: [
+                {n: "Sayur Sup", p: 7000}, {n: "Sayur Santan", p: 7000}, {n: "Kangkung Cah", p: 8000}, {n: "Sawi Cah", p: 8000}, {n: "Paria Cah", p: 8000}, {n: "Terong Goreng", p: 8000}
+            ]},
+            "MENU TAHU & TEMPE": { class: "cat-tahu", items: [
+                {n: "Tempe/Tahu Goreng Biasa", p: 7000}, {n: "Tempe/Tahu Goreng Tepung", p: 8000}
+            ]},
+            "MENU LAUK LAINNYA": { class: "cat-lauk", items: [
+                {n: "Ayam Bakar Macca", p: 14000}, {n: "Ayam Goreng Macca", p: 14000}, {n: "Ayam Goreng Tepung", p: 16000}, {n: "Ayam Saos Mentega", p: 17000}, {n: "Bandeng Bakar", p: 13000}, {n: "Bandeng Goreng", p: 13000}, {n: "Bandeng Pallumara", p: 20000}, {n: "Ikan Layang Bakar/Goreng", p: 15000}, {n: "Kakap/Katamba Bakar/Goreng", p: 30000}, {n: "Udang Bakar/Goreng", p: 28000}, {n: "Udang Saos Pedas", p: 30000}
+            ]}
         };
 
         let cart = {}; let selectedOngkir = 0; let selectedPayment = ""; let subtotalAmount = 0; let orderType = "DINE";
 
-        // Render Menu
-        const menuContainer = document.getElementById('menu-items-container');
-        for (let catName in MENU_DATA) {
-            const catObj = MENU_DATA[catName];
-            menuContainer.innerHTML += `<div class="cat-box ${catObj.class}">${catName}</div>`;
-            catObj.items.forEach(it => {
-                const id = it.n.replace(/\s+|\+/g,'');
-                menuContainer.innerHTML += `<div class="menu-item"><div><b>${it.n}</b><br><small>Rp ${it.p.toLocaleString()}</small></div><div style="display:flex; align-items:center; gap:10px;"><button class="q-btn" onclick="updQty('${it.n}',-1,${it.p})">-</button><b id="q-${id}">0</b><button class="q-btn" onclick="updQty('${it.n}',1,${it.p})">+</button></div></div>`;
+        const mContainer = document.getElementById('menu-items-container');
+        function renderMenu() {
+            mContainer.innerHTML = "";
+            for (let cat in MENU_DATA) {
+                mContainer.innerHTML += `<div class="cat-header ${MENU_DATA[cat].class}">${cat}</div>`;
+                MENU_DATA[cat].items.forEach(it => {
+                    const id = it.n.replace(/\s+|\/|\+|\(|\)/g,'');
+                    const currentQty = cart[it.n] ? cart[it.n].qty : 0;
+                    mContainer.innerHTML += `
+                        <div class="menu-item-row" data-name="${it.n.toLowerCase()}">
+                            <div>
+                                <b style="font-size:0.85rem;">${it.n}</b><br>
+                                <small style="color:var(--green); font-weight:700;">Rp ${it.p.toLocaleString()}</small>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <button class="q-btn" onclick="updQty('${it.n}',-1,${it.p})">-</button>
+                                <b id="q-${id}">${currentQty}</b>
+                                <button class="q-btn" onclick="updQty('${it.n}',1,${it.p})">+</button>
+                            </div>
+                        </div>`;
+                });
+            }
+        }
+
+        function filterMenu() {
+            const val = document.getElementById('menuSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('.menu-item-row');
+            const headers = document.querySelectorAll('.cat-header');
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name');
+                row.style.display = name.includes(val) ? 'flex' : 'none';
             });
+            headers.forEach(head => {
+                let next = head.nextElementSibling;
+                let hasVisible = false;
+                while(next && next.classList.contains('menu-item-row')) {
+                    if(next.style.display === 'flex') hasVisible = true;
+                    next = next.nextElementSibling;
+                }
+                head.style.display = hasVisible ? 'block' : 'none';
+            });
+        }
+
+        function updQty(n, d, p) {
+            const id = n.replace(/\s+|\/|\+|\(|\)/g,'');
+            if(!cart[n]) cart[n] = {qty: 0, p: p};
+            cart[n].qty += d;
+            
+            // Notifikasi Toast Modern
+            if(d > 0) Toast.fire({ icon: 'success', title: n + ' ditambah' });
+            else Toast.fire({ icon: 'info', title: n + ' dikurangi' });
+
+            if(cart[n].qty <= 0) { 
+                delete cart[n]; 
+                if(document.getElementById(`q-${id}`)) document.getElementById(`q-${id}`).innerText = 0; 
+            } else { 
+                if(document.getElementById(`q-${id}`)) document.getElementById(`q-${id}`).innerText = cart[n].qty; 
+            }
+            calculateAll();
         }
 
         function setOrderType(val) {
             orderType = val;
+            Toast.fire({ icon: 'success', title: 'Tipe: ' + val });
             document.getElementById('type-dine').classList.toggle('selected', val==='DINE');
             document.getElementById('type-deliv').classList.toggle('selected', val==='ANTAR');
-            document.getElementById('c-alamat').style.display = (val==='ANTAR') ? 'block' : 'none';
-            document.getElementById('ongkir-section').style.display = (val==='ANTAR') ? 'block' : 'none';
-            if(val === 'DINE') { selectedOngkir = 0; }
-            calculateAll();
-        }
-
-        function updQty(n, d, p) {
-            const id = n.replace(/\s+|\+/g,'');
-            if(!cart[n]) cart[n] = {qty: 0, p: p};
-            cart[n].qty += d;
-            if(cart[n].qty <= 0) { delete cart[n]; document.getElementById(`q-${id}`).innerText = 0; }
-            else { document.getElementById(`q-${id}`).innerText = cart[n].qty; }
+            document.getElementById('c-alamat').style.display = document.getElementById('ongkir-section').style.display = (val==='ANTAR' ? 'block' : 'none');
+            if(val==='DINE') selectedOngkir = 0;
             calculateAll();
         }
 
         function setOngkir(val) {
             selectedOngkir = val;
+            Toast.fire({ icon: 'success', title: 'Ongkir Rp ' + val.toLocaleString() });
             document.querySelectorAll('#ongkir-group .select-btn').forEach(b => b.classList.remove('selected'));
-            if(val === 0) document.getElementById('btn-ong-0').classList.add('selected');
-            else if(val === 5000) document.getElementById('btn-ong-5').classList.add('selected');
-            else if(val === 10000) document.getElementById('btn-ong-10').classList.add('selected');
+            if(val===0) document.getElementById('btn-ong-0').classList.add('selected');
+            else if(val===5000) document.getElementById('btn-ong-5').classList.add('selected');
+            else if(val===10000) document.getElementById('btn-ong-10').classList.add('selected');
             calculateAll();
         }
 
-        // FUNGSI UPDATE: Metropolitan Payment
         function setPayment(val) {
             selectedPayment = val;
+            Toast.fire({ icon: 'success', title: 'Bayar via ' + val.split(' ')[0] });
             document.querySelectorAll('#payment-group .select-btn').forEach(b => b.classList.remove('selected'));
-            
-            if(val === 'Bayar Langsung (COD)') {
-                document.getElementById('pay-cod').classList.add('selected');
-            } else {
-                document.getElementById('pay-tf').classList.add('selected');
-                // Munculkan Popup Info Rekening
-                toggleModal('paymentModal');
-            }
+            if(val.includes('COD')) document.getElementById('pay-cod').classList.add('selected');
+            else { document.getElementById('pay-tf').classList.add('selected'); toggleModal('paymentModal'); }
         }
 
         function calculateAll() {
             let txt = ""; subtotalAmount = 0;
             for(let k in cart) { txt += `• ${k} (x${cart[k].qty})<br>`; subtotalAmount += (cart[k].qty * cart[k].p); }
-            const preview = document.getElementById('cart-preview');
-            const calcBox = document.getElementById('price-calculation');
-            if(subtotalAmount > 0) { 
-                preview.style.display = 'block'; calcBox.style.display = 'block'; 
-                preview.innerHTML = `<b>Item Terpilih:</b><br>${txt}`; 
-                document.getElementById('display-subtotal').innerText = "Rp " + subtotalAmount.toLocaleString(); 
+            const preview = document.getElementById('cart-preview'), calcBox = document.getElementById('price-calculation');
+            if(subtotalAmount > 0) {
+                preview.style.display = calcBox.style.display = 'block';
+                preview.innerHTML = `<b>Item Terpilih:</b><br>${txt}`;
+                document.getElementById('display-subtotal').innerText = "Rp " + subtotalAmount.toLocaleString();
                 document.getElementById('display-total').innerText = "Rp " + (subtotalAmount + (orderType==='ANTAR' ? selectedOngkir : 0)).toLocaleString();
-            } else { preview.style.display = calcBox.style.display = 'none'; }
+            } else preview.style.display = calcBox.style.display = 'none';
         }
 
         function simpanPesanan() {
-            const name = document.getElementById('c-name').value;
-            const wa = document.getElementById('c-wa').value;
-            const addr = document.getElementById('c-alamat').value;
+            const name = document.getElementById('c-name').value, wa = document.getElementById('c-wa').value, addr = document.getElementById('c-alamat').value;
+            if(!name || subtotalAmount === 0 || !selectedPayment) return Swal.fire('Error','Lengkapi data!','error');
+            
+            Swal.fire({
+                title: 'Simpan Pesanan?',
+                text: "Pesanan akan masuk ke antrean",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#2ec4b6',
+                cancelButtonColor: '#ef233c',
+                confirmButtonText: 'Ya, Simpan!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let itemsTxt = ""; for(let key in cart) itemsTxt += `${key} (x${cart[key].qty})\n`;
+                    db.ref('orders').push({
+                        customer: name, whatsapp: wa, alamat: (orderType==='DINE' ? 'DINE IN' : addr), items: itemsTxt, 
+                        total: "Rp " + (subtotalAmount + (orderType==='ANTAR' ? selectedOngkir : 0)).toLocaleString(),
+                        pembayaran: selectedPayment, orderType: orderType, status: 'approved', timestamp: Date.now()
+                    }).then(() => { 
+                        Swal.fire('Berhasil!', 'Pesanan telah disimpan.', 'success').then(() => location.reload());
+                    });
+                }
+            });
+        }
 
-            if(!name || subtotalAmount === 0 || !selectedPayment) return Swal.fire('Error','Lengkapi Nama, Menu & Pembayaran','error');
-            if(orderType === 'ANTAR' && !addr) return Swal.fire('Error','Alamat wajib diisi untuk Antar!','error');
-            
-            let itemsTxt = ""; for(let key in cart) { itemsTxt += `${key} (x${cart[key].qty})\n`; }
-            
-            db.ref('orders').push({
-                customer: name, whatsapp: wa, alamat: (orderType==='DINE' ? 'MAKAN DITEMPAT' : addr), items: itemsTxt, 
-                total: "Rp " + (subtotalAmount + (orderType==='ANTAR' ? selectedOngkir : 0)).toLocaleString(),
-                ongkir: "Rp " + selectedOngkir.toLocaleString(), pembayaran: selectedPayment, 
-                orderType: orderType, status: 'approved', timestamp: Date.now()
-            }).then(() => { location.reload(); });
+        function terimaPesananOnline(key) {
+            db.ref('orders/' + key).once('value').then(snap => {
+                const data = snap.val();
+                db.ref('orders/' + key).update({ status: 'approved', orderType: data.orderType || 'ANTAR' }).then(() => {
+                    Swal.fire({ title: 'Diterima!', icon: 'success', timer: 1000, showConfirmButton: false });
+                });
+            });
         }
 
         function toggleModal(id) { 
             const m = document.getElementById(id); 
             m.style.display = (m.style.display === 'block') ? 'none' : 'block'; 
+            if(id === 'menuModal' && m.style.display === 'block') {
+                document.getElementById('menuSearch').value = "";
+                filterMenu();
+            }
         }
-
+        
         function openTab(e, id) { document.querySelectorAll('.tab-content, .tab-btn').forEach(x => x.classList.remove('active')); document.getElementById(id).classList.add('active'); e.currentTarget.classList.add('active'); }
 
+        // REALTIME LISTENER
         db.ref('orders').on('value', snap => {
             const inbox = document.getElementById('inbox-list'), active = document.getElementById('active-list'), history = document.getElementById('history-list'), badge = document.getElementById('badge-inbox');
-            const statDay = document.getElementById('stat-day'), statMonth = document.getElementById('stat-month'), statYear = document.getElementById('stat-year'), statTotal = document.getElementById('stat-total'), dList = document.getElementById('driver-list');
+            const statDay = document.getElementById('stat-day'), statTotal = document.getElementById('stat-total'), incDay = document.getElementById('income-day'), incTotal = document.getElementById('income-total'), dList = document.getElementById('driver-list');
             
-            inbox.innerHTML = active.innerHTML = history.innerHTML = ''; 
-            let newCount = 0, totalSukes = 0, hIni = 0, bIni = 0, tIni = 0;
-            let drivers = {};
-            const now = new Date();
+            inbox.innerHTML = active.innerHTML = history.innerHTML = "";
+            let newCount = 0, totalSukes = 0, hIni = 0, omzetH = 0, omzetT = 0;
+            let drivers = {}; const today = new Date().toDateString();
 
             snap.forEach(child => {
                 const o = child.val(), k = child.key;
                 const card = document.createElement('div'); card.className = `order-card ${o.status}`;
                 
-                let detail = `
-                <div class="order-time">${new Date(o.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                <span style="font-weight:800; font-size:1.1rem;">${o.customer}</span> <span style="font-size:0.7rem; background:#eee; padding:2px 6px; border-radius:5px;">${o.orderType || 'ANTAR'}</span><br>
-                <a href="https://wa.me/${o.whatsapp}" class="wa-link"><i class="fab fa-whatsapp"></i> ${o.whatsapp}</a>
-                <div class="detail-box">
-                    <strong>MENU:</strong><br>${o.items.replace(/\n/g,'<br>')} 
-                    <div class="detail-item"><span>Alamat:</span><b>${o.alamat}</b></div>
-                    <div class="detail-item"><span>Metode:</span><b>${o.pembayaran}</b></div>
-                    <div class="detail-item" style="border-top:1px dashed #ddd; margin-top:10px; padding-top:10px; font-size:1.1rem; color:var(--green)">
-                        <strong>TOTAL:</strong><strong>${o.total}</strong>
-                    </div>
-                </div>`;
-                
+                let proofHTML = o.proof ? `<div class="proof-container"><span class="proof-label">BUKTI TRANSFER:</span><img src="${o.proof}" class="proof-img" onclick="Swal.fire({imageUrl: '${o.proof}', showConfirmButton: false})"></div>` : "";
+                let detail = `<div style="position:absolute; top:20px; right:20px; font-size:0.7rem; color:#a0aec0;">${new Date(o.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div><span style="font-weight:800; font-size:1.05rem;">${o.customer}</span> <span style="font-size:0.65rem; background:#eee; padding:2px 6px; border-radius:5px;">${o.orderType || 'ANTAR'}</span><br><a href="https://wa.me/${o.whatsapp}" class="wa-link"><i class="fab fa-whatsapp"></i> ${o.whatsapp}</a><div class="detail-box"><strong>MENU:</strong><br>${o.items.replace(/\n/g,'<br>')} <div class="detail-item"><span>Alamat:</span><b>${o.alamat}</b></div><div class="detail-item"><span>Metode:</span><b>${o.pembayaran}</b></div><div class="detail-item" style="border-top:1px dashed #ddd; margin-top:10px; padding-top:10px; font-size:1.1rem; color:var(--green)"><strong>TOTAL:</strong><strong>${o.total}</strong></div></div>${proofHTML}`;
+
                 if(o.status === 'delivered') {
                     totalSukes++;
-                    const d = new Date(o.timestamp);
-                    if(d.toDateString() === now.toDateString()) hIni++;
-                    if(d.getMonth() === now.getMonth()) bIni++;
-                    if(d.getFullYear() === now.getFullYear()) tIni++;
-                    if(o.driver) drivers[o.driver] = (drivers[o.driver] || 0) + 1;
-                    card.innerHTML = detail + `<div style="text-align:center; color:var(--green); font-weight:800;">SELESAI (${o.driver || 'Kasir'})</div><button onclick="db.ref('orders/${k}').remove()" style="background:none; border:none; color:#ccc; width:100%; font-size:0.75rem; margin-top:10px;">Hapus Permanen</button>`;
+                    let harga = parseInt(o.total.replace(/[^0-9]/g, '')) || 0;
+                    omzetT += harga;
+                    if(new Date(o.timestamp).toDateString() === today) { hIni++; omzetH += harga; }
+                    
+                    if(o.driver) {
+                        if(!drivers[o.driver]) drivers[o.driver] = { c: 0, m: 0, type: (o.driver === 'Kasir' ? 'KASIR' : 'DRIVER') };
+                        drivers[o.driver].c++; drivers[o.driver].m += harga;
+                    }
+
+                    card.innerHTML = detail + `<div style="text-align:center; color:var(--green); font-weight:800; font-size:0.9rem;">SELESAI (${o.driver || 'Kasir'})</div>`;
                     history.prepend(card);
-                } else if(o.status === 'new') { 
-                    newCount++; 
-                    card.innerHTML = detail + `<button class="btn-send" style="background:var(--blue)" onclick="db.ref('orders/${k}').update({status:'approved'})">TERIMA PESANAN</button>`; 
-                    inbox.prepend(card); 
-                } else if(o.status === 'approved') { 
-                    card.innerHTML = detail + `<button class="btn-send" style="background:var(--orange)" onclick="db.ref('orders/${k}').update({status:'ready'})">SIAP ${o.orderType==='ANTAR'?'/ PANGGIL DRIVER':''}</button>`; 
-                    active.prepend(card); 
-                } else if(o.status === 'ready') { 
-                    let btnFinish = (o.orderType === 'DINE') ? `<button class="btn-send" style="background:var(--green)" onclick="db.ref('orders/${k}').update({status:'delivered', driver:'Kasir'})">SAJIKAN SELESAI</button>` : `<div style="text-align:center; color:var(--orange); font-weight:800;">MENUNGGU DRIVER...</div>`;
-                    card.innerHTML = detail + btnFinish; 
-                    active.prepend(card); 
-                } else if(o.status === 'onprogress') { 
-                    card.innerHTML = detail + `<div style="text-align:center; color:var(--blue); font-weight:800;">DIANTAR: ${o.driver}</div>`; 
-                    active.prepend(card); 
+                } else if(o.status === 'new') {
+                    newCount++;
+                    card.innerHTML = detail + `<button class="btn-send" style="background:var(--blue)" onclick="terimaPesananOnline('${k}')">TERIMA PESANAN</button>`;
+                    inbox.prepend(card);
+                } else {
+                    let btn = "";
+                    if(o.status === 'approved') btn = `<button class="btn-send" style="background:var(--orange)" onclick="db.ref('orders/${k}').update({status:'ready'})">SIAP KIRIM/SAJI</button>`;
+                    else if(o.status === 'ready' && o.orderType === 'DINE') btn = `<button class="btn-send" style="background:var(--green)" onclick="db.ref('orders/${k}').update({status:'delivered', driver:'Kasir'})">SAJIKAN SELESAI</button>`;
+                    else if(o.status === 'ready') btn = `<div style="text-align:center; color:var(--orange); font-weight:800; font-size:0.9rem;">MENUNGGU DRIVER...</div>`;
+                    else if(o.status === 'onprogress') btn = `<div style="text-align:center; color:var(--blue); font-weight:800; font-size:0.9rem;">DIANTAR: ${o.driver}</div>`;
+                    card.innerHTML = detail + btn;
+                    active.prepend(card);
                 }
             });
 
-            statDay.innerText = hIni; statMonth.innerText = bIni; statYear.innerText = tIni; statTotal.innerText = totalSukes;
+            statDay.innerText = hIni; statTotal.innerText = totalSukes;
+            incDay.innerText = "Rp " + omzetH.toLocaleString(); incTotal.innerText = "Rp " + omzetT.toLocaleString();
             badge.innerText = newCount; badge.style.display = newCount > 0 ? 'block' : 'none';
-            
-            let driverHTML = "";
-            for(let name in drivers) { driverHTML += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;"><span>${name}</span><b>${drivers[name]} Order</b></div>`; }
-            dList.innerHTML = driverHTML || 'Belum ada data...';
+
+            dList.innerHTML = "";
+            const sortedDrivers = Object.entries(drivers).sort((a,b) => b[1].c - a[1].c);
+            sortedDrivers.forEach(([name, d]) => {
+                let badgeHTML = (d.type === 'KASIR') 
+                    ? `<span class="kasir-badge">${d.c} Transaksi</span>` 
+                    : `<span class="trip-badge">${d.c} Trip Selesai</span>`;
+
+                dList.innerHTML += `
+                <div class="driver-stat-item">
+                    <div class="driver-info">
+                        <div class="driver-img-circle" style="background:${d.type==='KASIR' ? '#718096' : '#2b2d42'}">${name.charAt(0)}</div>
+                        <div>
+                            <b style="font-size:0.85rem;">${name}</b><br>
+                            ${badgeHTML}
+                        </div>
+                    </div>
+                    <div class="income-pill">Rp ${d.m.toLocaleString()}</div>
+                </div>`;
+            });
         });
 
+        renderMenu();
         setOrderType('DINE');
     </script>
 </body>
