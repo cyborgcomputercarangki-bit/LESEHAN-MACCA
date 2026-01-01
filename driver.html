@@ -29,42 +29,37 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Order Card Styling */
         .order-card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border-left: 6px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .order-card.new { border-left-color: var(--orange); background: var(--yellow); }
-        .order-card.ready { border-left-color: var(--orange); }
+        .order-card.ready { border-left-color: var(--orange); animation: pulse-border 2s infinite; }
         .order-card.onprogress { border-left-color: var(--blue); }
         .order-card.delivered { border-left-color: var(--green); }
 
+        @keyframes pulse-border {
+            0% { border-left-color: var(--orange); }
+            50% { border-left-color: #ffd166; }
+            100% { border-left-color: var(--orange); }
+        }
+
         .customer-name { font-size: 1.1rem; font-weight: 700; display: block; color: var(--secondary); margin-bottom: 5px; }
-        
-        /* Detail Box for Menu & Address */
         .detail-box { background: #f9f9f9; border: 1px solid #eee; border-radius: 12px; padding: 12px; margin: 10px 0; font-size: 0.85rem; line-height: 1.5; }
         .detail-box hr { border: 0; border-top: 1px solid #eee; margin: 8px 0; }
-        
         .time-info { font-size: 0.7rem; color: #777; display: block; margin-bottom: 5px; font-weight: 600; }
         
-        .wa-link { display: inline-flex; align-items: center; background: #25d366; color: white; padding: 8px 15px; border-radius: 10px; font-size: 0.85rem; font-weight: bold; gap: 8px; border: none; cursor: pointer; width: 100%; justify-content: center; text-decoration: none; margin-bottom: 10px; }
+        .wa-number-display { display: block; background: #e8f5e9; color: #2e7d32; padding: 10px; border-radius: 8px; text-align: center; font-weight: 700; font-size: 1rem; margin-bottom: 8px; border: 1px dashed #2e7d32; text-decoration: none; }
+        
+        .wa-link { display: inline-flex; align-items: center; background: #25d366; color: white; padding: 12px; border-radius: 10px; font-size: 0.85rem; font-weight: bold; gap: 8px; border: none; cursor: pointer; width: 100%; justify-content: center; text-decoration: none; margin-bottom: 10px; box-sizing: border-box; }
 
         .btn-action { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: 700; margin-top: 5px; cursor: pointer; font-size: 1rem; color: white; font-family: inherit; }
-        .btn-locked { background: #fff; color: #d84315; border: 2px dashed #ffab91; cursor: not-allowed; font-size: 0.85rem; }
+        .btn-locked { background: #f0f0f0; color: #aaa; border: 2px dashed #ddd; cursor: not-allowed; }
         .btn-orange { background: var(--orange); }
         .btn-green { background: var(--green); }
         
-        .driver-badge { display: inline-block; padding: 6px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; width: 100%; text-align: center; box-sizing: border-box; margin-top: 5px; }
-        .badge-otw { background: #e3f2fd; color: #1976d2; border: 1px solid #1976d2; }
-        .badge-sukses { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
-
-        #driver-login { position: fixed; inset: 0; background: white; z-index: 1001; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
-        .login-box { background: #fdfdfd; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 350px; }
+        #driver-login { position: fixed; inset: 0; background: var(--primary); z-index: 1001; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
+        .login-box { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 100%; max-width: 350px; }
         .login-box input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #eee; margin-bottom: 15px; font-size: 1.5rem; text-align: center; box-sizing: border-box; }
         
         table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
-
-        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
-        .coffee-icon { font-size: 4rem; color: #6f4e37; margin-bottom: 20px; position: relative; animation: coffee-float 3s ease-in-out infinite; }
-        @keyframes coffee-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        td { padding: 12px 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -76,7 +71,6 @@
             <h2>Akses Driver</h2>
             <input type="number" id="kode-input" pattern="\d*" inputmode="numeric" placeholder="KODE">
             <button class="btn-action btn-orange" onclick="loginDenganKode()">MASUK</button>
-            <div style="font-size:0.75rem; color:#bbb; margin-top:20px; font-weight: bold;">1: HASBI | 2: RIZKY | 3: ASWAR</div>
         </div>
     </div>
 
@@ -90,18 +84,13 @@
 
     <div class="tab-bar">
         <button class="tab-btn active" onclick="openTab(event, 'tab-tugas')"><i class="fas fa-motorcycle"></i>ANTRIAN</button>
-        <button class="tab-btn" onclick="openTab(event, 'tab-global-status')"><i class="fas fa-map-marker-alt"></i>STATUS</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-global-status')"><i class="fas fa-history"></i>STATUS</button>
         <button class="tab-btn" onclick="openTab(event, 'tab-rekap')"><i class="fas fa-trophy"></i>REKAP</button>
     </div>
 
     <div class="container">
         <div id="tab-tugas" class="tab-content active"><div id="tugas-list"></div></div>
-        
-        <div id="tab-global-status" class="tab-content">
-            <h4 style="margin-bottom:10px;">Status Pengiriman Tim</h4>
-            <div id="status-global-list"></div>
-        </div>
-        
+        <div id="tab-global-status" class="tab-content"><div id="status-global-list"></div></div>
         <div id="tab-rekap" class="tab-content">
             <div style="background:white; padding:20px; border-radius:20px;">
                 <h4 style="margin-top:0;">Laporan Bulan Ini</h4>
@@ -124,17 +113,14 @@
                 myName = daftarDriver[kode]; 
                 localStorage.setItem('driverName', myName); 
                 location.reload(); 
-            } else { 
-                Swal.fire('Error', 'Kode tidak terdaftar!', 'error'); 
-            }
+            } else { Swal.fire('Error', 'Kode tidak terdaftar!', 'error'); }
         }
         function logout() { localStorage.removeItem('driverName'); location.reload(); }
         
-        // Fungsi Format Waktu Lengkap (Tanggal, Jam, Menit, Detik, Bulan, Tahun)
         function formatWaktuLengkap(ts) {
             const d = new Date(ts);
-            const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()} | ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')} WITA`;
+            const bulan = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+            return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()} | ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')} WITA`;
         }
 
         function openTab(evt, t) {
@@ -156,7 +142,11 @@
             db.ref('orders/'+k).update(d);
         }
 
-        let lastCount = -1;
+        function cleanPhoneNumber(phone) {
+            // Menghapus semua karakter non-digit kecuali tanda plus di depan
+            return phone.replace(/\D/g, '');
+        }
+
         function startSync() {
             db.ref('orders').on('value', snap => {
                 const tl = document.getElementById('tugas-list'); 
@@ -173,8 +163,13 @@
                     const k = child.key; 
                     const dO = new Date(o.timestamp);
                     
-                    const timeHTML = `<span class="time-info"><i class="far fa-calendar-alt"></i> ${formatWaktuLengkap(o.timestamp)}</span>`;
-                    const waBtn = `<button class="wa-link" onclick="window.open('https://wa.me/${o.whatsapp}', '_blank')"><i class="fab fa-whatsapp"></i> Chat Pelanggan</button>`;
+                    // Bersihkan nomor WA untuk link yang benar
+                    const cleanedPhone = cleanPhoneNumber(o.whatsapp);
+                    const waUrl = `https://api.whatsapp.com/send?phone=${cleanedPhone}`;
+
+                    const timeHTML = `<span class="time-info"><i class="far fa-clock"></i> ${formatWaktuLengkap(o.timestamp)}</span>`;
+                    const waDisplayHTML = `<a href="${waUrl}" target="_blank" class="wa-number-display"><i class="fab fa-whatsapp"></i> WA: ${o.whatsapp}</a>`;
+                    const waBtn = `<a href="${waUrl}" target="_blank" class="wa-link"><i class="fas fa-comment-dots"></i> CHAT PELANGGAN</a>`;
                     
                     const detailHTML = `
                         <div class="detail-box">
@@ -184,7 +179,6 @@
                             <strong>TOTAL:</strong> ${o.total} (${o.pembayaran})
                         </div>`;
 
-                    // LOGIKA TAB ANTRIAN
                     if(o.status === 'new' || o.status === 'approved' || o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
                         activeCount++;
                         const card = document.createElement('div'); 
@@ -192,45 +186,31 @@
                         
                         let actionHTML = '';
                         if(o.status === 'new' || o.status === 'approved') {
-                            actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-hourglass-half"></i> MASIH DI DAPUR</button>`;
+                            actionHTML = `<button class="btn-action btn-locked" disabled><i class="fas fa-hourglass-half"></i> PROSES DAPUR</button>`;
                         } else if(o.status === 'ready') {
-                            actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL SEKARANG</button>`;
+                            actionHTML = `<button class="btn-action btn-orange" onclick="updateStatus('${k}','onprogress')">AMBIL PESANAN</button>`;
                         } else if(o.status === 'onprogress') {
-                            actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">SELESAI ANTAR</button>`;
+                            actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">KONFIRMASI SELESAI</button>`;
                         }
 
-                        card.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}${o.status !== 'new' ? waBtn : ''}${actionHTML}`;
+                        const waSection = (o.status !== 'new') ? (waDisplayHTML + waBtn) : '';
+                        card.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}${waSection}${actionHTML}`;
                         tl.prepend(card);
                     }
                     
-                    // LOGIKA TAB STATUS GLOBAL
-                    if(o.status === 'onprogress') {
+                    if(o.status === 'onprogress' || o.status === 'delivered') {
                         const cardStatus = document.createElement('div');
-                        cardStatus.className = 'order-card onprogress';
-                        cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}<div class="driver-badge badge-otw"><i class="fas fa-shipping-fast"></i> Sedang diantar oleh: ${o.driver}</div>`;
-                        sgl.prepend(cardStatus);
-                    } else if(o.status === 'delivered') {
-                        const cardStatus = document.createElement('div');
-                        cardStatus.className = 'order-card delivered';
-                        cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}<div class="driver-badge badge-sukses"><i class="fas fa-check-circle"></i> SUKSES diantar oleh : ${o.driver}</div>`;
-                        sgl.prepend(cardStatus);
+                        cardStatus.className = `order-card ${o.status}`;
+                        const badge = o.status === 'onprogress' ? 
+                            `<div class="driver-badge" style="background:#e3f2fd; color:#1976d2; padding:8px; border-radius:8px; text-align:center; font-size:0.8rem; margin-top:10px;"><b>OTW:</b> ${o.driver}</div>` : 
+                            `<div class="driver-badge" style="background:#e8f5e9; color:#2e7d32; padding:8px; border-radius:8px; text-align:center; font-size:0.8rem; margin-top:10px;"><b>SUKSES:</b> ${o.driver}</div>`;
                         
-                        // Hitung Rekap Bulan Ini
-                        if(o.driver && dO.getMonth() === mNow) { 
-                            rd[o.driver] = (rd[o.driver] || 0) + 1; 
-                        }
+                        cardStatus.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}${badge}`;
+                        sgl.prepend(cardStatus);
+                        if(o.status === 'delivered' && o.driver && dO.getMonth() === mNow) rd[o.driver] = (rd[o.driver] || 0) + 1;
                     }
                 });
 
-                if (activeCount === 0) {
-                    tl.innerHTML = `<div class="empty-state"><div class="coffee-icon"><i class="fas fa-coffee"></i></div><div class="tagline">Santai dulu bro,<br>belum ada pesanan...</div></div>`;
-                }
-
-                if (lastCount !== -1 && activeCount > lastCount) {
-                    document.getElementById('notif-sound').play().catch(e => {});
-                }
-                lastCount = activeCount;
-                
                 for (let n in rd) {
                     ra.innerHTML += `<tr><td><b>${n}</b></td><td style="text-align:right"><b>${rd[n]} Selesai</b></td></tr>`;
                 }
