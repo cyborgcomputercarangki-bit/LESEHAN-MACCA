@@ -43,6 +43,7 @@
             background: #f8fafc; cursor: pointer; font-weight: 700; font-size: 0.8rem; 
             transition: 0.3s; color: #4a5568; font-family: inherit;
         }
+        /* Style Tombol Saat Terpilih */
         .select-btn.selected { background: var(--blue); color: white; border-color: var(--blue); box-shadow: 0 4px 10px rgba(58, 134, 255, 0.3); }
 
         .btn-menu-trigger { 
@@ -74,14 +75,12 @@
         .detail-box { background: #f7fafc; border-radius: 16px; padding: 15px; margin: 12px 0; font-size: 0.88rem; border: 1px solid #edf2f7; }
         .detail-item { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e0; }
 
-        /* Style Baru untuk Bukti Transfer */
         .tf-proof-container { margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid #ddd; }
         .tf-proof-img { width: 100%; height: auto; display: block; cursor: pointer; transition: 0.3s; }
-        .tf-proof-img:hover { opacity: 0.8; }
-        .label-proof { font-size: 0.7rem; font-weight: bold; color: var(--primary); margin-bottom: 5px; display: block; }
-
+        
+        /* Modal General */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
-        .modal-content { background: white; width: 92%; max-width: 450px; margin: 20px auto; border-radius: 28px; max-height: 85vh; overflow-y: auto; }
+        .modal-content { background: white; width: 92%; max-width: 450px; margin: 20px auto; border-radius: 28px; max-height: 85vh; overflow-y: auto; position: relative; }
         
         .cat-box { margin: 10px 15px; padding: 10px 15px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
         .cat-red { background: #fff5f5; color: #c53030; border-left: 5px solid #c53030; }
@@ -128,7 +127,7 @@
                 <input type="text" id="c-name" placeholder="Nama Pelanggan">
                 <input type="tel" id="c-wa" placeholder="WhatsApp (08...)">
                 
-                <div class="btn-menu-trigger" onclick="toggleModal()">
+                <div class="btn-menu-trigger" onclick="toggleModal('menuModal')">
                     <span><i class="fas fa-utensils"></i> Pilih Menu Makanan</span>
                     <i class="fas fa-plus-circle"></i>
                 </div>
@@ -164,9 +163,8 @@
 
                 <span class="selector-label">Metode Pembayaran:</span>
                 <div class="grid-selector" id="payment-group">
-                    <button class="select-btn" id="pay-cod" onclick="setPayment('COD')">COD</button>
-                    <button class="select-btn" id="pay-tf" onclick="setPayment('Transfer Bank')">TF BANK</button>
-                    <button class="select-btn" id="pay-qris" onclick="setPayment('QRIS')">QRIS</button>
+                    <button class="select-btn" id="pay-cod" onclick="setPayment('Bayar Langsung (COD)')">BAYAR LANGSUNG (COD)</button>
+                    <button class="select-btn" id="pay-tf" onclick="setPayment('Transfer / QRIS')">TRANSFER / QRIS</button>
                 </div>
                 <button class="btn-send" onclick="simpanPesanan()">SIMPAN KE ANTREAN</button>
             </div>
@@ -210,12 +208,28 @@
         <div class="modal-content">
             <div style="padding:20px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:white; z-index:10;">
                 <h3 style="margin:0;">Menu Macca</h3>
-                <button onclick="toggleModal()" style="background:none; border:none; font-size:1.5rem;">&times;</button>
+                <button onclick="toggleModal('menuModal')" style="background:none; border:none; font-size:1.5rem;">&times;</button>
             </div>
             <div id="menu-items-container" style="padding-bottom:20px;"></div>
             <div style="padding:20px; position:sticky; bottom:0; background:white; border-top:1px solid #eee;">
-                <button class="btn-send" onclick="toggleModal()" style="background:var(--green)">Selesai Memilih</button>
+                <button class="btn-send" onclick="toggleModal('menuModal')" style="background:var(--green)">Selesai Memilih</button>
             </div>
+        </div>
+    </div>
+
+    <div id="paymentModal" class="modal">
+        <div class="modal-content" style="text-align:center; padding:20px;">
+            <h3 style="margin-top:0; color:var(--blue);">Info Pembayaran</h3>
+            <div style="background:#f7fafc; padding:15px; border-radius:15px; margin-bottom:15px; border:1px solid #cbd5e0;">
+                <p style="margin:0; font-size:0.8rem; color:#668;">NOMOR REKENING:</p>
+                <b style="font-size:1.2rem; color:var(--secondary);">0403 0101 2546 539</b><br>
+                <span style="font-weight:600;">BRI an Sulkifli</span>
+            </div>
+            <p style="margin-bottom:10px; font-weight:bold; font-size:0.9rem;">ATAU SCAN QRIS DIBAWAH:</p>
+            <div class="tf-proof-container" style="border:2px solid var(--blue);">
+                <img src="https://i.ibb.co.com/mC8SDk1j/Whats-App-Image-2026-01-01-at-16-20-37.jpg" style="width:100%; display:block;">
+            </div>
+            <button class="btn-send" onclick="toggleModal('paymentModal')" style="margin-top:20px; background:var(--primary);">TUTUP</button>
         </div>
     </div>
 
@@ -243,17 +257,6 @@
             catObj.items.forEach(it => {
                 const id = it.n.replace(/\s+|\+/g,'');
                 menuContainer.innerHTML += `<div class="menu-item"><div><b>${it.n}</b><br><small>Rp ${it.p.toLocaleString()}</small></div><div style="display:flex; align-items:center; gap:10px;"><button class="q-btn" onclick="updQty('${it.n}',-1,${it.p})">-</button><b id="q-${id}">0</b><button class="q-btn" onclick="updQty('${it.n}',1,${it.p})">+</button></div></div>`;
-            });
-        }
-
-        // Fungsi Perbesar Gambar
-        function previewImg(url) {
-            Swal.fire({
-                imageUrl: url,
-                imageAlt: 'Bukti Transfer',
-                showConfirmButton: false,
-                background: 'rgba(0,0,0,0.8)',
-                width: 'auto'
             });
         }
 
@@ -285,10 +288,18 @@
             calculateAll();
         }
 
+        // FUNGSI UPDATE: Metropolitan Payment
         function setPayment(val) {
             selectedPayment = val;
             document.querySelectorAll('#payment-group .select-btn').forEach(b => b.classList.remove('selected'));
-            document.getElementById('pay-'+val.toLowerCase().split(' ')[0]).classList.add('selected');
+            
+            if(val === 'Bayar Langsung (COD)') {
+                document.getElementById('pay-cod').classList.add('selected');
+            } else {
+                document.getElementById('pay-tf').classList.add('selected');
+                // Munculkan Popup Info Rekening
+                toggleModal('paymentModal');
+            }
         }
 
         function calculateAll() {
@@ -322,7 +333,11 @@
             }).then(() => { location.reload(); });
         }
 
-        function toggleModal() { const m = document.getElementById('menuModal'); m.style.display = (m.style.display === 'block') ? 'none' : 'block'; }
+        function toggleModal(id) { 
+            const m = document.getElementById(id); 
+            m.style.display = (m.style.display === 'block') ? 'none' : 'block'; 
+        }
+
         function openTab(e, id) { document.querySelectorAll('.tab-content, .tab-btn').forEach(x => x.classList.remove('active')); document.getElementById(id).classList.add('active'); e.currentTarget.classList.add('active'); }
 
         db.ref('orders').on('value', snap => {
@@ -338,20 +353,6 @@
                 const o = child.val(), k = child.key;
                 const card = document.createElement('div'); card.className = `order-card ${o.status}`;
                 
-                if(o.status === 'new' && !o.orderType) {
-                    db.ref('orders/' + k).update({ orderType: 'ANTAR' });
-                }
-
-                // Bagian Bukti Transfer (Cek jika ada field buktiTf)
-                let tfProofHTML = "";
-                if(o.buktiTf) {
-                    tfProofHTML = `
-                    <div class="tf-proof-container">
-                        <span class="label-proof"><i class="fas fa-image"></i> BUKTI TRANSFER:</span>
-                        <img src="${o.buktiTf}" class="tf-proof-img" onclick="previewImg('${o.buktiTf}')">
-                    </div>`;
-                }
-
                 let detail = `
                 <div class="order-time">${new Date(o.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                 <span style="font-weight:800; font-size:1.1rem;">${o.customer}</span> <span style="font-size:0.7rem; background:#eee; padding:2px 6px; border-radius:5px;">${o.orderType || 'ANTAR'}</span><br>
@@ -363,7 +364,6 @@
                     <div class="detail-item" style="border-top:1px dashed #ddd; margin-top:10px; padding-top:10px; font-size:1.1rem; color:var(--green)">
                         <strong>TOTAL:</strong><strong>${o.total}</strong>
                     </div>
-                    ${tfProofHTML}
                 </div>`;
                 
                 if(o.status === 'delivered') {
