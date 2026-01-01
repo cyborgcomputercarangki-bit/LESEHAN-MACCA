@@ -74,6 +74,12 @@
         .detail-box { background: #f7fafc; border-radius: 16px; padding: 15px; margin: 12px 0; font-size: 0.88rem; border: 1px solid #edf2f7; }
         .detail-item { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e0; }
 
+        /* Style Baru untuk Bukti Transfer */
+        .tf-proof-container { margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid #ddd; }
+        .tf-proof-img { width: 100%; height: auto; display: block; cursor: pointer; transition: 0.3s; }
+        .tf-proof-img:hover { opacity: 0.8; }
+        .label-proof { font-size: 0.7rem; font-weight: bold; color: var(--primary); margin-bottom: 5px; display: block; }
+
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
         .modal-content { background: white; width: 92%; max-width: 450px; margin: 20px auto; border-radius: 28px; max-height: 85vh; overflow-y: auto; }
         
@@ -240,6 +246,17 @@
             });
         }
 
+        // Fungsi Perbesar Gambar
+        function previewImg(url) {
+            Swal.fire({
+                imageUrl: url,
+                imageAlt: 'Bukti Transfer',
+                showConfirmButton: false,
+                background: 'rgba(0,0,0,0.8)',
+                width: 'auto'
+            });
+        }
+
         function setOrderType(val) {
             orderType = val;
             document.getElementById('type-dine').classList.toggle('selected', val==='DINE');
@@ -321,9 +338,18 @@
                 const o = child.val(), k = child.key;
                 const card = document.createElement('div'); card.className = `order-card ${o.status}`;
                 
-                // LOGIKA PERBAIKAN: JIKA PESANAN INBOX (status new) DAN BELUM ADA orderType
                 if(o.status === 'new' && !o.orderType) {
                     db.ref('orders/' + k).update({ orderType: 'ANTAR' });
+                }
+
+                // Bagian Bukti Transfer (Cek jika ada field buktiTf)
+                let tfProofHTML = "";
+                if(o.buktiTf) {
+                    tfProofHTML = `
+                    <div class="tf-proof-container">
+                        <span class="label-proof"><i class="fas fa-image"></i> BUKTI TRANSFER:</span>
+                        <img src="${o.buktiTf}" class="tf-proof-img" onclick="previewImg('${o.buktiTf}')">
+                    </div>`;
                 }
 
                 let detail = `
@@ -337,6 +363,7 @@
                     <div class="detail-item" style="border-top:1px dashed #ddd; margin-top:10px; padding-top:10px; font-size:1.1rem; color:var(--green)">
                         <strong>TOTAL:</strong><strong>${o.total}</strong>
                     </div>
+                    ${tfProofHTML}
                 </div>`;
                 
                 if(o.status === 'delivered') {
