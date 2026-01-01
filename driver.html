@@ -142,9 +142,20 @@
             db.ref('orders/'+k).update(d);
         }
 
+        // FUNGSI PERBAIKAN: Memastikan format internasional (62)
         function cleanPhoneNumber(phone) {
-            // Menghapus semua karakter non-digit kecuali tanda plus di depan
-            return phone.replace(/\D/g, '');
+            if (!phone) return "";
+            let cleaned = phone.toString().replace(/\D/g, ''); // Hapus semua karakter non-angka
+            
+            // Jika diawali '0', ubah jadi '62'
+            if (cleaned.startsWith('0')) {
+                cleaned = '62' + cleaned.substring(1);
+            }
+            // Jika diawali '8', tambahkan '62'
+            else if (cleaned.startsWith('8')) {
+                cleaned = '62' + cleaned;
+            }
+            return cleaned;
         }
 
         function startSync() {
@@ -154,7 +165,6 @@
                 const ra = document.getElementById('rekap-all-driver'); 
                 tl.innerHTML = sgl.innerHTML = ra.innerHTML = '';
                 
-                let activeCount = 0; 
                 let rd = {}; 
                 const mNow = new Date().getMonth();
 
@@ -163,9 +173,9 @@
                     const k = child.key; 
                     const dO = new Date(o.timestamp);
                     
-                    // Bersihkan nomor WA untuk link yang benar
                     const cleanedPhone = cleanPhoneNumber(o.whatsapp);
-                    const waUrl = `https://api.whatsapp.com/send?phone=${cleanedPhone}`;
+                    // Gunakan format wa.me yang lebih universal untuk aplikasi mobile
+                    const waUrl = `https://wa.me/${cleanedPhone}`;
 
                     const timeHTML = `<span class="time-info"><i class="far fa-clock"></i> ${formatWaktuLengkap(o.timestamp)}</span>`;
                     const waDisplayHTML = `<a href="${waUrl}" target="_blank" class="wa-number-display"><i class="fab fa-whatsapp"></i> WA: ${o.whatsapp}</a>`;
@@ -173,14 +183,13 @@
                     
                     const detailHTML = `
                         <div class="detail-box">
-                            <strong>PESANAN:</strong><br>${o.items.replace(/\n/g,'<br>')}
+                            <strong>PESANAN:</strong><br>${o.items ? o.items.replace(/\n/g,'<br>') : '-'}
                             <hr>
-                            <strong>ALAMAT:</strong><br>${o.alamat}<br>
-                            <strong>TOTAL:</strong> ${o.total} (${o.pembayaran})
+                            <strong>ALAMAT:</strong><br>${o.alamat || '-'}<br>
+                            <strong>TOTAL:</strong> ${o.total || '0'} (${o.pembayaran || '-'})
                         </div>`;
 
                     if(o.status === 'new' || o.status === 'approved' || o.status === 'ready' || (o.status === 'onprogress' && o.driver === myName)) {
-                        activeCount++;
                         const card = document.createElement('div'); 
                         card.className = `order-card ${o.status}`;
                         
@@ -193,6 +202,7 @@
                             actionHTML = `<button class="btn-action btn-green" onclick="updateStatus('${k}','delivered')">KONFIRMASI SELESAI</button>`;
                         }
 
+                        // Tampilkan tombol WA jika status bukan 'new'
                         const waSection = (o.status !== 'new') ? (waDisplayHTML + waBtn) : '';
                         card.innerHTML = `<span class="customer-name">${o.customer}</span>${timeHTML}${detailHTML}${waSection}${actionHTML}`;
                         tl.prepend(card);
