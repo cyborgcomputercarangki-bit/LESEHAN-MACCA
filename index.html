@@ -273,11 +273,14 @@
             } else { preview.style.display = calcBox.style.display = 'none'; }
         }
 
-        // FUNGSI PEMBERSIH NOMOR WA (WAJIB UNTUK LINK wa.me)
+        // PERBAIKAN: Fungsi pembersih nomor WA agar link wa.me tidak gagal
         function cleanPhone(phone) {
-            let cleaned = ('' + phone).replace(/\D/g, ''); // Ambil hanya angka
+            if (!phone) return "";
+            let cleaned = ('' + phone).replace(/\D/g, ''); 
             if (cleaned.startsWith('0')) {
                 cleaned = '62' + cleaned.substring(1);
+            } else if (cleaned.startsWith('8')) {
+                cleaned = '62' + cleaned;
             }
             return cleaned;
         }
@@ -294,7 +297,7 @@
             
             db.ref('orders').push({
                 customer: name, 
-                whatsapp: waClean, // Simpan yang sudah bersih
+                whatsapp: waClean, 
                 alamat: addr || "Makan di Tempat", 
                 items: itemsTxt, 
                 total: "Rp " + (subtotalAmount + selectedOngkir).toLocaleString(),
@@ -340,7 +343,7 @@
                 const card = document.createElement('div'); card.className = `order-card ${o.status}`;
                 const displayItems = o.items ? o.items.replace(/\n/g,'<br>') : "Tidak ada menu";
                 
-                // PEMBUATAN LINK WA YANG DINAMIS DAN BERSIH
+                // PERBAIKAN: Gunakan wa.me/62... agar pasti terbuka di HP
                 const waNumber = cleanPhone(o.whatsapp);
                 const waLink = waNumber ? `<a href="https://wa.me/${waNumber}" target="_blank" class="wa-link"><i class="fab fa-whatsapp"></i> ${o.whatsapp}</a>` : '<i>Tidak ada nomor</i>';
 
